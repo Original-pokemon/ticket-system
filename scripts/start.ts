@@ -1,20 +1,33 @@
 #!/usr/bin/env tsx
 
-import { onShutdown } from "node-graceful-shutdown";
 import { createBot } from "#root/bot/index.js";
-import { config } from "#root/config.js";
-import { logger } from "#root/logger.js";
-import { createServer } from "#root/server/index.js";
+import { createAppContainer } from "#root/container.js";
+import { onShutdown } from "node-graceful-shutdown";
+import { PsqlAdapter } from "@grammyjs/storage-psql";
+
+import { run, RunnerHandle } from "@grammyjs/runner";
+
+const container = createAppContainer();
+const { logger, config, client } = container;
 
 try {
-  const bot = createBot(config.BOT_TOKEN);
-  const server = await createServer(bot);
+  await client.connect();
+  const sessionStorage = await PsqlAdapter.create({
+    tableName: "session",
+    client,
+  });
+
+  const bot = createBot(config.BOT_TOKEN, {
+    container,
+    sessionStorage,
+  });
+  let runner: undefined | RunnerHandle;
 
   // Graceful shutdown
   onShutdown(async () => {
     logger.info("shutdown");
 
-    await server.close();
+    await runner?.stop();
     await bot.stop();
   });
 
@@ -22,13 +35,17 @@ try {
     // to prevent receiving updates before the bot is ready
     await bot.init();
 
-    await server.listen({
-      host: config.BOT_SERVER_HOST,
-      port: config.BOT_SERVER_PORT,
+    logger.info({
+      msg: "bot running...",
+      username: bot.botInfo.username,
     });
 
-    await bot.api.setWebhook(config.BOT_WEBHOOK, {
-      allowed_updates: config.BOT_ALLOWED_UPDATES,
+    runner = run(bot, {
+      runner: {
+        fetch: {
+          allowed_updates: config.BOT_ALLOWED_UPDATES,
+        },
+      },
     });
   } else if (config.isDev) {
     await bot.start({

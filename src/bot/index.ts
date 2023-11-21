@@ -1,12 +1,4 @@
-import { autoChatAction } from "@grammyjs/auto-chat-action";
-import { hydrate } from "@grammyjs/hydrate";
-import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
-import { BotConfig, StorageAdapter, Bot as TelegramBot, session } from "grammy";
-import {
-  Context,
-  SessionData,
-  createContextConstructor,
-} from "#root/bot/context.js";
+import { Context, createContextConstructor } from "#root/bot/context.js";
 import {
   botAdminFeature,
   languageFeature,
@@ -16,19 +8,32 @@ import {
 import { errorHandler } from "#root/bot/handlers/index.js";
 import { i18n, isMultipleLocales } from "#root/bot/i18n.js";
 import { updateLogger } from "#root/bot/middlewares/index.js";
-import { config } from "#root/config.js";
-import { logger } from "#root/logger.js";
+import { Container } from "#root/container.js";
+import { Bot as TelegramBot, BotConfig, session, StorageAdapter } from "grammy";
+
+import { autoChatAction } from "@grammyjs/auto-chat-action";
+import { hydrate } from "@grammyjs/hydrate";
+import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
+import { sequentialize } from "@grammyjs/runner";
 
 type Options = {
-  sessionStorage?: StorageAdapter<SessionData>;
-  config?: Omit<BotConfig<Context>, "ContextConstructor">;
+  container: Container;
+  sessionStorage: StorageAdapter<unknown>;
 };
 
-export function createBot(token: string, options: Options = {}) {
-  const { sessionStorage } = options;
+const getSessionKey = (ctx: Omit<Context, "session">) =>
+  ctx.chat?.id.toString();
+
+export function createBot(
+  token: string,
+  options: Options,
+  botConfig?: Omit<BotConfig<Context>, "ContextConstructor">,
+) {
+  const { container, sessionStorage } = options;
+  const { config } = container;
   const bot = new TelegramBot(token, {
-    ...options.config,
-    ContextConstructor: createContextConstructor({ logger }),
+    ...botConfig,
+    ContextConstructor: createContextConstructor(container),
   });
 
   // Middlewares
@@ -41,10 +46,15 @@ export function createBot(token: string, options: Options = {}) {
   bot.use(autoChatAction(bot.api));
   bot.use(hydrateReply);
   bot.use(hydrate());
+  bot.use(sequentialize(getSessionKey));
   bot.use(
     session({
-      initial: () => ({}),
+      initial: () => ({
+        user: {},
+        customData: {},
+      }),
       storage: sessionStorage,
+      getSessionKey,
     }),
   );
   bot.use(i18n);
