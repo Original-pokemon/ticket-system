@@ -1,17 +1,23 @@
-import { Update, UserFromGetMe } from "@grammyjs/types";
-import { Context as DefaultContext, SessionFlavor, type Api } from "grammy";
+import { ServicesType } from "#root/container.js";
+import type { Logger } from "#root/logger.js";
+import { UserType } from "#root/services/user/user-service.js";
+import { type Api, Context as DefaultContext, SessionFlavor } from "grammy";
+
 import type { AutoChatActionFlavor } from "@grammyjs/auto-chat-action";
 import type { HydrateFlavor } from "@grammyjs/hydrate";
 import type { I18nFlavor } from "@grammyjs/i18n";
 import type { ParseModeFlavor } from "@grammyjs/parse-mode";
-import type { Logger } from "#root/logger.js";
+import { Update, UserFromGetMe } from "@grammyjs/types";
 
 export type SessionData = {
-  // field?: string;
+  user: UserType;
+  customData: { [key: string]: boolean };
+  selectUser: string | null;
 };
 
 type ExtendedContextFlavor = {
   logger: Logger;
+  services: ServicesType;
 };
 
 export type Context = ParseModeFlavor<
@@ -26,14 +32,26 @@ export type Context = ParseModeFlavor<
 
 interface Dependencies {
   logger: Logger;
+  services: ServicesType;
 }
 
-export function createContextConstructor({ logger }: Dependencies) {
+export function createContextConstructor({ logger, services }: Dependencies) {
   return class extends DefaultContext implements ExtendedContextFlavor {
     logger: Logger;
 
+    services: ServicesType;
+
     constructor(update: Update, api: Api, me: UserFromGetMe) {
       super(update, api, me);
+      Object.defineProperty(this, "logger", {
+        writable: true,
+      });
+
+      Object.defineProperty(this, "services", {
+        writable: true,
+      });
+
+      this.services = services;
 
       this.logger = logger.child({
         update_id: this.update.update_id,

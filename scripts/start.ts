@@ -3,6 +3,7 @@
 import { createBot } from "#root/bot/index.js";
 import { createAppContainer } from "#root/container.js";
 import { onShutdown } from "node-graceful-shutdown";
+import { PsqlAdapter } from "@grammyjs/storage-psql";
 
 import { run, RunnerHandle } from "@grammyjs/runner";
 
@@ -11,8 +12,14 @@ const { logger, config, client } = container;
 
 try {
   await client.connect();
+  const sessionStorage = await PsqlAdapter.create({
+    tableName: "session",
+    client,
+  });
+
   const bot = createBot(config.BOT_TOKEN, {
     container,
+    sessionStorage,
   });
   let runner: undefined | RunnerHandle;
 
