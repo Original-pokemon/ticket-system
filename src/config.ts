@@ -24,8 +24,10 @@ const configSchema = z.object({
   LOG_LEVEL: z
     .enum(["trace", "debug", "info", "warn", "error", "fatal", "silent"])
     .default("info"),
-  BOT_SERVER_HOST: z.string().default("0.0.0.0"),
-  BOT_SERVER_PORT: z.coerce.number().positive().default(80),
+  DATA_BASE_HOST: z.string().default("127.0.0.1"),
+  DATA_BASE_PORT: z.coerce.number().positive().default(5432),
+  DATA_BASE_USER: z.string().default("postgres"),
+  DATA_BASE_PASSWORD: z.string(),
   BOT_ALLOWED_UPDATES: z
     .preprocess(
       parseJsonSafe("BOT_ALLOWED_UPDATES"),
@@ -33,7 +35,6 @@ const configSchema = z.object({
     )
     .default([]),
   BOT_TOKEN: z.string(),
-  BOT_WEBHOOK: z.string().url(),
   BOT_ADMIN_USER_ID: z
     .preprocess(
       parseJsonSafe("BOT_ADMIN_USER_ID"),
@@ -41,6 +42,7 @@ const configSchema = z.object({
     )
     .transform((v) => (Array.isArray(v) ? v : [v]))
     .default([]),
+  BACKEND_URL: z.string(),
 });
 
 const parseConfig = (environment: NodeJS.ProcessEnv) => {

@@ -1,14 +1,17 @@
 #!/usr/bin/env tsx
 
-import { onShutdown } from "node-graceful-shutdown";
 import { createBot } from "#root/bot/index.js";
-import { config } from "#root/config.js";
-import { logger } from "#root/logger.js";
-import { createServer } from "#root/server/index.js";
+import { createAppContainer } from "#root/container.js";
+import { onShutdown } from "node-graceful-shutdown";
+
+const container = createAppContainer();
+const { logger, config, client } = container;
 
 try {
-  const bot = createBot(config.BOT_TOKEN);
-  const server = await createServer(bot);
+  await client.connect();
+  const bot = createBot(config.BOT_TOKEN, {
+    container,
+  });
 
   // Graceful shutdown
   onShutdown(async () => {
