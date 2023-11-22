@@ -1,13 +1,11 @@
 import { Context, createContextConstructor } from "#root/bot/context.js";
 import {
   botAdminFeature,
-  languageFeature,
   unhandledFeature,
   welcomeFeature,
 } from "#root/bot/features/index.js";
 import { errorHandler } from "#root/bot/handlers/index.js";
-import { i18n, isMultipleLocales } from "#root/bot/i18n.js";
-import { updateLogger } from "#root/bot/middlewares/index.js";
+import { updateLogger, authMiddleware } from "#root/bot/middlewares/index.js";
 import { Container } from "#root/container.js";
 import { Bot as TelegramBot, BotConfig, session, StorageAdapter } from "grammy";
 
@@ -15,6 +13,11 @@ import { autoChatAction } from "@grammyjs/auto-chat-action";
 import { hydrate } from "@grammyjs/hydrate";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
+import { conversations } from "@grammyjs/conversations";
+import {
+  registerUserConversation,
+  findUserConversation,
+} from "./conversations/index.js";
 
 type Options = {
   container: Container;
@@ -57,15 +60,14 @@ export function createBot(
       getSessionKey,
     }),
   );
-  bot.use(i18n);
+  bot.use(conversations());
+  bot.use(findUserConversation(container));
+  bot.use(registerUserConversation(container));
+  bot.use(authMiddleware());
 
   // Handlers
   bot.use(welcomeFeature);
   bot.use(botAdminFeature);
-
-  if (isMultipleLocales) {
-    bot.use(languageFeature);
-  }
 
   // must be the last handler
   bot.use(unhandledFeature);
