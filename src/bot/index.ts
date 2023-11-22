@@ -13,6 +13,11 @@ import { autoChatAction } from "@grammyjs/auto-chat-action";
 import { hydrate } from "@grammyjs/hydrate";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
+import { conversations } from "@grammyjs/conversations";
+import {
+  registerUserConversation,
+  findUserConversation,
+} from "./conversations/index.js";
 
 type Options = {
   container: Container;
@@ -55,7 +60,9 @@ export function createBot(
       getSessionKey,
     }),
   );
-
+  bot.use(conversations());
+  bot.use(findUserConversation(container));
+  bot.use(registerUserConversation(container));
   bot.use(authMiddleware());
 
   // Handlers
