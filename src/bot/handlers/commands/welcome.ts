@@ -4,6 +4,7 @@ import { createAdminKeyboard } from "#root/bot/keyboards/admin/admin-panel.ts";
 import { isUnauthorized } from "#root/bot/filters/index.ts";
 import { isAdmin } from "#root/bot/filters/is-bot-admin.ts";
 import { BotText } from "#root/bot/const/text.ts";
+import { createUserKeyboard } from "#root/bot/keyboards/user/user-panel.ts";
 
 export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
   const {
@@ -23,5 +24,7 @@ export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
   if (isUnauthorized(userGroup)) {
     return ctx.reply(BotText.Welcome.UNAUTHORIZED);
   }
-  return ctx.reply(BotText.Welcome.getUserText(group.description));
+  return ctx.reply(BotText.Welcome.getUserText(group.description), {
+    reply_markup: await createUserKeyboard(group.id),
+  });
 };

@@ -1,4 +1,4 @@
-import { Context, createContextConstructor } from "#root/bot/context.ts";
+import { Context, createContextConstructor } from "#root/bot/context";
 import {
   botAdminFeature,
   unhandledFeature,
