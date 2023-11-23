@@ -1,7 +1,7 @@
-import { selectPetrolStationData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { Context } from "#root/bot/context.js";
-import { createPetrolStationKeyboard } from "#root/bot/keyboards/index.js";
+import { selectPetrolStationData } from "#root/bot/callback-data/index.ts";
+import { AdminText } from "#root/bot/const/text.ts";
+import { Context } from "#root/bot/context.ts";
+import { createPetrolStationsKeyboard } from "#root/bot/keyboards/index.ts";
 import { CallbackQueryContext } from "grammy";
 
 export const selectPetrolStationHandler = async (
@@ -19,6 +19,6 @@ export const selectPetrolStationHandler = async (
     customData[id] = true;
   }
   await ctx.editMessageText(AdminText.AdminCommand.USERS, {
-    reply_markup: await createPetrolStationKeyboard(ctx),
+    reply_markup: await createPetrolStationsKeyboard(ctx),
   });
 };

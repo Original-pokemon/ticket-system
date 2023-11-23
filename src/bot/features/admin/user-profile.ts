@@ -1,5 +1,5 @@
-import type { Context } from "#root/bot/context.js";
-import { isBotAdmin } from "#root/bot/filters/index.js";
+import type { Context } from "#root/bot/context.ts";
+import { isBotAdmin } from "#root/bot/filters/index.ts";
 
 import {
   setUpRelationshipHandler,
@@ -8,8 +8,8 @@ import {
   blockUserHandler,
   saveCategoryHandler,
   saveRelationshipHandler,
-} from "#root/bot/handlers/index.js";
-import { logHandle } from "#root/bot/helpers/logging.js";
+} from "#root/bot/handlers/index.ts";
+import { logHandle } from "#root/bot/helpers/logging.ts";
 import { Composer } from "grammy";
 import { chatAction } from "@grammyjs/auto-chat-action";
 import {
@@ -20,10 +20,10 @@ import {
   selectPetrolStationData,
   selectManagerData,
   selectCategoryData,
-} from "#root/bot/callback-data/index.js";
-import { selectPetrolStationHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-station.js";
-import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.js";
-import { selectManagerHandler } from "#root/bot/handlers/admin/user-profile/select-manager.js";
+} from "#root/bot/callback-data/index.ts";
+import { selectPetrolStationHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-station.ts";
+import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.ts";
+import { selectManagerHandler } from "#root/bot/handlers/admin/user-profile/select-manager.ts";
 
 const composer = new Composer<Context>();
 

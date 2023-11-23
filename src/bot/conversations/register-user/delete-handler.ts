@@ -1,5 +1,5 @@
-import { UserGroup } from "#root/bot/const/user-group.js";
-import { ServicesType } from "#root/container.js";
+import { UserGroup } from "#root/bot/const/user-group.ts";
+import { ServicesType } from "#root/container.ts";
 
 type Properties = {
   services: ServicesType;

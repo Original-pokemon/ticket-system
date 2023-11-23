@@ -1,11 +1,11 @@
-import { Context } from "#root/bot/context.js";
+import { Context } from "#root/bot/context.ts";
 import { createConversation } from "@grammyjs/conversations";
-import { Container } from "#root/container.js";
-import { AdminText, BotText } from "#root/bot/const/text.js";
-import { registerUserData } from "../../callback-data/admin/register-user.js";
-import { handleGroupRegistration } from "./handle-group-registration.js";
-import { getUserGroupId } from "./get-user-group-id.js";
-import { getUserBushId } from "./get-user-bush-id.js";
+import { Container } from "#root/container.ts";
+import { AdminText, BotText } from "#root/bot/const/text.ts";
+import { registerUserData } from "../../callback-data/admin/register-user.ts";
+import { handleGroupRegistration } from "./handle-group-registration.ts";
+import { getUserGroupId } from "./get-user-group-id.ts";
+import { getUserBushId } from "./get-user-bush-id.ts";
 
 export const registerUserConversation = (container: Container) =>
   createConversation<Context>(async (conversation, ctx) => {

@@ -1,4 +1,4 @@
-import { Context } from "#root/bot/context.js";
+import { Context } from "#root/bot/context.ts";
 import { CallbackQueryContext } from "grammy";
 
 export const registerUserHandler = async (

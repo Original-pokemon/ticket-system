@@ -1,5 +1,5 @@
-import { config } from "#root/config.js";
-import { logger } from "#root/logger.js";
+import { config } from "#root/config.ts";
+import { logger } from "#root/logger.ts";
 import {
   UserService,
   GroupService,
@@ -15,7 +15,7 @@ import {
   StatusService,
   TagWordService,
   TicketService,
-} from "#root/services/index.js";
+} from "#root/services/index.ts";
 
 import pg from "pg";
 

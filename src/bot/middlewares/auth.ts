@@ -1,11 +1,11 @@
 /* eslint-disable camelcase */
 import { Middleware } from "grammy";
-import { config } from "#root/config.js";
-import { UserType } from "#root/services/user/user-service.js";
-import { Context } from "../context.js";
-import { UserGroup } from "../const/user-group.js";
-import { getProfileText } from "../helpers/user-profile.js";
-import { BotText } from "../const/text.js";
+import { config } from "#root/config.ts";
+import { UserType } from "#root/services/user/user-service.ts";
+import { Context } from "../context.ts";
+import { UserGroup } from "../const/user-group.ts";
+import { getProfileText } from "../helpers/user-profile.ts";
+import { BotText } from "../const/text.ts";
 
 export function authMiddleware(): Middleware<Context> {
   return async (ctx, next) => {

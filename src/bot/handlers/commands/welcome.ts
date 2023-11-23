@@ -1,9 +1,9 @@
-import { Context } from "#root/bot/context.js";
+import { Context } from "#root/bot/context.ts";
 import { CommandContext } from "grammy";
-import { createAdminKeyboard } from "#root/bot/keyboards/admin/admin-panel.js";
-import { isUnauthorized } from "#root/bot/filters/index.js";
-import { isAdmin } from "#root/bot/filters/is-bot-admin.js";
-import { BotText } from "#root/bot/const/text.js";
+import { createAdminKeyboard } from "#root/bot/keyboards/admin/admin-panel.ts";
+import { isUnauthorized } from "#root/bot/filters/index.ts";
+import { isAdmin } from "#root/bot/filters/is-bot-admin.ts";
+import { BotText } from "#root/bot/const/text.ts";
 
 export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
   const {

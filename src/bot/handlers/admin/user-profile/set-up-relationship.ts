@@ -1,12 +1,12 @@
-import { setRelationshipUserData } from "#root/bot/callback-data/admin/set-relationship-user.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { UserGroup } from "#root/bot/const/user-group.js";
-import { Context } from "#root/bot/context.js";
+import { setRelationshipUserData } from "#root/bot/callback-data/admin/set-relationship-user.ts";
+import { AdminText } from "#root/bot/const/text.ts";
+import { UserGroup } from "#root/bot/const/user-group.ts";
+import { Context } from "#root/bot/context.ts";
 import {
-  createPetrolStationKeyboard,
-  createManagerKeyboard,
+  createPetrolStationsKeyboard,
+  createManagersKeyboard,
   createCategoriesKeyboard,
-} from "#root/bot/keyboards/index.js";
+} from "#root/bot/keyboards/index.ts";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 const getCustomArray = (array: string[]) => array.map((item) => [item, true]);
@@ -33,7 +33,7 @@ export const setUpRelationshipHandler = async (
 
       ctx.session.customData = Object.fromEntries(petrolStationsCustom);
 
-      keyboard = await createPetrolStationKeyboard(ctx);
+      keyboard = await createPetrolStationsKeyboard(ctx);
       break;
     }
     case UserGroup.PetrolStation: {
@@ -47,7 +47,7 @@ export const setUpRelationshipHandler = async (
 
       ctx.session.customData = Object.fromEntries(managersCustom);
 
-      keyboard = await createManagerKeyboard(ctx);
+      keyboard = await createManagersKeyboard(ctx);
       break;
     }
     case UserGroup.TaskPerformer: {

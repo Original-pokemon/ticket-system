@@ -1,2 +1,2 @@
-export * from "./find-user.js";
-export * from "./register-user/index.js";
+export * from "./find-user.ts";
+export * from "./register-user/index.ts";

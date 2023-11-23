@@ -1,8 +1,8 @@
-import { Context } from "#root/bot/context.js";
-import { viewUserProfileHandler } from "#root/bot/handlers/admin/view-user-profile.js";
-import { Container } from "#root/container.js";
+import { Context } from "#root/bot/context.ts";
+import { viewUserProfileHandler } from "#root/bot/handlers/admin/view-user-profile.ts";
+import { Container } from "#root/container.ts";
 import { createConversation } from "@grammyjs/conversations";
-import { AdminText } from "../const/text.js";
+import { AdminText } from "../const/text.ts";
 
 export const findUserConversation = (container: Container) =>
   createConversation<Context>(async (conversation, ctx) => {

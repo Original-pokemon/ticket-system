@@ -11,6 +11,7 @@
     "sourceMap": true,
     "outDir": "build",
     "rootDir": ".",
+    "allowImportingTsExtensions": true,
     "paths": {
       "#root/*": [
         "./src/*"

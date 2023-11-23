@@ -1,7 +1,7 @@
-import { saveRelationshipData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { UserGroup } from "#root/bot/const/user-group.js";
-import { Context } from "#root/bot/context.js";
+import { saveRelationshipData } from "#root/bot/callback-data/index.ts";
+import { AdminText } from "#root/bot/const/text.ts";
+import { UserGroup } from "#root/bot/const/user-group.ts";
+import { Context } from "#root/bot/context.ts";
 import { CallbackQueryContext } from "grammy";
 
 export const saveRelationshipHandler = async (

@@ -1,6 +1,6 @@
-import { selectBushData } from "#root/bot/callback-data/admin/select/select-bush.js";
-import { Context } from "#root/bot/context.js";
-import { chunk } from "#root/bot/helpers/keyboard.js";
+import { selectBushData } from "#root/bot/callback-data/admin/select/select-bush.ts";
+import { Context } from "#root/bot/context.ts";
+import { chunk } from "#root/bot/helpers/keyboard.ts";
 import { InlineKeyboard } from "grammy";
 
 export const createBushKeyboard = async (ctx: Context) => {

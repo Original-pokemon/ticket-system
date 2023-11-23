@@ -1,6 +1,6 @@
-import { ServicesType } from "#root/container.js";
-import type { Logger } from "#root/logger.js";
-import { UserType } from "#root/services/user/user-service.js";
+import { ServicesType } from "#root/container.ts";
+import type { Logger } from "#root/logger.ts";
+import { UserType } from "#root/services/user/user-service.ts";
 import { type Api, Context as DefaultContext, SessionFlavor } from "grammy";
 
 import type { AutoChatActionFlavor } from "@grammyjs/auto-chat-action";

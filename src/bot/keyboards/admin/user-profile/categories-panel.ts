@@ -1,6 +1,6 @@
-import { selectCategoryData } from "#root/bot/callback-data/admin/select/select-category.js";
-import { Context } from "#root/bot/context.js";
-import { chunk } from "#root/bot/helpers/keyboard.js";
+import { selectCategoryData } from "#root/bot/callback-data/admin/select/select-category.ts";
+import { Context } from "#root/bot/context.ts";
+import { chunk } from "#root/bot/helpers/keyboard.ts";
 import { InlineKeyboard } from "grammy";
 
 export const createCategoriesKeyboard = async (ctx: Context) => {

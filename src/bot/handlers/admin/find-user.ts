@@ -1,4 +1,4 @@
-import { Context } from "#root/bot/context.js";
+import { Context } from "#root/bot/context.ts";
 import { HearsContext } from "grammy";
 
 export const findUserCommandHandler = async (ctx: HearsContext<Context>) => {

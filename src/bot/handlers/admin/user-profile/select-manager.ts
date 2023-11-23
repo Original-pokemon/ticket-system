@@ -1,7 +1,7 @@
-import { selectManagerData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { Context } from "#root/bot/context.js";
-import { createManagerKeyboard } from "#root/bot/keyboards/index.js";
+import { selectManagerData } from "#root/bot/callback-data/index.ts";
+import { AdminText } from "#root/bot/const/text.ts";
+import { Context } from "#root/bot/context.ts";
+import { createManagersKeyboard } from "#root/bot/keyboards/index.ts";
 import { CallbackQueryContext } from "grammy";
 
 export const selectManagerHandler = async (
@@ -19,6 +19,6 @@ export const selectManagerHandler = async (
     customData[id] = true;
   }
   await ctx.editMessageText(AdminText.AdminCommand.USERS, {
-    reply_markup: await createManagerKeyboard(ctx),
+    reply_markup: await createManagersKeyboard(ctx),
   });
 };

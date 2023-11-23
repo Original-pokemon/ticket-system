@@ -1,10 +1,10 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
 
-import { logger } from "#root/logger.js";
+import { logger } from "#root/logger.ts";
 
 import axiosRetry from "axios-retry";
-import { config } from "#root/config.js";
-import { REQUEST_TIMEOUT } from "./const.js";
+import { config } from "#root/config.ts";
+import { REQUEST_TIMEOUT } from "./const.ts";
 
 type DetailMessageType = {
   type: string;
