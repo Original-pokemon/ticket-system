@@ -1,7 +1,7 @@
 import { CallbackQueryContext } from "grammy";
-import { blockUserData } from "#root/bot/callback-data/admin/block-user.ts";
-import { UserGroup } from "#root/bot/const/user-group.ts";
-import { Context } from "../../../context.ts";
+import { blockUserData } from "#root/bot/callback-data/index.ts";
+import { UserGroup, AdminText } from "#root/bot/const/index.ts";
+import { Context } from "#root/bot/context.ts";
 
 export const blockUserHandler = async (ctx: CallbackQueryContext<Context>) => {
   const { id } = blockUserData.unpack(ctx.callbackQuery.data);
@@ -12,6 +12,6 @@ export const blockUserHandler = async (ctx: CallbackQueryContext<Context>) => {
     user_group: UserGroup.Blocked,
   });
 
-  ctx.reply("User blocked successfully");
-  ctx.api.sendMessage(user.id, "You are now blocked");
+  await ctx.reply(AdminText.Block.USER_BLOCK);
+  await ctx.api.sendMessage(user.id, AdminText.Block.USER_MESSAGE);
 };

@@ -1,5 +1,5 @@
 import { selectBushData } from "#root/bot/callback-data/index.ts";
-import { AdminText } from "#root/bot/const/text.ts";
+import { AdminText } from "#root/bot/const/index.ts";
 import { Context } from "#root/bot/context.ts";
 import { createBushKeyboard } from "#root/bot/keyboards/index.ts";
 import { ServicesType } from "#root/container.ts";
@@ -17,7 +17,7 @@ export const getUserBushId = async ({
   conversation,
   services,
 }: Properties): Promise<[CallbackQueryContext<Context>, number]> => {
-  await ctx.reply(AdminText.AdminCommand.BUSHES, {
+  await ctx.reply(AdminText.Admin.BUSHES, {
     reply_markup: await createBushKeyboard({ ...ctx, services }),
   });
 

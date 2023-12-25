@@ -1,6 +1,5 @@
 import { saveRelationshipData } from "#root/bot/callback-data/index.ts";
-import { AdminText } from "#root/bot/const/text.ts";
-import { UserGroup } from "#root/bot/const/user-group.ts";
+import { AdminText, UserGroup } from "#root/bot/const/index.ts";
 import { Context } from "#root/bot/context.ts";
 import { CallbackQueryContext } from "grammy";
 
@@ -28,5 +27,5 @@ export const saveRelationshipHandler = async (
     });
   }
 
-  ctx.editMessageText(AdminText.AdminCommand.SAVE_RELATIONSHIP);
+  ctx.editMessageText(AdminText.Admin.SAVE_RELATIONSHIP);
 };

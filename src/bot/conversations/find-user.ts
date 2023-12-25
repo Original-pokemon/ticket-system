@@ -1,8 +1,10 @@
 import { Context } from "#root/bot/context.ts";
-import { viewUserProfileHandler } from "#root/bot/handlers/admin/view-user-profile.ts";
+import { viewUserProfileHandler } from "#root/bot/handlers/index.ts";
 import { Container } from "#root/container.ts";
 import { createConversation } from "@grammyjs/conversations";
-import { AdminText } from "../const/text.ts";
+import { AdminText } from "../const/index.ts";
+
+export const FIND_USER_CONVERSATION = "find-user";
 
 export const findUserConversation = (container: Container) =>
   createConversation<Context>(async (conversation, ctx) => {
@@ -22,4 +24,4 @@ export const findUserConversation = (container: Container) =>
     }
 
     await answerCtx.reply(AdminText.FindUser.NOT_FOUND);
-  }, "find-user");
+  }, FIND_USER_CONVERSATION);

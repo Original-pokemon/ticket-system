@@ -19,12 +19,13 @@ class ApiService {
       baseURL: config.BACKEND_URL,
       timeout: REQUEST_TIMEOUT,
     });
+    this.#axios.get("/");
 
     axiosRetry(this.#axios, {
-      retries: 3,
+      retries: 4,
       retryDelay: (retryCount) => {
         logger.warn(`Retrying attempt: ${retryCount}`);
-        return retryCount * 2000; // time interval between retries
+        return retryCount * 5000; // time interval between retries
       },
     });
 

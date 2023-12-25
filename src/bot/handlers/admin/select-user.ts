@@ -1,6 +1,6 @@
 import { CallbackQueryContext } from "grammy";
-import { selectUserData } from "../../callback-data/admin/select/select-user.ts";
-import { Context } from "../../context.ts";
+import { Context } from "#root/bot/context.ts";
+import { selectUserData } from "#root/bot/callback-data/index.ts";
 import { viewUserProfileHandler } from "./view-user-profile.ts";
 
 export const selectUserHandler = async (ctx: CallbackQueryContext<Context>) => {

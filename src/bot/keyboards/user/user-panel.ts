@@ -1,5 +1,5 @@
-import { UserGroup } from "#root/bot/const/user-group.ts";
-import { isUser } from "#root/bot/filters/is-user.ts";
+import { isUser } from "#root/bot/filters/index.ts";
+import { UserGroup } from "#root/bot/const/index.ts";
 import {
   createPetrolStationKeyboard,
   createTaskPerformerKeyboard,

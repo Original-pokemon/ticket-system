@@ -1,6 +1,7 @@
-import { Context, createContextConstructor } from "#root/bot/context";
+import { Context, createContextConstructor } from "#root/bot/context.ts";
 import {
   botAdminFeature,
+  userFeature,
   unhandledFeature,
   welcomeFeature,
 } from "#root/bot/features/index.ts";
@@ -14,9 +15,12 @@ import { hydrate } from "@grammyjs/hydrate";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
 import { conversations } from "@grammyjs/conversations";
+import { hydrateFiles } from "@grammyjs/files";
 import {
   registerUserConversation,
   findUserConversation,
+  createTicketConversation,
+  editTicketConversation,
 } from "./conversations/index.ts";
 
 type Options = {
@@ -32,7 +36,7 @@ export function createBot(
   options: Options,
   botConfig?: Omit<BotConfig<Context>, "ContextConstructor">,
 ) {
-  const { container, sessionStorage } = options;
+  const { container /* sessionStorage */ } = options;
   const { config } = container;
   const bot = new TelegramBot(token, {
     ...botConfig,
@@ -46,6 +50,7 @@ export function createBot(
     bot.use(updateLogger());
   }
 
+  bot.api.config.use(hydrateFiles(bot.token));
   bot.use(autoChatAction(bot.api));
   bot.use(hydrateReply);
   bot.use(hydrate());
@@ -56,7 +61,7 @@ export function createBot(
         user: {},
         customData: {},
       }),
-      storage: sessionStorage,
+      // storage: sessionStorage,
       getSessionKey,
     }),
   );
@@ -66,15 +71,16 @@ export function createBot(
   bot.use(conversations());
   bot.use(findUserConversation(container));
   bot.use(registerUserConversation(container));
-  bot.use(authMiddleware());
+  bot.use(createTicketConversation(container));
+  bot.use(editTicketConversation(container));
 
   // Handlers
   bot.use(welcomeFeature);
   bot.use(botAdminFeature);
+  bot.use(userFeature);
 
   // must be the last handler
   bot.use(unhandledFeature);
-
   if (config.isDev) {
     bot.catch(errorHandler);
   }

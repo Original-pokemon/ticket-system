@@ -3,7 +3,8 @@ import { ApiRouteKey } from "../const.ts";
 
 export type AttachmentType = {
   id: string;
-  comment_id: string;
+  ticket_id?: string;
+  comment_id?: string;
   path: string;
 };
 

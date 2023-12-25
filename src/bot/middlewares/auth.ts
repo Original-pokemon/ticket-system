@@ -1,23 +1,21 @@
-/* eslint-disable camelcase */
 import { Middleware } from "grammy";
 import { config } from "#root/config.ts";
 import { Context } from "../context.ts";
-import { UserGroup } from "../const/user-group.ts";
-import { getProfileText } from "../helpers/user-profile.ts";
-import { BotText } from "../const/text.ts";
+import { UserGroup, BotText } from "../const/index.ts";
+import { getProfileText } from "../helpers/index.ts";
 
 export function authMiddleware(): Middleware<Context> {
   return async (ctx, next) => {
-    const { id, first_name, last_name } = ctx.from || {};
+    const { id, first_name: firstName, last_name: lastName } = ctx.from || {};
 
-    if (!id || !first_name) return;
+    if (!id || !firstName) return;
 
     try {
       try {
         ctx.session.user = await ctx.services.User.getUnique(id.toString());
       } catch {
-        const userName = `${first_name.replaceAll(" ", "")}${
-          last_name ? `_${last_name}` : ""
+        const userName = `${firstName.replaceAll(" ", "")}${
+          lastName ? `_${lastName}` : ""
         }`;
 
         const group = config.BOT_ADMIN_USER_ID.includes(id)
@@ -27,8 +25,8 @@ export function authMiddleware(): Middleware<Context> {
         const userId = await ctx.services.User.create({
           id: id.toString(),
           user_name: userName,
-          first_name,
-          last_name,
+          first_name: firstName,
+          last_name: lastName,
           user_group: group,
         });
 

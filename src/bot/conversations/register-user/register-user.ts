@@ -1,16 +1,18 @@
 import { Context } from "#root/bot/context.ts";
 import { createConversation } from "@grammyjs/conversations";
 import { Container } from "#root/container.ts";
-import { AdminText, BotText } from "#root/bot/const/text.ts";
-import { registerUserData } from "../../callback-data/admin/register-user.ts";
+import { AdminText, BotText } from "#root/bot/const/index.ts";
+import { registerUserData } from "#root/bot/callback-data/index.ts";
 import { handleGroupRegistration } from "./handle-group-registration.ts";
 import { getUserGroupId } from "./get-user-group-id.ts";
 import { getUserBushId } from "./get-user-bush-id.ts";
 
+export const REGISTER_USER_CONVERSATION = "register-user";
+
 export const registerUserConversation = (container: Container) =>
   createConversation<Context>(async (conversation, ctx) => {
     if (!ctx.callbackQuery?.data) return;
-    const { services } = container;
+    const { services, logger } = container;
     const { id: userId } = registerUserData.unpack(ctx.callbackQuery.data);
     const [_groupCtx, groupId] = await getUserGroupId({
       ctx,
@@ -40,13 +42,18 @@ export const registerUserConversation = (container: Container) =>
       });
 
       const group = await services.Group.getUnique(groupId);
-      await ctx.api.sendMessage(
-        userId,
-        BotText.Welcome.getUserText(group.description),
-      );
+
+      try {
+        await ctx.api.sendMessage(
+          userId,
+          BotText.Welcome.getUserText(group.description),
+        );
+      } catch {
+        logger.warn("User ID not valid");
+      }
 
       await bushCtx.editMessageText(
-        AdminText.AdminCommand.getUserRegText(userLogin, group.description),
+        AdminText.Admin.getUserRegText(userLogin, group.description),
       );
     });
-  }, "role-assignment");
+  }, REGISTER_USER_CONVERSATION);

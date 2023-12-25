@@ -1,6 +1,6 @@
-import { selectGroupData } from "#root/bot/callback-data/admin/select/select-group.ts";
+import { selectGroupData } from "#root/bot/callback-data/index.ts";
 import { Context } from "#root/bot/context.ts";
-import { chunk } from "#root/bot/helpers/keyboard.ts";
+import { chunk } from "#root/bot/helpers/index.ts";
 import { InlineKeyboard } from "grammy";
 
 export const createGroupKeyboard = async (ctx: Context) => {

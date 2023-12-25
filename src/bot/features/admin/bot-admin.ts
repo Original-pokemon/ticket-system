@@ -5,7 +5,7 @@ import {
   findUserCommandHandler,
   selectUserHandler,
 } from "#root/bot/handlers/index.ts";
-import { logHandle } from "#root/bot/helpers/logging.ts";
+import { logHandle } from "#root/bot/helpers/index.ts";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";

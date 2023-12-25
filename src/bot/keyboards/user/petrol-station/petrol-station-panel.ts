@@ -1,4 +1,4 @@
-import { PetrolStationButtons } from "#root/bot/const/index";
+import { PetrolStationButtons } from "#root/bot/const/index.ts";
 import { chunk } from "#root/bot/helpers/keyboard.ts";
 import { Keyboard } from "grammy";
 

@@ -17,13 +17,13 @@ import {
   registerUserData,
   setRelationshipUserData,
   unBlockUserData,
-  selectPetrolStationData,
   selectManagerData,
-  selectCategoryData,
+  selectCategoryAdminData,
+  selectPetrolStationAdminData,
 } from "#root/bot/callback-data/index.ts";
-import { selectPetrolStationHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-station.ts";
+import { selectPetrolStationsHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-stations.ts";
 import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.ts";
-import { selectManagerHandler } from "#root/bot/handlers/admin/user-profile/select-manager.ts";
+import { selectManagersHandler } from "#root/bot/handlers/admin/user-profile/select-managers.ts";
 
 const composer = new Composer<Context>();
 
@@ -58,16 +58,16 @@ feature.callbackQuery(
 );
 
 feature.callbackQuery(
-  selectPetrolStationData.filter(),
+  selectPetrolStationAdminData.filter(),
   logHandle("callbackquery-selext-petrol-station"),
   chatAction("typing"),
-  selectPetrolStationHandler,
+  selectPetrolStationsHandler,
 );
 feature.callbackQuery(
   selectManagerData.filter(),
-  logHandle("callbackquery-selext-petrol-station"),
+  logHandle("callbackquery-select-petrol-station"),
   chatAction("typing"),
-  selectManagerHandler,
+  selectManagersHandler,
 );
 
 feature.callbackQuery(
@@ -78,7 +78,7 @@ feature.callbackQuery(
 );
 
 feature.callbackQuery(
-  selectCategoryData.filter(),
+  selectCategoryAdminData.filter(),
   logHandle("callbackquery-set-category"),
   chatAction("typing"),
   saveCategoryHandler,

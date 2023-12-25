@@ -19,6 +19,7 @@ export enum ApiRouteKey {
 export const APIRoute = {
   [ApiRouteKey.Group]: {
     All: "/groups",
+    Many: undefined,
     Info: (id: string) => `/group/${id}`,
     Create: undefined,
     Update: undefined,
@@ -26,6 +27,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Category]: {
     All: "/categories",
+    Many: undefined,
     Info: (id: string) => `/category/${id}`,
     Create: undefined,
     Update: undefined,
@@ -33,6 +35,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Bush]: {
     All: "/bushes",
+    Many: undefined,
     Info: (id: string) => `/bush/${id}`,
     Create: undefined,
     Update: undefined,
@@ -40,6 +43,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.User]: {
     All: "/users",
+    Many: `/users/select`,
     Info: (id: string) => `/user/${id}`,
     Create: "/user/create",
     Update: (id: string) => `/user/update/${id}`,
@@ -47,6 +51,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.TaskPerformer]: {
     All: "/task-performers",
+    Many: undefined,
     Info: (id: string) => `/task-performer/${id}`,
     Create: "/task-performer/create",
     Update: (id: string) => `/task-performer/update/${id}`,
@@ -54,6 +59,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Manager]: {
     All: "/managers",
+    Many: undefined,
     Info: (id: string) => `/manager/${id}`,
     Create: "/manager/create",
     Update: (id: string) => `/manager/update/${id}`,
@@ -61,6 +67,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.PetrolStation]: {
     All: "/petrol-stations",
+    Many: undefined,
     Info: (id: string) => `/petrol-station/${id}`,
     Create: "/petrol-station/create",
     Update: (id: string) => `/petrol-station/update/${id}`,
@@ -68,6 +75,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Attachment]: {
     All: "/attachments",
+    Many: "/attachments/select",
     Info: (id: string) => `/attachment/${id}`,
     Create: "/attachment/create",
     Update: (id: string) => `/attachment/update/${id}`,
@@ -75,6 +83,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Comment]: {
     All: "/comments",
+    Many: undefined,
     Info: (id: string) => `/comment/${id}`,
     Create: "/comment/create",
     Update: (id: string) => `/comment/update/${id}`,
@@ -82,6 +91,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Priority]: {
     All: "/priorities",
+    Many: undefined,
     Info: (id: string) => `/priority/${id}`,
     Create: "/priority/create",
     Update: (id: string) => `/priority/update/${id}`,
@@ -89,6 +99,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.StatusHistory]: {
     All: "/status-histories",
+    Many: undefined,
     Info: (id: string) => `/status-history/${id}`,
     Create: "/status-history/create",
     Update: (id: string) => `/status-history/update/${id}`,
@@ -96,6 +107,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Status]: {
     All: "/statuses",
+    Many: undefined,
     Info: (id: string) => `/status/${id}`,
     Create: "/status/create",
     Update: (id: string) => `/status/update/${id}`,
@@ -103,6 +115,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.TagWord]: {
     All: "/tag-words",
+    Many: undefined,
     Info: (id: string) => `/tag-word/${id}`,
     Create: "/tag-word/create",
     Update: (id: string) => `/tag-word/update/${id}`,
@@ -110,6 +123,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Ticket]: {
     All: "/tickets",
+    Many: `/tickets/select`,
     Info: (id: string) => `/ticket/${id}`,
     Create: "/ticket/create",
     Update: (id: string) => `/ticket/update/${id}`,

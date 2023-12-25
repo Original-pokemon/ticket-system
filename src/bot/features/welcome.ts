@@ -1,5 +1,5 @@
 import type { Context } from "#root/bot/context.ts";
-import { logHandle } from "#root/bot/helpers/logging.ts";
+import { logHandle } from "#root/bot/helpers/index.ts";
 import { Composer } from "grammy";
 import { welcomeCommandHandler } from "../handlers/commands/welcome.ts";
 
