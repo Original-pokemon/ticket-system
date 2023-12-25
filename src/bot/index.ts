@@ -60,6 +60,9 @@ export function createBot(
       getSessionKey,
     }),
   );
+  bot.use(authMiddleware());
+
+  // Conversations
   bot.use(conversations());
   bot.use(findUserConversation(container));
   bot.use(registerUserConversation(container));
