@@ -1,9 +1,10 @@
-import { BaseService } from "../base-service.js";
-import { ApiRouteKey } from "../const.js";
+import { BaseService } from "../base-service.ts";
+import { ApiRouteKey } from "../const.ts";
 
 export type AttachmentType = {
   id: string;
-  comment_id: string;
+  ticket_id?: string;
+  comment_id?: string;
   path: string;
 };
 

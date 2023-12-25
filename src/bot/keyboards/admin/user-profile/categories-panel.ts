@@ -1,9 +1,9 @@
-import { selectCategoryData } from "#root/bot/callback-data/admin/select/select-category.js";
-import { Context } from "#root/bot/context.js";
-import { chunk } from "#root/bot/helpers/keyboard.js";
+import { selectCategoryAdminData } from "#root/bot/callback-data/index.ts";
+import { Context } from "#root/bot/context.ts";
+import { chunk } from "#root/bot/helpers/index.ts";
 import { InlineKeyboard } from "grammy";
 
-export const createCategoriesKeyboard = async (ctx: Context) => {
+export const createCategoriesRelationKeyboard = async (ctx: Context) => {
   const {
     services: { TaskPerformer, Category },
     session: { selectUser },
@@ -20,7 +20,7 @@ export const createCategoriesKeyboard = async (ctx: Context) => {
     chunk(
       categories.map(({ description, id }) => ({
         text: id === categoryId ? `✅${description}` : description,
-        callback_data: selectCategoryData.pack({
+        callback_data: selectCategoryAdminData.pack({
           id,
         }),
       })),

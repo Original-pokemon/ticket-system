@@ -1,5 +1,5 @@
-import { UserType } from "#root/services/index.js";
-import { AdminText } from "../const/text.js";
+import { UserType } from "#root/services/index.ts";
+import { AdminText } from "../const/text.ts";
 
 export const getProfileText = (user: UserType) => {
   const {

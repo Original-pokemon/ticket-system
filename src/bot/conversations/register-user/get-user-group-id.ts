@@ -1,8 +1,8 @@
-import { selectGroupData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { Context } from "#root/bot/context.js";
-import { createGroupKeyboard } from "#root/bot/keyboards/index.js";
-import { ServicesType } from "#root/container.js";
+import { selectGroupData } from "#root/bot/callback-data/index.ts";
+import { AdminText } from "#root/bot/const/index.ts";
+import { Context } from "#root/bot/context.ts";
+import { createGroupKeyboard } from "#root/bot/keyboards/index.ts";
+import { ServicesType } from "#root/container.ts";
 import { Conversation } from "@grammyjs/conversations";
 import { CallbackQueryContext } from "grammy";
 
@@ -27,7 +27,7 @@ export const getUserGroupId = async ({
 
   const { id: groupId } = selectGroupData.unpack(groupCtx.callbackQuery.data);
 
-  await groupCtx.editMessageText(AdminText.AdminCommand.EDIT_USER_NAME);
+  await groupCtx.editMessageText(AdminText.Admin.EDIT_USER_NAME);
 
   return [groupCtx, groupId];
 };

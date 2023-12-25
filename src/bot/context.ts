@@ -1,6 +1,6 @@
-import { ServicesType } from "#root/container.js";
-import type { Logger } from "#root/logger.js";
-import { UserType } from "#root/services/user/user-service.js";
+import { ServicesType } from "#root/container.ts";
+import type { Logger } from "#root/logger.ts";
+import { UserType } from "#root/services/user/user-service.ts";
 import { type Api, Context as DefaultContext, SessionFlavor } from "grammy";
 
 import type { AutoChatActionFlavor } from "@grammyjs/auto-chat-action";
@@ -8,10 +8,12 @@ import { ConversationFlavor } from "@grammyjs/conversations";
 import type { HydrateFlavor } from "@grammyjs/hydrate";
 import type { ParseModeFlavor } from "@grammyjs/parse-mode";
 import { Update, UserFromGetMe } from "@grammyjs/types";
+import { FileFlavor } from "@grammyjs/files";
 
 export type SessionData = {
   user: UserType;
-  customData: { [key: string]: boolean };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  customData: { [key: string]: any };
   selectUser: string | null;
 };
 
@@ -21,12 +23,14 @@ type ExtendedContextFlavor = {
 };
 
 export type Context = ParseModeFlavor<
-  HydrateFlavor<
-    DefaultContext &
-      ExtendedContextFlavor &
-      SessionFlavor<SessionData> &
-      AutoChatActionFlavor &
-      ConversationFlavor
+  FileFlavor<
+    HydrateFlavor<
+      DefaultContext &
+        ExtendedContextFlavor &
+        SessionFlavor<SessionData> &
+        AutoChatActionFlavor &
+        ConversationFlavor
+    >
   >
 >;
 

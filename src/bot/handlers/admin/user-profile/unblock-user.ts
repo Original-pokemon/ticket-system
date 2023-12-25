@@ -1,7 +1,7 @@
 import { CallbackQueryContext } from "grammy";
-import { UserGroup } from "#root/bot/const/user-group.js";
-import { unBlockUserData } from "#root/bot/callback-data/admin/unblock-user.js";
-import { Context } from "../../../context.js";
+import { AdminText, UserGroup } from "#root/bot/const/index.ts";
+import { unBlockUserData } from "#root/bot/callback-data/index.ts";
+import { Context } from "#root/bot/context.ts";
 
 export const unblockUserHandler = async (
   ctx: CallbackQueryContext<Context>,
@@ -14,6 +14,6 @@ export const unblockUserHandler = async (
     user_group: UserGroup.Unauthorized,
   });
 
-  ctx.reply("User unblocked successfully");
-  ctx.api.sendMessage(user.id, "You are now unblocked");
+  await ctx.reply(AdminText.Unblock.USER_UNBLOCK);
+  await ctx.api.sendMessage(user.id, AdminText.Unblock.USER_MESSAGE);
 };

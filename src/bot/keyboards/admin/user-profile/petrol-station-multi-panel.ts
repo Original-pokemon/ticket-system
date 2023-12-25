@@ -1,11 +1,14 @@
-import { selectPetrolStationData } from "#root/bot/callback-data/admin/select/select-petrol-station.js";
-import { saveRelationshipData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { Context } from "#root/bot/context.js";
-import { chunk } from "#root/bot/helpers/keyboard.js";
+import {
+  selectPetrolStationAdminData,
+  saveRelationshipData,
+} from "#root/bot/callback-data/index.ts";
+
+import { AdminText } from "#root/bot/const/text.ts";
+import { Context } from "#root/bot/context.ts";
+import { chunk } from "#root/bot/helpers/keyboard.ts";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
-export const createPetrolStationKeyboard = async (
+export const createPetrolStationsMultiKeyboard = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
   const petrolStations = await ctx.services.PetrolStation.getAll();
@@ -24,7 +27,7 @@ export const createPetrolStationKeyboard = async (
 
           return {
             text,
-            callback_data: selectPetrolStationData.pack({
+            callback_data: selectPetrolStationAdminData.pack({
               id: id.toString(),
             }),
           };

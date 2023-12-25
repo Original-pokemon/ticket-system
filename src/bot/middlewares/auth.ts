@@ -1,51 +1,46 @@
-/* eslint-disable camelcase */
 import { Middleware } from "grammy";
-import { config } from "#root/config.js";
-import { UserType } from "#root/services/user/user-service.js";
-import { Context } from "../context.js";
-import { UserGroup } from "../const/user-group.js";
-import { getProfileText } from "../helpers/user-profile.js";
-import { BotText } from "../const/text.js";
+import { config } from "#root/config.ts";
+import { Context } from "../context.ts";
+import { UserGroup, BotText } from "../const/index.ts";
+import { getProfileText } from "../helpers/index.ts";
 
 export function authMiddleware(): Middleware<Context> {
   return async (ctx, next) => {
-    const { id, first_name, last_name } = ctx.from || {};
+    const { id, first_name: firstName, last_name: lastName } = ctx.from || {};
 
-    if (!id || !first_name) return;
+    if (!id || !firstName) return;
 
     try {
-      let user: UserType;
-
       try {
-        user = await ctx.services.User.getUnique(id.toString());
+        ctx.session.user = await ctx.services.User.getUnique(id.toString());
       } catch {
-        const userName = `${first_name.replaceAll(" ", "")}${
-          last_name ? `_${last_name}` : ""
+        const userName = `${firstName.replaceAll(" ", "")}${
+          lastName ? `_${lastName}` : ""
         }`;
 
         const group = config.BOT_ADMIN_USER_ID.includes(id)
           ? UserGroup.Admin
           : UserGroup.Unauthorized;
 
-        user = await ctx.services.User.create({
+        const userId = await ctx.services.User.create({
           id: id.toString(),
           user_name: userName,
-          first_name,
-          last_name,
+          first_name: firstName,
+          last_name: lastName,
           user_group: group,
         });
 
+        ctx.session.user = await ctx.services.User.getUnique(userId);
+
         const adminMessages = config.BOT_ADMIN_USER_ID.map((adminId) => {
-          const text = getProfileText(user);
+          const text = getProfileText(ctx.session.user);
           return ctx.api.sendMessage(adminId, text);
         });
 
         await Promise.all(adminMessages);
       }
 
-      ctx.session.user = user;
-
-      if (user.user_group === UserGroup.Blocked) {
+      if (ctx.session.user.user_group === UserGroup.Blocked) {
         return ctx.reply(BotText.Welcome.BLOCKED);
       }
 

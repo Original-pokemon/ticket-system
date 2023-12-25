@@ -1,5 +1,5 @@
-import type { Context } from "#root/bot/context.js";
-import { isBotAdmin } from "#root/bot/filters/index.js";
+import type { Context } from "#root/bot/context.ts";
+import { isBotAdmin } from "#root/bot/filters/index.ts";
 
 import {
   setUpRelationshipHandler,
@@ -8,8 +8,8 @@ import {
   blockUserHandler,
   saveCategoryHandler,
   saveRelationshipHandler,
-} from "#root/bot/handlers/index.js";
-import { logHandle } from "#root/bot/helpers/logging.js";
+} from "#root/bot/handlers/index.ts";
+import { logHandle } from "#root/bot/helpers/logging.ts";
 import { Composer } from "grammy";
 import { chatAction } from "@grammyjs/auto-chat-action";
 import {
@@ -17,13 +17,13 @@ import {
   registerUserData,
   setRelationshipUserData,
   unBlockUserData,
-  selectPetrolStationData,
   selectManagerData,
-  selectCategoryData,
-} from "#root/bot/callback-data/index.js";
-import { selectPetrolStationHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-station.js";
-import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.js";
-import { selectManagerHandler } from "#root/bot/handlers/admin/user-profile/select-manager.js";
+  selectCategoryAdminData,
+  selectPetrolStationAdminData,
+} from "#root/bot/callback-data/index.ts";
+import { selectPetrolStationsHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-stations.ts";
+import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.ts";
+import { selectManagersHandler } from "#root/bot/handlers/admin/user-profile/select-managers.ts";
 
 const composer = new Composer<Context>();
 
@@ -58,16 +58,16 @@ feature.callbackQuery(
 );
 
 feature.callbackQuery(
-  selectPetrolStationData.filter(),
+  selectPetrolStationAdminData.filter(),
   logHandle("callbackquery-selext-petrol-station"),
   chatAction("typing"),
-  selectPetrolStationHandler,
+  selectPetrolStationsHandler,
 );
 feature.callbackQuery(
   selectManagerData.filter(),
-  logHandle("callbackquery-selext-petrol-station"),
+  logHandle("callbackquery-select-petrol-station"),
   chatAction("typing"),
-  selectManagerHandler,
+  selectManagersHandler,
 );
 
 feature.callbackQuery(
@@ -78,7 +78,7 @@ feature.callbackQuery(
 );
 
 feature.callbackQuery(
-  selectCategoryData.filter(),
+  selectCategoryAdminData.filter(),
   logHandle("callbackquery-set-category"),
   chatAction("typing"),
   saveCategoryHandler,

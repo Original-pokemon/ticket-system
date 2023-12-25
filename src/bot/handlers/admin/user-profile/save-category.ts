@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { selectCategoryData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { Context } from "#root/bot/context.js";
+import { selectCategoryAdminData } from "#root/bot/callback-data/index.ts";
+import { AdminText } from "#root/bot/const/index.ts";
+import { Context } from "#root/bot/context.ts";
 import { CallbackQueryContext } from "grammy";
 
 export const saveCategoryHandler = async (
@@ -12,7 +12,9 @@ export const saveCategoryHandler = async (
     session: { selectUser },
     services: { TaskPerformer },
   } = ctx;
-  const { id: category_id } = selectCategoryData.unpack(callbackQuery.data);
+  const { id: category_id } = selectCategoryAdminData.unpack(
+    callbackQuery.data,
+  );
 
   if (!selectUser) {
     throw new Error("User not Selected");
@@ -24,5 +26,5 @@ export const saveCategoryHandler = async (
     category_id,
   });
 
-  await ctx.editMessageText(AdminText.AdminCommand.SAVE_RELATIONSHIP);
+  await ctx.editMessageText(AdminText.Admin.SAVE_RELATIONSHIP);
 };

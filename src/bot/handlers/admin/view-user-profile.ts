@@ -1,17 +1,16 @@
-/* eslint-disable camelcase */
 import { InlineKeyboard } from "grammy";
 import {
   registerUserData,
   unBlockUserData,
   blockUserData,
   setRelationshipUserData,
-} from "#root/bot/callback-data/index.js";
+} from "#root/bot/callback-data/index.ts";
 
-import { ServicesType } from "#root/container.js";
-import { isBlocked, isUnauthorized, isUser } from "#root/bot/filters/index.js";
-import { getProfileText } from "#root/bot/helpers/user-profile.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { Context } from "../../context.js";
+import { ServicesType } from "#root/container.ts";
+import { isBlocked, isUnauthorized, isUser } from "#root/bot/filters/index.ts";
+import { getProfileText } from "#root/bot/helpers/index.ts";
+import { AdminText } from "#root/bot/const/index.ts";
+import { Context } from "../../context.ts";
 
 export const viewUserProfileHandler = async (
   ctx: Context,
@@ -20,20 +19,20 @@ export const viewUserProfileHandler = async (
 ) => {
   try {
     const user = await services.User.getUnique(id);
-    const { user_group } = user;
+    const { user_group: userGroup } = user;
 
     const keyboard = new InlineKeyboard();
 
-    if (isUnauthorized(user_group)) {
+    if (isUnauthorized(userGroup)) {
       keyboard.text("Выдать доступ", registerUserData.pack({ id: user.id }));
-    } else if (isBlocked(user_group)) {
+    } else if (isBlocked(userGroup)) {
       keyboard.text("Разблокировать", unBlockUserData.pack({ id: user.id }));
     } else {
       keyboard.text("Изменить данные", registerUserData.pack({ id: user.id }));
       keyboard.text("Заблокировать", blockUserData.pack({ id: user.id }));
     }
 
-    if (isUser(user_group)) {
+    if (isUser(userGroup)) {
       keyboard.text(
         "Настроить связи",
         setRelationshipUserData.pack({ id: user.id }),

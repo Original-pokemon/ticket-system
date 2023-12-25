@@ -1,17 +1,17 @@
-import type { Context } from "#root/bot/context.js";
-import { isBotAdmin } from "#root/bot/filters/index.js";
+import type { Context } from "#root/bot/context.ts";
+import { isBotAdmin } from "#root/bot/filters/index.ts";
 import {
   viewAllUsersCommandHandler,
   findUserCommandHandler,
   selectUserHandler,
-} from "#root/bot/handlers/index.js";
-import { logHandle } from "#root/bot/helpers/logging.js";
+} from "#root/bot/handlers/index.ts";
+import { logHandle } from "#root/bot/helpers/index.ts";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
-import { AdminButton } from "#root/bot/const/admin-buttons.js";
-import { selectUserData } from "#root/bot/callback-data/index.js";
-import { userProfileFeature } from "./user-profile.js";
+import { AdminButton } from "#root/bot/const/buttons/admin-buttons.ts";
+import { selectUserData } from "#root/bot/callback-data/index.ts";
+import { userProfileFeature } from "./user-profile.ts";
 
 const composer = new Composer<Context>();
 

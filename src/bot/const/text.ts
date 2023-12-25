@@ -3,7 +3,7 @@ export const AdminText = {
     TEXT: "Введите ID пользователя",
     NOT_FOUND: "Пользователь не найден",
   },
-  AdminCommand: {
+  Admin: {
     USERS: "Выберете нужного пользователя",
     BUSHES: "Выберите куст пользователя",
     EDIT_USER_NAME:
@@ -22,6 +22,14 @@ export const AdminText = {
   Keyboard: {
     SAVE: "Сохранить",
   },
+  Block: {
+    USER_BLOCK: "User blocked successfully",
+    USER_MESSAGE: "You are now blocked",
+  },
+  Unblock: {
+    USER_UNBLOCK: "User unblocked successfully",
+    USER_MESSAGE: "You are now unblocked",
+  },
 };
 
 export const BotText = {
@@ -32,5 +40,60 @@ export const BotText = {
     getUserText: (role: string) => `Добро пожаловать! \nВаша роль: ${role}`,
     ADMIN: "Приветствую, Господин! ",
     BLOCKED: "Вы заблокированы",
+  },
+};
+
+export const UserText = {
+  CreateTicket: {
+    PETROL_STATIONS: "Выберите АЗС",
+    CATEGORY: "Выберите нужную картигорию",
+    PRIORITY: "Выберите приоритет. \nЧем БОЛЬШЕ ЦИФРА тем МЕНЬШЕ ПРИОРИТЕТ",
+    SAVE_TICKET: "Задача Сохранена",
+    TICKET_TITLE: "titleText",
+    TICKET_DESCRIPTION: "descriptionText",
+  },
+  EditTicket: {
+    Title: "Введите новый заголовок",
+    Description: "Введите новое описание",
+    EditPanelTitle: "Выберите то, что Вы хотите изменить",
+  },
+  EditTicketPanel: {
+    TITLE: "Заголовок",
+    DESCRIPTION: "Описание",
+    CATEGORY: "Катигорию",
+    PRIORITY: "Приоритет",
+  },
+  TicketProfile: {
+    TICKET_TITLE: "<b>Профиль задачи:</b>",
+    TITLE: "- Заголовок",
+    NUMBER: "- Номер АЗС",
+    CATEGORY: "- Категория",
+    PRIORITY: "- Приоритет",
+    STATUS: "- Статус",
+    DESCRIPTION: "<b>Описание</b>",
+  },
+  TicketProfilePanel: {
+    SEND_TEXT: "Отправить",
+    EDIT_TEXT: "Изменить",
+    DELETE_TEXT: "Удалить",
+  },
+  Consider: {
+    PETROL_STATIONS: "Выберите АЗС",
+    TICKETS: "Выберите билет",
+  },
+  AllTickets: {
+    PETROL_STATIONS: "Выберите АЗС",
+    TICKETS: "Выберите билет",
+  },
+  DELETE_TICKET: "Билет удален",
+  GetPhotos: {
+    MSG_TEXT:
+      "Вы можете прикрепить фото\n\nДля этого отправьте фотографию\\фотографии",
+    UNHANDLED_TEXT: "Plese send a photo or press the button",
+  },
+  SEND_TICKET: "Задача отправленна",
+  ViewComment: {
+    USER: "Пользователь",
+    TEXT: "Текст комментария",
   },
 };

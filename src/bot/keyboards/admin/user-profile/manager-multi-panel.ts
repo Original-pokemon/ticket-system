@@ -1,14 +1,14 @@
 import {
   saveRelationshipData,
   selectManagerData,
-} from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/text.js";
+} from "#root/bot/callback-data/index.ts";
+import { AdminText } from "#root/bot/const/index.ts";
 
-import { Context } from "#root/bot/context.js";
-import { chunk } from "#root/bot/helpers/keyboard.js";
+import { Context } from "#root/bot/context.ts";
+import { chunk } from "#root/bot/helpers/index.ts";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
-export const createManagerKeyboard = async (
+export const createManagersKeyboard = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
   const managers = await ctx.services.Manager.getAll();

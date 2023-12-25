@@ -1,5 +1,5 @@
-import { ApiService } from "./api.js";
-import { APIRoute } from "./const.js";
+import { ApiService } from "./api.ts";
+import { APIRoute } from "./const.ts";
 
 export class BaseService<T> extends ApiService {
   private readonly resource;
@@ -14,14 +14,24 @@ export class BaseService<T> extends ApiService {
     return data;
   };
 
+  getSelect = async (ids: string[]): Promise<T[]> => {
+    if (this.resource.Many) {
+      const { data } = await this.api.post<T[]>(this.resource.Many, {
+        data: ids,
+      });
+      return data;
+    }
+    throw new Error(`Method don't implement`);
+  };
+
   getUnique = async (id: string): Promise<T> => {
     const { data } = await this.api.get<T>(this.resource.Info(id));
     return data;
   };
 
-  create = async (item: T): Promise<T> => {
+  create = async (item: T): Promise<string> => {
     if (this.resource.Create) {
-      const { data } = await this.api.post<T>(this.resource.Create, item);
+      const { data } = await this.api.post<string>(this.resource.Create, item);
       return data;
     }
     throw new Error("this method is not implemented");

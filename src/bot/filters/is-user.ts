@@ -1,13 +1,19 @@
 /* eslint-disable camelcase */
-import { UserGroup } from "../const/user-group.js";
+import { UserGroup } from "../const/user-group.ts";
 
-const isManager = (userGroup: string) => userGroup === UserGroup.Manager;
-const isPetrolStation = (userGroup: string) =>
-  userGroup === UserGroup.PetrolStation;
-const isTaskPerformer = (userGroup: string) =>
-  userGroup === UserGroup.TaskPerformer;
+export const isManager = (string: string): string is UserGroup.Manager =>
+  string === UserGroup.Manager;
+export const isPetrolStation = (
+  string: string,
+): string is UserGroup.PetrolStation => string === UserGroup.PetrolStation;
+export const isTaskPerformer = (
+  string: string,
+): string is UserGroup.TaskPerformer => string === UserGroup.TaskPerformer;
 
-export const isUser = (userGroup: string) =>
-  isManager(userGroup) ||
-  isPetrolStation(userGroup) ||
-  isTaskPerformer(userGroup);
+export const isUser = (
+  string: string,
+): string is
+  | UserGroup.TaskPerformer
+  | UserGroup.PetrolStation
+  | UserGroup.Manager =>
+  isManager(string) || isPetrolStation(string) || isTaskPerformer(string);

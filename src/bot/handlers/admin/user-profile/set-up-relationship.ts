@@ -1,12 +1,11 @@
-import { setRelationshipUserData } from "#root/bot/callback-data/admin/set-relationship-user.js";
-import { AdminText } from "#root/bot/const/text.js";
-import { UserGroup } from "#root/bot/const/user-group.js";
-import { Context } from "#root/bot/context.js";
+import { setRelationshipUserData } from "#root/bot/callback-data/index.ts";
+import { AdminText, UserGroup } from "#root/bot/const/index.ts";
+import { Context } from "#root/bot/context.ts";
 import {
-  createPetrolStationKeyboard,
-  createManagerKeyboard,
-  createCategoriesKeyboard,
-} from "#root/bot/keyboards/index.js";
+  createPetrolStationsMultiKeyboard,
+  createManagersKeyboard,
+  createCategoriesRelationKeyboard,
+} from "#root/bot/keyboards/index.ts";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 const getCustomArray = (array: string[]) => array.map((item) => [item, true]);
@@ -33,7 +32,7 @@ export const setUpRelationshipHandler = async (
 
       ctx.session.customData = Object.fromEntries(petrolStationsCustom);
 
-      keyboard = await createPetrolStationKeyboard(ctx);
+      keyboard = await createPetrolStationsMultiKeyboard(ctx);
       break;
     }
     case UserGroup.PetrolStation: {
@@ -47,11 +46,11 @@ export const setUpRelationshipHandler = async (
 
       ctx.session.customData = Object.fromEntries(managersCustom);
 
-      keyboard = await createManagerKeyboard(ctx);
+      keyboard = await createManagersKeyboard(ctx);
       break;
     }
     case UserGroup.TaskPerformer: {
-      keyboard = await createCategoriesKeyboard(ctx);
+      keyboard = await createCategoriesRelationKeyboard(ctx);
       break;
     }
     default: {
@@ -59,7 +58,7 @@ export const setUpRelationshipHandler = async (
     }
   }
 
-  await ctx.editMessageText(AdminText.AdminCommand.USERS, {
+  await ctx.editMessageText(AdminText.Admin.USERS, {
     reply_markup: keyboard,
   });
 };

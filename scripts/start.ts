@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
-import { createBot } from "#root/bot/index.js";
-import { createAppContainer } from "#root/container.js";
+import { createBot } from "#root/bot/index.ts";
+import { createAppContainer } from "#root/container.ts";
 import { onShutdown } from "node-graceful-shutdown";
 import { PsqlAdapter } from "@grammyjs/storage-psql";
 

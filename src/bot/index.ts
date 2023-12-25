@@ -1,12 +1,13 @@
-import { Context, createContextConstructor } from "#root/bot/context.js";
+import { Context, createContextConstructor } from "#root/bot/context.ts";
 import {
   botAdminFeature,
+  userFeature,
   unhandledFeature,
   welcomeFeature,
-} from "#root/bot/features/index.js";
-import { errorHandler } from "#root/bot/handlers/index.js";
-import { updateLogger, authMiddleware } from "#root/bot/middlewares/index.js";
-import { Container } from "#root/container.js";
+} from "#root/bot/features/index.ts";
+import { errorHandler } from "#root/bot/handlers/index.ts";
+import { updateLogger, authMiddleware } from "#root/bot/middlewares/index.ts";
+import { Container } from "#root/container.ts";
 import { Bot as TelegramBot, BotConfig, session, StorageAdapter } from "grammy";
 
 import { autoChatAction } from "@grammyjs/auto-chat-action";
@@ -14,10 +15,13 @@ import { hydrate } from "@grammyjs/hydrate";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
 import { conversations } from "@grammyjs/conversations";
+import { hydrateFiles } from "@grammyjs/files";
 import {
   registerUserConversation,
   findUserConversation,
-} from "./conversations/index.js";
+  createTicketConversation,
+  editTicketConversation,
+} from "./conversations/index.ts";
 
 type Options = {
   container: Container;
@@ -32,7 +36,7 @@ export function createBot(
   options: Options,
   botConfig?: Omit<BotConfig<Context>, "ContextConstructor">,
 ) {
-  const { container, sessionStorage } = options;
+  const { container /* sessionStorage */ } = options;
   const { config } = container;
   const bot = new TelegramBot(token, {
     ...botConfig,
@@ -46,6 +50,7 @@ export function createBot(
     bot.use(updateLogger());
   }
 
+  bot.api.config.use(hydrateFiles(bot.token));
   bot.use(autoChatAction(bot.api));
   bot.use(hydrateReply);
   bot.use(hydrate());
@@ -56,22 +61,26 @@ export function createBot(
         user: {},
         customData: {},
       }),
-      storage: sessionStorage,
+      // storage: sessionStorage,
       getSessionKey,
     }),
   );
+  bot.use(authMiddleware());
+
+  // Conversations
   bot.use(conversations());
   bot.use(findUserConversation(container));
   bot.use(registerUserConversation(container));
-  bot.use(authMiddleware());
+  bot.use(createTicketConversation(container));
+  bot.use(editTicketConversation(container));
 
   // Handlers
   bot.use(welcomeFeature);
   bot.use(botAdminFeature);
+  bot.use(userFeature);
 
   // must be the last handler
   bot.use(unhandledFeature);
-
   if (config.isDev) {
     bot.catch(errorHandler);
   }
