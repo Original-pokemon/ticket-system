@@ -1,6 +1,5 @@
 import { BaseService } from "../base-service.ts";
 import { ApiRouteKey } from "../const.ts";
-import { CommentType } from "./comment-service.ts";
 
 export type TicketType = {
   id?: string;
@@ -12,7 +11,7 @@ export type TicketType = {
   ticket_category?: number;
   ticket_priority?: number;
   status_id: number;
-  comments?: CommentType[];
+  comments: string[];
 };
 
 export class TicketService extends BaseService<TicketType> {

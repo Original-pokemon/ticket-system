@@ -1,14 +1,13 @@
 import { BaseService } from "../base-service.ts";
 import { ApiRouteKey } from "../const.ts";
-import { AttachmentType } from "./attachment-service.ts";
 
 export type CommentType = {
-  id: string;
+  id?: string;
   ticket_id: string;
   user_id: string;
   text: string;
-  created_at: Date;
-  attachments: AttachmentType[];
+  created_at?: Date;
+  attachments: string[];
 };
 
 export class CommentService extends BaseService<CommentType> {

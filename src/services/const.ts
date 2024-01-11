@@ -83,7 +83,7 @@ export const APIRoute = {
   },
   [ApiRouteKey.Comment]: {
     All: "/comments",
-    Many: undefined,
+    Many: "/comments/select",
     Info: (id: string) => `/comment/${id}`,
     Create: "/comment/create",
     Update: (id: string) => `/comment/update/${id}`,

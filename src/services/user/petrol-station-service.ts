@@ -7,6 +7,7 @@ export type PetrolStationType = {
   bush_id?: number;
   managers?: string[];
   user?: UserType;
+  ticket?: string[];
 };
 
 export class PetrolStationService extends BaseService<PetrolStationType> {
