@@ -5,3 +5,5 @@ export * from "./select-ticket-property.user.ts";
 export * from "./ticket/index.ts";
 export * from "./save-photos.ts";
 export * from "./manager/index.ts";
+export * from "./task-performer/performed-ticket.ts";
+export * from "./task-performer/retrieve-ticket.ts";

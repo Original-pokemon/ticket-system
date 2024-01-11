@@ -41,7 +41,12 @@ const editPriorityHandler = async ({
 };
 
 const _editPhotoHandler = async ({ ctx, conversation, ticket }: Properties) => {
-  const [photos] = await getPhotos({ ctx, conversation });
+  await ctx.deleteMessage();
+
+  const [photos] = await getPhotos({
+    ctx,
+    conversation,
+  });
 
   return { ...ticket, attachments: photos };
 };

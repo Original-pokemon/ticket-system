@@ -21,6 +21,7 @@ import {
   findUserConversation,
   createTicketConversation,
   editTicketConversation,
+  takeTicketConversation,
 } from "./conversations/index.ts";
 
 type Options = {
@@ -73,6 +74,7 @@ export function createBot(
   bot.use(registerUserConversation(container));
   bot.use(createTicketConversation(container));
   bot.use(editTicketConversation(container));
+  bot.use(takeTicketConversation(container));
 
   // Handlers
   bot.use(welcomeFeature);

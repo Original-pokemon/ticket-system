@@ -5,3 +5,5 @@ export * from "./select-ticket.ts";
 export * from "./send-ticket.ts";
 export * from "./view-comments.ts";
 export * from "./view-ticket-profile.ts";
+export * from "./task-performer/retrieve-ticket.ts";
+export * from "./task-performer/take-ticket.ts";

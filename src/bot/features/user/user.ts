@@ -3,17 +3,30 @@ import { logHandle } from "#root/bot/helpers/logging.ts";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
-import { selectTicketData } from "#root/bot/callback-data/user/ticket/select-ticket.user.ts";
-import { showTicketHandler } from "#root/bot/handlers/user/select-ticket.ts";
-import { sendTicketData } from "#root/bot/callback-data/user/ticket/send-ticket.user.ts";
-import { sendTicketHandler } from "#root/bot/handlers/user/send-ticket.ts";
+import {
+  selectTicketData,
+  selectConsiderPetrolStationData,
+  selectConsiderTicketData,
+  sendTicketData,
+} from "#root/bot/callback-data/index.ts";
+import {
+  showTicketHandler,
+  showFilteredTicketHandler,
+  showTicketsFilteredHandler,
+  viewPetrolStationsFilteredHandler,
+  sendTicketHandler,
+} from "#root/bot/handlers/index.ts";
+
+import { ManagerButtons, TaskPerformerButtons } from "#root/bot/const/index.ts";
 import { managerFeature } from "./manager/manager.ts";
+import { taskPerformerFeature } from "./task-performer/task-performer.ts";
 
 const composer = new Composer<Context>();
 
 const feature = composer.chatType("private");
 
 feature.use(managerFeature);
+feature.use(taskPerformerFeature);
 
 feature.callbackQuery(
   selectTicketData.filter(),
@@ -27,6 +40,27 @@ feature.callbackQuery(
   logHandle("callbackQuery-send-ticket"),
   chatAction("typing"),
   sendTicketHandler,
+);
+
+feature.hears(
+  [ManagerButtons.ConsiderTickets, TaskPerformerButtons.ConsiderTickets],
+  logHandle("hears-consider-tickets"),
+  chatAction("typing"),
+  viewPetrolStationsFilteredHandler,
+);
+
+feature.callbackQuery(
+  selectConsiderPetrolStationData.filter(),
+  logHandle("select-filtered-petrol-station"),
+  chatAction("typing"),
+  showTicketsFilteredHandler,
+);
+
+feature.callbackQuery(
+  selectConsiderTicketData.filter(),
+  logHandle("callbackQuery-view-ticket"),
+  chatAction("typing"),
+  showFilteredTicketHandler,
 );
 
 export { composer as userFeature };

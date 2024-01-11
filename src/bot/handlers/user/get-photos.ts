@@ -61,7 +61,7 @@ const handlePhotoCallback = async (
     reply_markup: InlineKeyboard.from([
       [
         {
-          text: "Сохранить",
+          text: UserText.GetPhotos.SAVE,
           callback_data: savePhotoCallBackData,
         },
       ],
@@ -105,15 +105,17 @@ export const getPhotos = async ({
   ctx,
   conversation,
 }: Properties): Promise<[string[], Context]> => {
-  await ctx.editMessageText(UserText.GetPhotos.MSG_TEXT, {
-    reply_markup: InlineKeyboard.from([
-      [
-        {
-          text: "Далее",
-          callback_data: savePhotoCallBackData,
-        },
-      ],
-    ]),
+  const keyboard = InlineKeyboard.from([
+    [
+      {
+        text: UserText.GetPhotos.NEXT,
+        callback_data: savePhotoCallBackData,
+      },
+    ],
+  ]);
+
+  await ctx.reply(UserText.GetPhotos.MSG_TEXT, {
+    reply_markup: keyboard,
   });
 
   const photosCtx = await waitForPhotoCallback(conversation, ctx);
