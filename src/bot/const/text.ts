@@ -73,9 +73,12 @@ export const UserText = {
     DESCRIPTION: "<b>Описание</b>",
   },
   TicketProfilePanel: {
+    ACCEPT_TEXT: "Принять задачу",
     SEND_TEXT: "Отправить",
     EDIT_TEXT: "Изменить",
     DELETE_TEXT: "Удалить",
+    RETRIEVE_TEXT: "Вернуть задачу ",
+    CONSIDER: "Задача выполнена",
   },
   Consider: {
     PETROL_STATIONS: "Выберите АЗС",
@@ -86,14 +89,25 @@ export const UserText = {
     TICKETS: "Выберите билет",
   },
   DELETE_TICKET: "Билет удален",
+  RETRIEVE_TICKET: "retrieveTicket",
   GetPhotos: {
     MSG_TEXT:
       "Вы можете прикрепить фото\n\nДля этого отправьте фотографию\\фотографии",
     UNHANDLED_TEXT: "Plese send a photo or press the button",
+    SAVE: "Сохранить ",
+    NEXT: "Далее",
   },
-  SEND_TICKET: "Задача отправленна",
+  SendTicket: {
+    NEW_TICKET: "new ticket",
+    PERFORMED: "performed",
+    STATUS_EDIT: "Статус задачи изменен",
+  },
   ViewComment: {
-    USER: "Пользователь",
-    TEXT: "Текст комментария",
+    USER: "<i>Пользователь</i>",
+    TEXT: "<i>Текст комментария</i>",
+  },
+  TakeTicket: {
+    COMMENT: "Enter your comment",
+    BUTTON: "Отметить задачу выполненной",
   },
 };

@@ -4,7 +4,7 @@ import { sendTicketData } from "#root/bot/callback-data/user/ticket/send-ticket.
 import { UserText } from "#root/bot/const/index.ts";
 import { InlineKeyboard } from "grammy";
 
-export const ticketProfilePanel = (id: string) =>
+export const ticketProfilePanelManager = (id: string) =>
   InlineKeyboard.from([
     [
       {

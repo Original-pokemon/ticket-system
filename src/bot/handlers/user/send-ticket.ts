@@ -54,7 +54,6 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
 
   const { task_performers: TaskPerformerIds } =
     await ctx.services.Category.getUnique(categoryId.toString());
-  const text = "";
 
   await ctx.services.Ticket.update({
     ...ticket,
@@ -62,18 +61,16 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   });
 
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
-    await ctx.api.sendMessage(taskPerformerId, text);
+    await ctx.api.sendMessage(taskPerformerId, UserText.SendTicket.NEW_TICKET);
   });
 
-  Promise.all(promises);
+  await Promise.all(promises);
 };
 
 const sendManagersNotificationAboutPerformTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const text = "";
-
   await ctx.services.Ticket.update({
     ...ticket,
     status_id: TicketStatus.Performed,
@@ -84,7 +81,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
       ctx,
       ticket,
     },
-    text,
+    UserText.SendTicket.PERFORMED,
   );
 };
 
@@ -92,7 +89,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const text = "";
+  const text = "completedTicket";
   await ctx.services.Ticket.update({
     ...ticket,
     status_id: TicketStatus.Completed,
@@ -124,5 +121,5 @@ export const sendTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
 
   await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
 
-  await ctx.editMessageText(UserText.SEND_TICKET);
+  await ctx.editMessageText(UserText.SendTicket.STATUS_EDIT);
 };
