@@ -7,3 +7,4 @@ export * from "./view-comments.ts";
 export * from "./view-ticket-profile.ts";
 export * from "./task-performer/retrieve-ticket.ts";
 export * from "./task-performer/take-ticket.ts";
+export * from "./petrol-station/view-all-tickets.ts";

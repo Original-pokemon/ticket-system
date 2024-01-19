@@ -29,11 +29,9 @@ const sendManagersNotificationAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const text = "";
-
   await ctx.services.Ticket.update({
     ...ticket,
-    status_id: TicketStatus.Created,
+    status_id: TicketStatus.ReviewedManager,
   });
 
   await sendManagers(
@@ -41,15 +39,16 @@ const sendManagersNotificationAboutNewTicket = async ({
       ctx,
       ticket,
     },
-    text,
+    UserText.SendTicket.NEW_TICKET,
   );
 };
 
 const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
-  const { ticket_category: categoryId } = ticket;
+  const { ticket_category: categoryId, ticket_priority: priorityId } = ticket;
 
-  if (!categoryId) {
-    throw new Error("Category not found");
+  if (!categoryId || !priorityId) {
+    await ctx.reply(UserText.SendTicket.WITHOUT_CATEGORY);
+    throw new Error("Category or Priority not found");
   }
 
   const { task_performers: TaskPerformerIds } =
@@ -89,7 +88,6 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const text = "completedTicket";
   await ctx.services.Ticket.update({
     ...ticket,
     status_id: TicketStatus.Completed,
@@ -100,7 +98,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
       ctx,
       ticket,
     },
-    text,
+    UserText.SendTicket.COMPILED_TICKET,
   );
 };
 
@@ -118,8 +116,10 @@ const statusActions = {
 export const sendTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
   const { id } = sendTicketData.unpack(ctx.callbackQuery.data);
   const ticket = await ctx.services.Ticket.getUnique(id);
-
-  await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
-
-  await ctx.editMessageText(UserText.SendTicket.STATUS_EDIT);
+  try {
+    await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
+    await ctx.editMessageText(UserText.SendTicket.STATUS_EDIT);
+  } catch (error) {
+    ctx.logger.info(error);
+  }
 };

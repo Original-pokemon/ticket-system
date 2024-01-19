@@ -17,7 +17,7 @@ export const createFilteredTicketsKeyboard = async (
   const { id: stationId, status } =
     selectConsiderPetrolStationData.unpack(data);
 
-  const { ticket: ticketIds } =
+  const { tickets: ticketIds } =
     await services.PetrolStation.getUnique(stationId);
 
   const ticketsInfo = await services.Ticket.getSelect(ticketIds || []);

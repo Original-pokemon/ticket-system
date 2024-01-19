@@ -3,7 +3,10 @@ import { createConversation } from "@grammyjs/conversations";
 import { Container } from "#root/container.ts";
 import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.ts";
 import { TicketType } from "#root/services/index.ts";
-import { ticketProfilePanelManager } from "#root/bot/keyboards/index.ts";
+import {
+  ticketProfilePanelManager,
+  ticketProfilePanelPetrolSTation,
+} from "#root/bot/keyboards/index.ts";
 import { UserText, TicketStatus } from "#root/bot/const/index.ts";
 import { isManager } from "#root/bot/filters/index.ts";
 import { getPetrolStation, getCategory, getPriority } from "./index.ts";
@@ -14,7 +17,7 @@ export const createTicketConversation = (container: Container) =>
     const { services } = container;
     const {
       session: {
-        user: { user_group: userGroup, user_name: userName, id },
+        user: { user_group: userGroup, id: userId },
       },
       form,
     } = conversation;
@@ -30,7 +33,7 @@ export const createTicketConversation = (container: Container) =>
 
     const [petrolStationNumber, petrolStationCtx] = isManagerUser
       ? await getPetrolStation(conversationProperties)
-      : [userName, ctx];
+      : [userId, ctx];
 
     await (isManagerUser
       ? petrolStationCtx.editMessageText(UserText.CreateTicket.TICKET_TITLE)
@@ -56,7 +59,7 @@ export const createTicketConversation = (container: Container) =>
     });
 
     const newTicket: TicketType = {
-      user_id: id,
+      user_id: userId,
       petrol_station_id: petrolStationNumber,
       title: ticketTitle,
       description,
@@ -78,9 +81,13 @@ export const createTicketConversation = (container: Container) =>
       throw new Error("ticket id not provided");
     }
 
+    const keyboard = isManagerUser
+      ? ticketProfilePanelManager(ticket.id)
+      : ticketProfilePanelPetrolSTation(ticket.id);
+
     await viewTicketProfile({
       ctx: photosCtx,
       ticket,
-      inlineKeyboard: ticketProfilePanelManager(ticket.id),
+      inlineKeyboard: keyboard,
     });
   }, CREATE_TICKET_CONVERSATION);

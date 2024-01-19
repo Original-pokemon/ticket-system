@@ -5,7 +5,6 @@ import { Composer } from "grammy";
 import { chatAction } from "@grammyjs/auto-chat-action";
 import { ManagerButtons } from "#root/bot/const/buttons/manager-buttons.ts";
 import {
-  createTicketHandler,
   showTicketsHandler,
   viewPetrolStationsHandler,
   deleteTicketHandler,
@@ -20,13 +19,6 @@ import {
 const composer = new Composer<Context>();
 
 const feature = composer.chatType("private");
-
-feature.hears(
-  ManagerButtons.CreateTicket,
-  logHandle("hears-create-ticket"),
-  chatAction("typing"),
-  createTicketHandler,
-);
 
 feature.hears(
   ManagerButtons.AllTickets,

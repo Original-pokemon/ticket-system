@@ -12,10 +12,10 @@ type Properties = {
 };
 
 const getTicketIdsManager = async ({ services, userId }: Properties) => {
-  const { ticket: tickets } = await services.Manager.getUnique(userId);
+  const { tickets } = await services.Manager.getUnique(userId);
   const ticketsId = tickets
     ?.map((ticket) => {
-      return ticket.ticket;
+      return ticket.tickets;
     })
     .flat();
 
@@ -28,9 +28,16 @@ const getTicketIdsTaskPerformer = async ({ services, userId }: Properties) => {
   return ticketsId;
 };
 
+const getTicketIdsPetrolStation = async ({ services, userId }: Properties) => {
+  const { tickets: ticketsId } = await services.PetrolStation.getUnique(userId);
+
+  return ticketsId;
+};
+
 const getTicketIds = {
   [UserGroup.Manager]: getTicketIdsManager,
   [UserGroup.TaskPerformer]: getTicketIdsTaskPerformer,
+  [UserGroup.PetrolStation]: getTicketIdsPetrolStation,
 };
 
 export const createFilteredPetrolStationsKeyboard = async (

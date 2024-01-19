@@ -24,7 +24,7 @@ export const getPetrolStation = async ({
   const {
     callbackQuery: { data: petrolStation },
   } = petrolStationCtx;
-  const { id: bushId } = selectPetrolStationData.unpack(petrolStation);
+  const { id: petrolStationId } = selectPetrolStationData.unpack(petrolStation);
 
-  return [bushId, petrolStationCtx];
+  return [petrolStationId, petrolStationCtx];
 };

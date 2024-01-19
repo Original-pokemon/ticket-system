@@ -6,7 +6,7 @@ import { InlineKeyboard } from "grammy";
 export const createPetrolStationsKeyboard = async (ctx: Context) => {
   const { services, session } = ctx;
   const { user } = session;
-  const { ticket: tickets } = await services.Manager.getUnique(user.id);
+  const { tickets } = await services.Manager.getUnique(user.id);
   const petrolStations = tickets?.map((ticket) => {
     return ticket.petrol_station;
   });

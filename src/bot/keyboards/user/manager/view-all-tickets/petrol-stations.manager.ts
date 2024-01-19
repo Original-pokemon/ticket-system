@@ -8,9 +8,9 @@ export const createPetrolStationsPerTicketStatusKeyboard = async (
 ) => {
   const { services, session } = ctx;
   const { user } = session;
-  const { ticket: tickets } = await services.Manager.getUnique(user.id);
+  const { tickets } = await services.Manager.getUnique(user.id);
   const petrolStations = tickets
-    ?.filter((ticket) => ticket.ticket.length > 0)
+    ?.filter((ticket) => ticket.tickets.length > 0)
     .map((ticket) => {
       return ticket.petrol_station;
     });
