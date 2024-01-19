@@ -23,11 +23,11 @@ const sendPhotos = async (ctx: Context, values: PhotoType[]) => {
 
   values.map(async ({ id, fileId }) => {
     const promise = ctx.replyWithPhoto(fileId, {
-      caption: "Прикрепленное фото",
+      caption: UserText.GetPhotos.PHOTO_CAPTION,
       reply_markup: InlineKeyboard.from([
         [
           {
-            text: "Удалить",
+            text: UserText.GetPhotos.DELETE_PHOTO_BUTTON,
             callback_data: deletePhotoData.pack({ id }),
           },
         ],

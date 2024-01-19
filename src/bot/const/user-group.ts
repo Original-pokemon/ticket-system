@@ -4,8 +4,8 @@ export enum UserGroup {
   Unauthorized = "unauthorized",
   Blocked = "blocked",
   Manager = "manager",
-  PetrolStation = "petrolstation",
-  TaskPerformer = "taskperformer",
+  PetrolStation = "petrol-station",
+  TaskPerformer = "task-performer",
 }
 
 export const isUserGroup = (group: string): group is UserGroup => {

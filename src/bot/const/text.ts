@@ -96,11 +96,16 @@ export const UserText = {
     UNHANDLED_TEXT: "Plese send a photo or press the button",
     SAVE: "Сохранить ",
     NEXT: "Далее",
+    PHOTO_CAPTION: "Прикрепленное фото",
+    DELETE_PHOTO_BUTTON: "Удалить",
   },
   SendTicket: {
     NEW_TICKET: "new ticket",
     PERFORMED: "performed",
     STATUS_EDIT: "Статус задачи изменен",
+    COMPILED_TICKET: "compited ticket",
+    WITHOUT_CATEGORY:
+      "Вы не можете отправить заявку без категории и приоритета",
   },
   ViewComment: {
     USER: "<i>Пользователь</i>",

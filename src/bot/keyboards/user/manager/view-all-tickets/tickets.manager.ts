@@ -7,12 +7,12 @@ import { chunk } from "#root/bot/helpers/index.ts";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 function convertArrayToDictionary(
-  array: { petrol_station: string; ticket: string[] }[],
+  array: { petrol_station: string; tickets: string[] }[],
 ): Map<string, string[]> {
   const dictionary = new Map();
 
   for (let index = 0; index < array.length; index += 1)
-    dictionary.set(array[index].petrol_station, array[index].ticket);
+    dictionary.set(array[index].petrol_station, array[index].tickets);
 
   return dictionary;
 }
@@ -28,7 +28,7 @@ export const createTicketsPerPetrolStationKeyboard = async (
   const { id: stationId } = selectPetrolStationData.unpack(data);
 
   const { user } = session;
-  const { ticket: ticketsPerStations } = await services.Manager.getUnique(
+  const { tickets: ticketsPerStations } = await services.Manager.getUnique(
     user.id,
   );
 

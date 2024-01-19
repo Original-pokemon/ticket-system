@@ -15,11 +15,17 @@ import {
   showTicketsFilteredHandler,
   viewPetrolStationsFilteredHandler,
   sendTicketHandler,
+  createTicketHandler,
 } from "#root/bot/handlers/index.ts";
 
-import { ManagerButtons, TaskPerformerButtons } from "#root/bot/const/index.ts";
+import {
+  ManagerButtons,
+  PetrolStationButtons,
+  TaskPerformerButtons,
+} from "#root/bot/const/index.ts";
 import { managerFeature } from "./manager/manager.ts";
 import { taskPerformerFeature } from "./task-performer/task-performer.ts";
+import { petrolStationFeature } from "./petrol-station/petrol-station.ts";
 
 const composer = new Composer<Context>();
 
@@ -27,6 +33,7 @@ const feature = composer.chatType("private");
 
 feature.use(managerFeature);
 feature.use(taskPerformerFeature);
+feature.use(petrolStationFeature);
 
 feature.callbackQuery(
   selectTicketData.filter(),
@@ -47,6 +54,13 @@ feature.hears(
   logHandle("hears-consider-tickets"),
   chatAction("typing"),
   viewPetrolStationsFilteredHandler,
+);
+
+feature.hears(
+  [ManagerButtons.CreateTicket, PetrolStationButtons.CreateTicket],
+  logHandle("hears-create-ticket"),
+  chatAction("typing"),
+  createTicketHandler,
 );
 
 feature.callbackQuery(

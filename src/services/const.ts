@@ -131,4 +131,4 @@ export const APIRoute = {
   },
 } as const;
 
-export const REQUEST_TIMEOUT = 5000;
+export const REQUEST_TIMEOUT = 30 * 1000;
