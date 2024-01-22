@@ -1,6 +1,6 @@
-import { TicketType } from "#root/services/index.ts";
-import { UserText } from "../const/index.ts";
-import { Context } from "../context.ts";
+import { TicketType } from "#root/services/index.js";
+import { UserText } from "../const/index.js";
+import { Context } from "../context.js";
 
 export const getTicketText = async (ctx: Context, ticket: TicketType) => {
   const {

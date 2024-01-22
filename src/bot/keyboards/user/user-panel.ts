@@ -1,10 +1,10 @@
-import { isUser } from "#root/bot/filters/index.ts";
-import { UserGroup } from "#root/bot/const/index.ts";
+import { isUser } from "#root/bot/filters/index.js";
+import { UserGroup } from "#root/bot/const/index.js";
 import {
   createPetrolStationKeyboard,
   createTaskPerformerKeyboard,
   createManagerKeyboard,
-} from "./index.ts";
+} from "./index.js";
 
 const Keyboard = {
   [UserGroup.Manager]: createManagerKeyboard,

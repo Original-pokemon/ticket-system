@@ -1,3 +1,3 @@
-export * from "./get-category.ts";
-export * from "./get-petrol-station.ts";
-export * from "./get-priority.ts";
+export * from "./get-category.js";
+export * from "./get-petrol-station.js";
+export * from "./get-priority.js";

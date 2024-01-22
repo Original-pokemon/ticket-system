@@ -1,5 +1,5 @@
-import { Context } from "#root/bot/context.ts";
-import { TAKE_TICKET_CONVERSATION } from "#root/bot/conversations/index.ts";
+import { Context } from "#root/bot/context.js";
+import { TAKE_TICKET_CONVERSATION } from "#root/bot/conversations/index.js";
 import { CallbackQueryContext } from "grammy";
 
 export const takeTicketHandler = async (ctx: CallbackQueryContext<Context>) => {

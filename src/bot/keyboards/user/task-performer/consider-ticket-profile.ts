@@ -1,6 +1,6 @@
-import { retrieveTicketData } from "#root/bot/callback-data/index.ts";
-import { sendTicketData } from "#root/bot/callback-data/user/ticket/send-ticket.user.ts";
-import { UserText } from "#root/bot/const/index.ts";
+import { retrieveTicketData } from "#root/bot/callback-data/index.js";
+import { sendTicketData } from "#root/bot/callback-data/user/ticket/send-ticket.user.js";
+import { UserText } from "#root/bot/const/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const considerTicketProfilePanelTaskPerformer = (id: string) =>

@@ -3,9 +3,9 @@ import {
   TaskPerformerButtons,
   TicketStatus,
   UserText,
-} from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createFilteredPetrolStationsKeyboard } from "#root/bot/keyboards/index.ts";
+} from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createFilteredPetrolStationsKeyboard } from "#root/bot/keyboards/index.js";
 
 type HearsTextType =
   | ManagerButtons.ConsiderTickets

@@ -1,8 +1,8 @@
-import { Context } from "#root/bot/context.ts";
-import { viewUserProfileHandler } from "#root/bot/handlers/index.ts";
-import { Container } from "#root/container.ts";
+import { Context } from "#root/bot/context.js";
+import { viewUserProfileHandler } from "#root/bot/handlers/index.js";
+import { Container } from "#root/container.js";
 import { createConversation } from "@grammyjs/conversations";
-import { AdminText } from "../const/index.ts";
+import { AdminText } from "../const/index.js";
 
 export const FIND_USER_CONVERSATION = "find-user";
 

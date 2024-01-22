@@ -1,7 +1,7 @@
-import { selectManagerData } from "#root/bot/callback-data/index.ts";
-import { AdminText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createManagersKeyboard } from "#root/bot/keyboards/index.ts";
+import { selectManagerData } from "#root/bot/callback-data/index.js";
+import { AdminText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createManagersKeyboard } from "#root/bot/keyboards/index.js";
 import { CallbackQueryContext } from "grammy";
 
 export const selectManagersHandler = async (

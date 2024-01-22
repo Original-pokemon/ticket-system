@@ -1,7 +1,7 @@
-import { selectCategoryData } from "#root/bot/callback-data/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createCategoryKeyboard } from "#root/bot/keyboards/index.ts";
+import { selectCategoryData } from "#root/bot/callback-data/index.js";
+import { UserText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createCategoryKeyboard } from "#root/bot/keyboards/index.js";
 import { Conversation } from "@grammyjs/conversations";
 
 type Properties = {

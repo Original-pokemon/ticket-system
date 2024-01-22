@@ -1,11 +1,11 @@
-import { setRelationshipUserData } from "#root/bot/callback-data/index.ts";
-import { AdminText, UserGroup } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
+import { setRelationshipUserData } from "#root/bot/callback-data/index.js";
+import { AdminText, UserGroup } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
 import {
   createPetrolStationsMultiKeyboard,
   createManagersKeyboard,
   createCategoriesRelationKeyboard,
-} from "#root/bot/keyboards/index.ts";
+} from "#root/bot/keyboards/index.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 const getCustomArray = (array: string[]) => array.map((item) => [item, true]);

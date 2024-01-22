@@ -4,13 +4,13 @@ import {
   unBlockUserData,
   blockUserData,
   setRelationshipUserData,
-} from "#root/bot/callback-data/index.ts";
+} from "#root/bot/callback-data/index.js";
 
-import { ServicesType } from "#root/container.ts";
-import { isBlocked, isUnauthorized, isUser } from "#root/bot/filters/index.ts";
-import { getProfileText } from "#root/bot/helpers/index.ts";
-import { AdminText } from "#root/bot/const/index.ts";
-import { Context } from "../../context.ts";
+import { ServicesType } from "#root/container.js";
+import { isBlocked, isUnauthorized, isUser } from "#root/bot/filters/index.js";
+import { getProfileText } from "#root/bot/helpers/index.js";
+import { AdminText } from "#root/bot/const/index.js";
+import { Context } from "../../context.js";
 
 export const viewUserProfileHandler = async (
   ctx: Context,

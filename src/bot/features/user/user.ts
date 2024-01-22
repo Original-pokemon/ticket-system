@@ -1,5 +1,5 @@
-import type { Context } from "#root/bot/context.ts";
-import { logHandle } from "#root/bot/helpers/logging.ts";
+import type { Context } from "#root/bot/context.js";
+import { logHandle } from "#root/bot/helpers/logging.js";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
@@ -8,7 +8,7 @@ import {
   selectConsiderPetrolStationData,
   selectConsiderTicketData,
   sendTicketData,
-} from "#root/bot/callback-data/index.ts";
+} from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
   showFilteredTicketHandler,
@@ -16,16 +16,16 @@ import {
   viewPetrolStationsFilteredHandler,
   sendTicketHandler,
   createTicketHandler,
-} from "#root/bot/handlers/index.ts";
+} from "#root/bot/handlers/index.js";
 
 import {
   ManagerButtons,
   PetrolStationButtons,
   TaskPerformerButtons,
-} from "#root/bot/const/index.ts";
-import { managerFeature } from "./manager/manager.ts";
-import { taskPerformerFeature } from "./task-performer/task-performer.ts";
-import { petrolStationFeature } from "./petrol-station/petrol-station.ts";
+} from "#root/bot/const/index.js";
+import { managerFeature } from "./manager/manager.js";
+import { taskPerformerFeature } from "./task-performer/task-performer.js";
+import { petrolStationFeature } from "./petrol-station/petrol-station.js";
 
 const composer = new Composer<Context>();
 

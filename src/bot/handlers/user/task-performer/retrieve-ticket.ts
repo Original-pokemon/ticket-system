@@ -1,8 +1,8 @@
-import { Context } from "#root/bot/context.ts";
+import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
-import { TicketStatus, UserText } from "#root/bot/const/index.ts";
-import { TicketType } from "#root/services/index.ts";
-import { retrieveTicketData } from "#root/bot/callback-data/index.ts";
+import { TicketStatus, UserText } from "#root/bot/const/index.js";
+import { TicketType } from "#root/services/index.js";
+import { retrieveTicketData } from "#root/bot/callback-data/index.js";
 
 type Properties = {
   ctx: Context;

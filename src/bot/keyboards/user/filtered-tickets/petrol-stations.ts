@@ -1,9 +1,9 @@
-import { selectConsiderPetrolStationData } from "#root/bot/callback-data/index.ts";
-import { TicketStatus, UserGroup } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { isManager, isTaskPerformer } from "#root/bot/filters/index.ts";
-import { chunk } from "#root/bot/helpers/index.ts";
-import { ServicesType } from "#root/container.ts";
+import { selectConsiderPetrolStationData } from "#root/bot/callback-data/index.js";
+import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { isManager, isTaskPerformer } from "#root/bot/filters/index.js";
+import { chunk } from "#root/bot/helpers/index.js";
+import { ServicesType } from "#root/container.js";
 import { InlineKeyboard } from "grammy";
 
 type Properties = {

@@ -1,5 +1,5 @@
-import { Context } from "#root/bot/context.ts";
-import { FIND_USER_CONVERSATION } from "#root/bot/conversations/index.ts";
+import { Context } from "#root/bot/context.js";
+import { FIND_USER_CONVERSATION } from "#root/bot/conversations/index.js";
 import { HearsContext } from "grammy";
 
 export const findUserCommandHandler = async (ctx: HearsContext<Context>) => {

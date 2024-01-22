@@ -1,6 +1,6 @@
-import { UserText } from "#root/bot/const/text.ts";
-import { Context } from "#root/bot/context.ts";
-import { createFilteredTicketsKeyboard } from "#root/bot/keyboards/index.ts";
+import { UserText } from "#root/bot/const/text.js";
+import { Context } from "#root/bot/context.js";
+import { createFilteredTicketsKeyboard } from "#root/bot/keyboards/index.js";
 import { CallbackQueryContext } from "grammy";
 
 export const showTicketsFilteredHandler = async (

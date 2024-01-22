@@ -1,10 +1,10 @@
-import { Context } from "#root/bot/context.ts";
+import { Context } from "#root/bot/context.js";
 import { InlineKeyboard } from "grammy";
-import { CommentType, TicketType } from "#root/services/index.ts";
-import { getTicketText } from "#root/bot/helpers/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
-import { ServicesType } from "#root/container.ts";
-import { createPhotosGroup, viewTicketComment } from "./view-comments.ts";
+import { CommentType, TicketType } from "#root/services/index.js";
+import { getTicketText } from "#root/bot/helpers/index.js";
+import { UserText } from "#root/bot/const/index.js";
+import { ServicesType } from "#root/container.js";
+import { createPhotosGroup, viewTicketComment } from "./view-comments.js";
 
 type Properties = {
   ctx: Context;

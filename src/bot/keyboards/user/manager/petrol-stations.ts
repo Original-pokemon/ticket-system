@@ -1,6 +1,6 @@
-import { selectPetrolStationData } from "#root/bot/callback-data/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { chunk } from "#root/bot/helpers/index.ts";
+import { selectPetrolStationData } from "#root/bot/callback-data/index.js";
+import { Context } from "#root/bot/context.js";
+import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const createPetrolStationsKeyboard = async (ctx: Context) => {

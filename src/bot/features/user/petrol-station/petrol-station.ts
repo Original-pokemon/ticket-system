@@ -1,10 +1,10 @@
-import type { Context } from "#root/bot/context.ts";
-import { logHandle } from "#root/bot/helpers/index.ts";
+import type { Context } from "#root/bot/context.js";
+import { logHandle } from "#root/bot/helpers/index.js";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
-import { showTicketsForPetrolStationHandler } from "#root/bot/handlers/index.ts";
-import { PetrolStationButtons } from "#root/bot/const/index.ts";
+import { showTicketsForPetrolStationHandler } from "#root/bot/handlers/index.js";
+import { PetrolStationButtons } from "#root/bot/const/index.js";
 
 const composer = new Composer<Context>();
 

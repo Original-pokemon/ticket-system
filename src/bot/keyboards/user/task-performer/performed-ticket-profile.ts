@@ -1,5 +1,5 @@
-import { performedTicketData } from "#root/bot/callback-data/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
+import { performedTicketData } from "#root/bot/callback-data/index.js";
+import { UserText } from "#root/bot/const/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const performedTicketProfileTaskPerformer = (id: string) =>

@@ -1,7 +1,7 @@
 import { InlineKeyboard } from "grammy";
-import { chunk } from "#root/bot/helpers/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { selectUserData } from "#root/bot/callback-data/index.ts";
+import { chunk } from "#root/bot/helpers/index.js";
+import { Context } from "#root/bot/context.js";
+import { selectUserData } from "#root/bot/callback-data/index.js";
 
 export const createSelectUserKeyboard = async (ctx: Context) => {
   const users = await ctx.services.User.getAll();

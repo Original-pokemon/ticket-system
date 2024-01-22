@@ -1,5 +1,5 @@
-import { ApiService } from "./api.ts";
-import { APIRoute } from "./const.ts";
+import { ApiService } from "./api.js";
+import { APIRoute } from "./const.js";
 
 export class BaseService<T> extends ApiService {
   private readonly resource;

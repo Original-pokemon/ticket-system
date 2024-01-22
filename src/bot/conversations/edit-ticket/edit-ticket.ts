@@ -1,10 +1,10 @@
-import { Context } from "#root/bot/context.ts";
+import { Context } from "#root/bot/context.js";
 import { createConversation } from "@grammyjs/conversations";
-import { Container } from "#root/container.ts";
-import { viewTicketProfile } from "#root/bot/handlers/index.ts";
-import { editTicketData } from "#root/bot/callback-data/index.ts";
-import { ticketProfilePanelManager } from "#root/bot/keyboards/index.ts";
-import { editTicket } from "./get-edited-ticket.ts";
+import { Container } from "#root/container.js";
+import { viewTicketProfile } from "#root/bot/handlers/index.js";
+import { editTicketData } from "#root/bot/callback-data/index.js";
+import { ticketProfilePanelManager } from "#root/bot/keyboards/index.js";
+import { editTicket } from "./get-edited-ticket.js";
 
 export const EDIT_TICKET_CONVERSATION = "edit-ticket";
 

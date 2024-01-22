@@ -1,8 +1,8 @@
-import { selectBushData } from "#root/bot/callback-data/index.ts";
-import { AdminText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createBushKeyboard } from "#root/bot/keyboards/index.ts";
-import { ServicesType } from "#root/container.ts";
+import { selectBushData } from "#root/bot/callback-data/index.js";
+import { AdminText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createBushKeyboard } from "#root/bot/keyboards/index.js";
+import { ServicesType } from "#root/container.js";
 import { Conversation } from "@grammyjs/conversations";
 import { CallbackQueryContext } from "grammy";
 

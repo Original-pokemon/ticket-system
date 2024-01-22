@@ -1,7 +1,7 @@
 import { CallbackQueryContext } from "grammy";
-import { AdminText, UserGroup } from "#root/bot/const/index.ts";
-import { unBlockUserData } from "#root/bot/callback-data/index.ts";
-import { Context } from "#root/bot/context.ts";
+import { AdminText, UserGroup } from "#root/bot/const/index.js";
+import { unBlockUserData } from "#root/bot/callback-data/index.js";
+import { Context } from "#root/bot/context.js";
 
 export const unblockUserHandler = async (
   ctx: CallbackQueryContext<Context>,

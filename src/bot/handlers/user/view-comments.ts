@@ -1,5 +1,5 @@
-import { Context } from "#root/bot/context.ts";
-import { getCommentText } from "#root/bot/helpers/index.ts";
+import { Context } from "#root/bot/context.js";
+import { getCommentText } from "#root/bot/helpers/index.js";
 import { InputMediaPhoto } from "@grammyjs/types";
 import { InputFile } from "grammy";
 

@@ -1,6 +1,6 @@
-import { UserText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createAllTicketsKeyboard } from "#root/bot/keyboards/index.ts";
+import { UserText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createAllTicketsKeyboard } from "#root/bot/keyboards/index.js";
 
 export const showTicketsForPetrolStationHandler = async (ctx: Context) => {
   await ctx.reply(UserText.AllTickets.TICKETS, {

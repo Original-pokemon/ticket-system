@@ -1,18 +1,18 @@
-import type { Context } from "#root/bot/context.ts";
-import { logHandle } from "#root/bot/helpers/index.ts";
+import type { Context } from "#root/bot/context.js";
+import { logHandle } from "#root/bot/helpers/index.js";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   retrieveTicketData,
   performedTicketData,
-} from "#root/bot/callback-data/index.ts";
+} from "#root/bot/callback-data/index.js";
 import {
   retrieveTicketHandler,
   viewPetrolStationsFilteredHandler,
   takeTicketHandler,
-} from "#root/bot/handlers/index.ts";
-import { TaskPerformerButtons } from "#root/bot/const/index.ts";
+} from "#root/bot/handlers/index.js";
+import { TaskPerformerButtons } from "#root/bot/const/index.js";
 
 const composer = new Composer<Context>();
 

@@ -1,8 +1,8 @@
-import { selectPetrolStationData } from "#root/bot/callback-data/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
+import { selectPetrolStationData } from "#root/bot/callback-data/index.js";
+import { UserText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
 import { Conversation } from "@grammyjs/conversations";
-import { createPetrolStationsKeyboard } from "#root/bot/keyboards/index.ts";
+import { createPetrolStationsKeyboard } from "#root/bot/keyboards/index.js";
 
 type Properties = {
   ctx: Context;

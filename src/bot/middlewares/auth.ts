@@ -1,8 +1,8 @@
 import { Middleware } from "grammy";
-import { config } from "#root/config.ts";
-import { Context } from "../context.ts";
-import { UserGroup, BotText } from "../const/index.ts";
-import { getProfileText } from "../helpers/index.ts";
+import { config } from "#root/config.js";
+import { Context } from "../context.js";
+import { UserGroup, BotText } from "../const/index.js";
+import { getProfileText } from "../helpers/index.js";
 
 export function authMiddleware(): Middleware<Context> {
   return async (ctx, next) => {

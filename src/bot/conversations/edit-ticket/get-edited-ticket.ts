@@ -1,18 +1,18 @@
-import { Context } from "#root/bot/context.ts";
+import { Context } from "#root/bot/context.js";
 import { Conversation } from "@grammyjs/conversations";
 import {
   EditPanelButtonKey,
   EditPanelButtons,
   createEditPanelKeyboard,
-} from "#root/bot/keyboards/index.ts";
-import { selectTicketPropertyData } from "#root/bot/callback-data/index.ts";
+} from "#root/bot/keyboards/index.js";
+import { selectTicketPropertyData } from "#root/bot/callback-data/index.js";
 import {
   getPriority,
   getCategory,
-} from "#root/bot/conversations/create-ticket/index.ts";
-import { TicketType } from "#root/services/index.ts";
-import { getPhotos } from "#root/bot/handlers/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
+} from "#root/bot/conversations/create-ticket/index.js";
+import { TicketType } from "#root/services/index.js";
+import { getPhotos } from "#root/bot/handlers/index.js";
+import { UserText } from "#root/bot/const/index.js";
 
 type Properties = {
   ctx: Context;

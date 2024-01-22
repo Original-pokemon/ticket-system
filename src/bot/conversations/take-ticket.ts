@@ -1,10 +1,10 @@
-import { Context } from "#root/bot/context.ts";
-import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.ts";
-import { Container } from "#root/container.ts";
+import { Context } from "#root/bot/context.js";
+import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.js";
+import { Container } from "#root/container.js";
 import { createConversation } from "@grammyjs/conversations";
 import { InlineKeyboard } from "grammy";
-import { performedTicketData, sendTicketData } from "../callback-data/index.ts";
-import { UserText } from "../const/index.ts";
+import { performedTicketData, sendTicketData } from "../callback-data/index.js";
+import { UserText } from "../const/index.js";
 
 export const TAKE_TICKET_CONVERSATION = "take-ticket";
 

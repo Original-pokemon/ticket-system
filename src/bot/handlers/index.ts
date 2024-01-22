@@ -1,3 +1,3 @@
-export * from "./error.ts";
-export * from "./admin/index.ts";
-export * from "./user/index.ts";
+export * from "./error.js";
+export * from "./admin/index.js";
+export * from "./user/index.js";

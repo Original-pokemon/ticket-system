@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
-import { selectCategoryAdminData } from "#root/bot/callback-data/index.ts";
-import { AdminText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
+import { selectCategoryAdminData } from "#root/bot/callback-data/index.js";
+import { AdminText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
 
 export const saveCategoryHandler = async (

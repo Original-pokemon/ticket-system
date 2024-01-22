@@ -1,14 +1,14 @@
-import { Context } from "#root/bot/context.ts";
+import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
 import {
   ticketProfilePanelManager,
   considerTicketProfilePanelTaskPerformer,
   performedTicketProfileTaskPerformer,
-} from "#root/bot/keyboards/index.ts";
-import { selectConsiderTicketData } from "#root/bot/callback-data/index.ts";
-import { TicketStatus } from "#root/bot/const/index.ts";
+} from "#root/bot/keyboards/index.js";
+import { selectConsiderTicketData } from "#root/bot/callback-data/index.js";
+import { TicketStatus } from "#root/bot/const/index.js";
 
-import { viewTicketProfile } from "../view-ticket-profile.ts";
+import { viewTicketProfile } from "../view-ticket-profile.js";
 
 type KeyboardStatusType =
   | TicketStatus.ReviewedManager

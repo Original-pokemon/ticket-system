@@ -1,6 +1,6 @@
 import pg from "pg";
-import { config } from "#root/config.ts";
-import { logger } from "#root/logger.ts";
+import { config } from "#root/config.js";
+import { logger } from "#root/logger.js";
 import {
   UserService,
   GroupService,
@@ -16,7 +16,7 @@ import {
   StatusService,
   TagWordService,
   TicketService,
-} from "#root/services/index.ts";
+} from "#root/services/index.js";
 
 const createServices = () => ({
   User: new UserService(),

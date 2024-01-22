@@ -1,7 +1,7 @@
-import { selectPriorityData } from "#root/bot/callback-data/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createPriorityKeyboard } from "#root/bot/keyboards/index.ts";
+import { selectPriorityData } from "#root/bot/callback-data/index.js";
+import { UserText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createPriorityKeyboard } from "#root/bot/keyboards/index.js";
 import { Conversation } from "@grammyjs/conversations";
 
 type Properties = {

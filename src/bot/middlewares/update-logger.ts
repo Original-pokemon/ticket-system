@@ -1,7 +1,7 @@
 import { performance } from "node:perf_hooks";
 
-import type { Context } from "#root/bot/context.ts";
-import { getUpdateInfo } from "#root/bot/helpers/index.ts";
+import type { Context } from "#root/bot/context.js";
+import { getUpdateInfo } from "#root/bot/helpers/index.js";
 import { Middleware } from "grammy";
 
 export function updateLogger(): Middleware<Context> {

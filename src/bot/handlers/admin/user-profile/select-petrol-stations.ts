@@ -1,7 +1,7 @@
-import { selectPetrolStationAdminData } from "#root/bot/callback-data/index.ts";
-import { AdminText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
-import { createPetrolStationsMultiKeyboard } from "#root/bot/keyboards/index.ts";
+import { selectPetrolStationAdminData } from "#root/bot/callback-data/index.js";
+import { AdminText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
+import { createPetrolStationsMultiKeyboard } from "#root/bot/keyboards/index.js";
 import { CallbackQueryContext } from "grammy";
 
 export const selectPetrolStationsHandler = async (

@@ -1,5 +1,5 @@
-import { BaseService } from "../base-service.ts";
-import { ApiRouteKey } from "../const.ts";
+import { BaseService } from "../base-service.js";
+import { ApiRouteKey } from "../const.js";
 
 type GroupType = {
   id: string;

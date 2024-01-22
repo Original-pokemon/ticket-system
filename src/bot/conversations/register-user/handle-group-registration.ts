@@ -1,10 +1,10 @@
-import { isUserGroup } from "#root/bot/const/user-group.ts";
-import { isUnauthorized } from "#root/bot/filters/index.ts";
-import { ServicesType } from "#root/container.ts";
-import { UserType } from "#root/services/user/user-service.ts";
-import { logger } from "#root/logger.ts";
-import { deleteHandler } from "./delete-handler.ts";
-import { addHandler } from "./add-handler.ts";
+import { isUserGroup } from "#root/bot/const/user-group.js";
+import { isUnauthorized } from "#root/bot/filters/index.js";
+import { ServicesType } from "#root/container.js";
+import { UserType } from "#root/services/user/user-service.js";
+import { logger } from "#root/logger.js";
+import { deleteHandler } from "./delete-handler.js";
+import { addHandler } from "./add-handler.js";
 
 type Properties = {
   services: ServicesType;

@@ -1,6 +1,6 @@
-import { BaseService } from "../base-service.ts";
-import { ApiRouteKey } from "../const.ts";
-import type { UserType } from "../index.ts";
+import { BaseService } from "../base-service.js";
+import { ApiRouteKey } from "../const.js";
+import type { UserType } from "../index.js";
 
 type TicketType = {
   petrol_station: string;

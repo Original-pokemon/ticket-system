@@ -1,6 +1,6 @@
-import { selectTicketPropertyData } from "#root/bot/callback-data/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
-import { chunk } from "#root/bot/helpers/index.ts";
+import { selectTicketPropertyData } from "#root/bot/callback-data/index.js";
+import { UserText } from "#root/bot/const/index.js";
+import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const EditPanelButtonKey = {

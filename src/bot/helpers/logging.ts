@@ -1,4 +1,4 @@
-import type { Context } from "#root/bot/context.ts";
+import type { Context } from "#root/bot/context.js";
 import { Middleware } from "grammy";
 
 import type { Update } from "@grammyjs/types";

@@ -1,2 +1,2 @@
-export * from "./update-logger.ts";
-export * from "./auth.ts";
+export * from "./update-logger.js";
+export * from "./auth.js";

@@ -1,20 +1,20 @@
-import type { Context } from "#root/bot/context.ts";
-import { logHandle } from "#root/bot/helpers/index.ts";
+import type { Context } from "#root/bot/context.js";
+import { logHandle } from "#root/bot/helpers/index.js";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
-import { ManagerButtons } from "#root/bot/const/buttons/manager-buttons.ts";
+import { ManagerButtons } from "#root/bot/const/buttons/manager-buttons.js";
 import {
   showTicketsHandler,
   viewPetrolStationsHandler,
   deleteTicketHandler,
   editTicketHandler,
-} from "#root/bot/handlers/index.ts";
+} from "#root/bot/handlers/index.js";
 import {
   selectPetrolStationData,
   editTicketData,
   deleteTicketData,
-} from "#root/bot/callback-data/index.ts";
+} from "#root/bot/callback-data/index.js";
 
 const composer = new Composer<Context>();
 

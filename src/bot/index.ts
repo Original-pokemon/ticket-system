@@ -1,13 +1,13 @@
-import { Context, createContextConstructor } from "#root/bot/context.ts";
+import { Context, createContextConstructor } from "#root/bot/context.js";
 import {
   botAdminFeature,
   userFeature,
   unhandledFeature,
   welcomeFeature,
-} from "#root/bot/features/index.ts";
-import { errorHandler } from "#root/bot/handlers/index.ts";
-import { updateLogger, authMiddleware } from "#root/bot/middlewares/index.ts";
-import { Container } from "#root/container.ts";
+} from "#root/bot/features/index.js";
+import { errorHandler } from "#root/bot/handlers/index.js";
+import { updateLogger, authMiddleware } from "#root/bot/middlewares/index.js";
+import { Container } from "#root/container.js";
 import { Bot as TelegramBot, BotConfig, session, StorageAdapter } from "grammy";
 
 import { autoChatAction } from "@grammyjs/auto-chat-action";
@@ -22,7 +22,7 @@ import {
   createTicketConversation,
   editTicketConversation,
   takeTicketConversation,
-} from "./conversations/index.ts";
+} from "./conversations/index.js";
 
 type Options = {
   container: Container;

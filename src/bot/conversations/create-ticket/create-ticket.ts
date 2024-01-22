@@ -1,15 +1,15 @@
-import { Context } from "#root/bot/context.ts";
+import { Context } from "#root/bot/context.js";
 import { createConversation } from "@grammyjs/conversations";
-import { Container } from "#root/container.ts";
-import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.ts";
-import { TicketType } from "#root/services/index.ts";
+import { Container } from "#root/container.js";
+import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.js";
+import { TicketType } from "#root/services/index.js";
 import {
   ticketProfilePanelManager,
   ticketProfilePanelPetrolSTation,
-} from "#root/bot/keyboards/index.ts";
-import { UserText, TicketStatus } from "#root/bot/const/index.ts";
-import { isManager } from "#root/bot/filters/index.ts";
-import { getPetrolStation, getCategory, getPriority } from "./index.ts";
+} from "#root/bot/keyboards/index.js";
+import { UserText, TicketStatus } from "#root/bot/const/index.js";
+import { isManager } from "#root/bot/filters/index.js";
+import { getPetrolStation, getCategory, getPriority } from "./index.js";
 
 export const CREATE_TICKET_CONVERSATION = "create-ticket";
 export const createTicketConversation = (container: Container) =>

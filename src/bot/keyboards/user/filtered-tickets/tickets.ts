@@ -1,10 +1,10 @@
 import {
   selectConsiderPetrolStationData,
   selectConsiderTicketData,
-} from "#root/bot/callback-data/index.ts";
+} from "#root/bot/callback-data/index.js";
 
-import { Context } from "#root/bot/context.ts";
-import { chunk } from "#root/bot/helpers/index.ts";
+import { Context } from "#root/bot/context.js";
+import { chunk } from "#root/bot/helpers/index.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 export const createFilteredTicketsKeyboard = async (

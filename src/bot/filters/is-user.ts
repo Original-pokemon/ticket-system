@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { UserGroup } from "../const/user-group.ts";
+import { UserGroup } from "../const/user-group.js";
 
 export const isManager = (string: string): string is UserGroup.Manager =>
   string === UserGroup.Manager;

@@ -1,5 +1,5 @@
-import type { Context } from "#root/bot/context.ts";
-import { isBotAdmin } from "#root/bot/filters/index.ts";
+import type { Context } from "#root/bot/context.js";
+import { isBotAdmin } from "#root/bot/filters/index.js";
 
 import {
   setUpRelationshipHandler,
@@ -8,8 +8,8 @@ import {
   blockUserHandler,
   saveCategoryHandler,
   saveRelationshipHandler,
-} from "#root/bot/handlers/index.ts";
-import { logHandle } from "#root/bot/helpers/logging.ts";
+} from "#root/bot/handlers/index.js";
+import { logHandle } from "#root/bot/helpers/logging.js";
 import { Composer } from "grammy";
 import { chatAction } from "@grammyjs/auto-chat-action";
 import {
@@ -20,10 +20,10 @@ import {
   selectManagerData,
   selectCategoryAdminData,
   selectPetrolStationAdminData,
-} from "#root/bot/callback-data/index.ts";
-import { selectPetrolStationsHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-stations.ts";
-import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.ts";
-import { selectManagersHandler } from "#root/bot/handlers/admin/user-profile/select-managers.ts";
+} from "#root/bot/callback-data/index.js";
+import { selectPetrolStationsHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-stations.js";
+import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.js";
+import { selectManagersHandler } from "#root/bot/handlers/admin/user-profile/select-managers.js";
 
 const composer = new Composer<Context>();
 

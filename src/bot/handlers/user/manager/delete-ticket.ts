@@ -1,6 +1,6 @@
-import { deleteTicketData } from "#root/bot/callback-data/index.ts";
-import { UserText } from "#root/bot/const/index.ts";
-import { Context } from "#root/bot/context.ts";
+import { deleteTicketData } from "#root/bot/callback-data/index.js";
+import { UserText } from "#root/bot/const/index.js";
+import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
 
 export const deleteTicketHandler = async (
