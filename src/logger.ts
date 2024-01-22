@@ -1,5 +1,6 @@
 import { pino } from "pino";
 import { config } from "#root/config.js";
+import { fileURLToPath } from "node:url";
 
 export const logger = pino({
   level: config.LOG_LEVEL,
@@ -21,7 +22,18 @@ export const logger = pino({
             {
               target: "pino/file",
               level: config.LOG_LEVEL,
-              options: {},
+              options: {
+                destination: fileURLToPath(new URL("app.log", import.meta.url)),
+              },
+            },
+            {
+              target: "pino-pretty",
+              level: config.LOG_LEVEL,
+              options: {
+                ignore: "pid,hostname",
+                colorize: true,
+                translateTime: true,
+              },
             },
           ]),
     ],
