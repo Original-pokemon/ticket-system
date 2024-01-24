@@ -52,7 +52,9 @@ export const createTicketConversation = (container: Container) =>
       ? getPriority({ ...conversationProperties, ctx: categoryCtx })
       : [undefined, ctx]);
 
-    await priorityCtx.deleteMessage();
+    if (isManagerUser) {
+      await priorityCtx.deleteMessage();
+    }
 
     const [photoUrs, photosCtx] = await getPhotos({
       ...conversationProperties,
