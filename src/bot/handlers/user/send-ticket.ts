@@ -39,12 +39,16 @@ const sendManagersNotificationAboutNewTicket = async ({
       ctx,
       ticket,
     },
-    UserText.SendTicket.NEW_TICKET,
+    UserText.SendTicket.NEW_TICKET(ticket.title),
   );
 };
 
 const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
-  const { ticket_category: categoryId, ticket_priority: priorityId } = ticket;
+  const {
+    ticket_category: categoryId,
+    ticket_priority: priorityId,
+    title,
+  } = ticket;
 
   if (!categoryId || !priorityId) {
     await ctx.reply(UserText.SendTicket.WITHOUT_CATEGORY);
@@ -60,7 +64,10 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   });
 
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
-    await ctx.api.sendMessage(taskPerformerId, UserText.SendTicket.NEW_TICKET);
+    await ctx.api.sendMessage(
+      taskPerformerId,
+      UserText.SendTicket.NEW_TICKET(title),
+    );
   });
 
   await Promise.all(promises);
@@ -80,7 +87,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
       ctx,
       ticket,
     },
-    UserText.SendTicket.PERFORMED,
+    UserText.SendTicket.PERFORMED(ticket.title),
   );
 };
 
@@ -98,7 +105,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
       ctx,
       ticket,
     },
-    UserText.SendTicket.COMPILED_TICKET,
+    UserText.SendTicket.COMPILED_TICKET(ticket.title),
   );
 };
 

@@ -23,12 +23,12 @@ export const AdminText = {
     SAVE: "Сохранить",
   },
   Block: {
-    USER_BLOCK: "User blocked successfully",
-    USER_MESSAGE: "You are now blocked",
+    USER_BLOCK: "Пользователь успешно заблокирован",
+    USER_MESSAGE: "Вы заблокированы",
   },
   Unblock: {
-    USER_UNBLOCK: "User unblocked successfully",
-    USER_MESSAGE: "You are now unblocked",
+    USER_UNBLOCK: "Пользователь успешно разблокирован",
+    USER_MESSAGE: "Теперь вы разблокированы",
   },
 };
 
@@ -49,8 +49,8 @@ export const UserText = {
     CATEGORY: "Выберите нужную картигорию",
     PRIORITY: "Выберите приоритет. \nЧем БОЛЬШЕ ЦИФРА тем МЕНЬШЕ ПРИОРИТЕТ",
     SAVE_TICKET: "Задача Сохранена",
-    TICKET_TITLE: "titleText",
-    TICKET_DESCRIPTION: "descriptionText",
+    TICKET_TITLE: "Введите заголовок задачи",
+    TICKET_DESCRIPTION: "Введите описание задачи",
   },
   EditTicket: {
     Title: "Введите новый заголовок",
@@ -89,7 +89,7 @@ export const UserText = {
     TICKETS: "Выберите билет",
   },
   DELETE_TICKET: "Билет удален",
-  RETRIEVE_TICKET: "retrieveTicket",
+  RETRIEVE_TICKET: (name: string) => `Билет ${name} возвращен`,
   GetPhotos: {
     MSG_TEXT:
       "Вы можете прикрепить фото\n\nДля этого отправьте фотографию\\фотографии",
@@ -100,10 +100,10 @@ export const UserText = {
     DELETE_PHOTO_BUTTON: "Удалить",
   },
   SendTicket: {
-    NEW_TICKET: "new ticket",
-    PERFORMED: "performed",
+    NEW_TICKET: (name: string) => `У вас новая заявка: ${name}`,
+    PERFORMED: (name: string) => `Задача ${name} взята в работу`,
     STATUS_EDIT: "Статус задачи изменен",
-    COMPILED_TICKET: "compited ticket",
+    COMPILED_TICKET: (name: string) => `Задача ${name} выполнена`,
     WITHOUT_CATEGORY:
       "Вы не можете отправить заявку без категории и приоритета",
   },
@@ -112,7 +112,7 @@ export const UserText = {
     TEXT: "<i>Текст комментария</i>",
   },
   TakeTicket: {
-    COMMENT: "Enter your comment",
+    COMMENT: "Введите Ваш комментарий",
     BUTTON: "Отметить задачу выполненной",
   },
 };

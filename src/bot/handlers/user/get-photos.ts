@@ -105,7 +105,6 @@ export const getPhotos = async ({
   ctx,
   conversation,
 }: Properties): Promise<[string[], Context]> => {
-  const { customData } = conversation.session;
   const keyboard = InlineKeyboard.from([
     [
       {
@@ -121,7 +120,9 @@ export const getPhotos = async ({
 
   const photosCtx = await waitForPhotoCallback(conversation, ctx);
 
-  const photos = Object.values(customData).filter(Boolean) as PhotoType[];
+  const photos = Object.values(conversation.session.customData).filter(
+    Boolean,
+  ) as PhotoType[];
 
   photosCtx.session.customData = {};
   const photoUrs = photos.map((photo) => photo.fileUrl);

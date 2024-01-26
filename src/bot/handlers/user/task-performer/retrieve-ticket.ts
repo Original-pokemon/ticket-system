@@ -39,7 +39,7 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
       ctx,
       ticket,
     },
-    UserText.RETRIEVE_TICKET,
+    UserText.RETRIEVE_TICKET(ticket.title),
   );
 };
 
@@ -51,5 +51,5 @@ export const retrieveTicketHandler = async (
 
   await sendManagersNotificationAboutRetrieveTicket({ ctx, ticket });
 
-  await ctx.editMessageText(UserText.RETRIEVE_TICKET);
+  await ctx.editMessageText(UserText.RETRIEVE_TICKET(ticket.title));
 };
