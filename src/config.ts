@@ -43,6 +43,8 @@ const configSchema = z.object({
     .transform((v) => (Array.isArray(v) ? v : [v]))
     .default([]),
   BACKEND_URL: z.string(),
+  BACKEND_USERNAME: z.string(),
+  BACKEND_PASSWORD: z.string(),
 });
 
 const parseConfig = (environment: NodeJS.ProcessEnv) => {

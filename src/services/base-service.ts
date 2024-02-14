@@ -1,17 +1,20 @@
-import { ApiService } from "./api.js";
+import { createApi } from "./api.js";
 import { APIRoute } from "./const.js";
 
-export class BaseService<T> extends ApiService {
+const api = await createApi();
+
+export class BaseService<T> {
   private readonly resource;
 
+  #api = api;
+
   constructor(resource: keyof typeof APIRoute) {
-    super();
     this.resource = APIRoute[resource];
   }
 
   getAll = async (): Promise<T[]> => {
     try {
-      const { data } = await this.api.get<T[]>(this.resource.All);
+      const { data } = await this.#api.get<T[]>(this.resource.All);
       return data;
     } catch {
       throw new Error("Error getting all items");
@@ -20,9 +23,11 @@ export class BaseService<T> extends ApiService {
 
   getSelect = async (ids: string[]): Promise<T[]> => {
     if (this.resource.Many) {
+      const searchParameters = ids.map((id) => ["ids", id]);
+      const parameters = new URLSearchParams(searchParameters);
       try {
-        const { data } = await this.api.post<T[]>(this.resource.Many, {
-          data: ids,
+        const { data } = await this.#api.get<T[]>(this.resource.Many, {
+          params: parameters,
         });
         return data;
       } catch {
@@ -34,7 +39,7 @@ export class BaseService<T> extends ApiService {
 
   getUnique = async (id: string): Promise<T> => {
     try {
-      const { data } = await this.api.get<T>(this.resource.Info(id));
+      const { data } = await this.#api.get<T>(this.resource.Info(id));
       return data;
     } catch {
       throw new Error("Error getting item");
@@ -44,7 +49,7 @@ export class BaseService<T> extends ApiService {
   create = async (item: T): Promise<string> => {
     if (this.resource.Create) {
       try {
-        const { data } = await this.api.post<string>(
+        const { data } = await this.#api.post<string>(
           this.resource.Create,
           item,
         );
@@ -63,7 +68,7 @@ export class BaseService<T> extends ApiService {
 
       if (itemId) {
         try {
-          const { data } = await this.api.put<T>(
+          const { data } = await this.#api.put<T>(
             this.resource.Update(itemId),
             item,
           );
@@ -80,7 +85,7 @@ export class BaseService<T> extends ApiService {
   delete = async (id: string): Promise<T> => {
     if (this.resource.Delete) {
       try {
-        const { data } = await this.api.delete<T>(this.resource.Delete(id));
+        const { data } = await this.#api.delete<T>(this.resource.Delete(id));
         return data;
       } catch {
         throw new Error("Error deleting item");

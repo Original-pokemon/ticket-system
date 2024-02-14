@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 
 import { logger } from "#root/logger.js";
 
@@ -11,39 +11,46 @@ type DetailMessageType = {
   message: string;
 };
 
-class ApiService {
-  #axios: AxiosInstance;
+const createApi = async () => {
+  const api = axios.create({
+    baseURL: config.BACKEND_URL,
+    timeout: REQUEST_TIMEOUT,
+  });
 
-  constructor() {
-    this.#axios = axios.create({
-      baseURL: config.BACKEND_URL,
-      timeout: REQUEST_TIMEOUT,
-    });
-    this.#axios.get("/");
+  axiosRetry(api, {
+    retries: 4,
+    retryDelay: (retryCount) => {
+      logger.warn(`Retrying attempt: ${retryCount}`);
+      return retryCount * 5000; // time interval between retries
+    },
+  });
 
-    axiosRetry(this.#axios, {
-      retries: 4,
-      retryDelay: (retryCount) => {
-        logger.warn(`Retrying attempt: ${retryCount}`);
-        return retryCount * 5000; // time interval between retries
-      },
-    });
+  api.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error: AxiosError<DetailMessageType>) => {
+      if (error.response) {
+        const detailMessage = error.response.data;
+        logger.error(detailMessage);
+      }
+      throw new Error(error.message);
+    },
+  );
 
-    this.#axios.interceptors.response.use(
-      (response) => response,
-      (error: AxiosError<DetailMessageType>) => {
-        if (error.response) {
-          const detailMessage = error.response.data;
-          logger.error(detailMessage);
-        }
-        throw new Error(error.message);
-      },
-    );
-  }
+  const { headers } = await api.post("/login", {
+    login: config.BACKEND_USERNAME,
+    password: config.BACKEND_PASSWORD,
+  });
 
-  get api() {
-    return this.#axios;
-  }
-}
+  api.interceptors.request.use((requestConfig) => {
+    const configWithHeaders = requestConfig;
+    configWithHeaders.headers.Cookie = headers["set-cookie"];
 
-export { ApiService };
+    return configWithHeaders;
+  });
+
+  return api;
+};
+
+export { createApi };
