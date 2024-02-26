@@ -2,7 +2,7 @@ import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
 
 type PriorityType = {
-  id: number;
+  id: string;
   description: string;
 };
 

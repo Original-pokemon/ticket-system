@@ -3,8 +3,8 @@ import { ApiRouteKey } from "../const.js";
 
 type TaskPerformerType = {
   user_id: string;
-  bush_id: number;
-  category_id?: number;
+  bush_id: string;
+  category_id?: string;
   ticket?: string[];
 };
 export class TaskPerformerService extends BaseService<TaskPerformerType> {

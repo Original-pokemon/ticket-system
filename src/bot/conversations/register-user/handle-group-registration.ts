@@ -10,7 +10,7 @@ type Properties = {
   services: ServicesType;
   group: string;
   user: UserType;
-  bush: number;
+  bush: string;
 };
 
 export const handleGroupRegistration = async ({

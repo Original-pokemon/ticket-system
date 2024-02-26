@@ -12,7 +12,7 @@ type Properties = {
 export const getPriority = async ({
   ctx,
   conversation,
-}: Properties): Promise<[number, Context]> => {
+}: Properties): Promise<[string, Context]> => {
   await ctx.editMessageText(UserText.CreateTicket.PRIORITY, {
     reply_markup: await createPriorityKeyboard(ctx),
   });

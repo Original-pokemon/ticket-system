@@ -3,7 +3,7 @@ import { ServicesType } from "#root/container.js";
 
 type User = {
   user_id: string;
-  bush_id: number;
+  bush_id: string;
 };
 
 type Properties = {

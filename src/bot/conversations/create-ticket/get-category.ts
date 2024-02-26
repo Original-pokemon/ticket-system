@@ -12,7 +12,7 @@ type Properties = {
 export const getCategory = async ({
   ctx,
   conversation,
-}: Properties): Promise<[number, Context]> => {
+}: Properties): Promise<[string, Context]> => {
   await ctx.reply(UserText.CreateTicket.CATEGORY, {
     reply_markup: await createCategoryKeyboard(ctx),
   });

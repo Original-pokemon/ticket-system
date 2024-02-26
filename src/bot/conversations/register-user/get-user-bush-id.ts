@@ -16,7 +16,7 @@ export const getUserBushId = async ({
   ctx,
   conversation,
   services,
-}: Properties): Promise<[CallbackQueryContext<Context>, number]> => {
+}: Properties): Promise<[CallbackQueryContext<Context>, string]> => {
   await ctx.reply(AdminText.Admin.BUSHES, {
     reply_markup: await createBushKeyboard({ ...ctx, services }),
   });

@@ -2,7 +2,7 @@ import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
 
 type CategoryType = {
-  id: number;
+  id: string;
   description: string;
   task_performers: string[];
 };

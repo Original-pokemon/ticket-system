@@ -4,6 +4,6 @@ export const selectConsiderPetrolStationData = createCallbackData(
   "consider-petrol-station-manager",
   {
     id: String,
-    status: Number,
+    status: String,
   },
 );

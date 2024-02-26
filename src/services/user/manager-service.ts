@@ -9,7 +9,7 @@ type TicketType = {
 
 export type ManagerType = {
   user_id: string;
-  bush_id?: number;
+  bush_id?: string;
   tickets?: TicketType[];
   petrol_stations?: string[];
   user?: UserType;
