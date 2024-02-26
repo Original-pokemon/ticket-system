@@ -16,10 +16,14 @@ const getCommentObject = async (
   comment: CommentType,
   services: ServicesType,
 ) => {
-  const { user_id: userId, text, attachments: commentAttachmentsId } = comment;
+  const { user_id: userId, text, attachments } = comment;
   const { user_name: userName } = await services.User.getUnique(userId);
-  const attachments = await services.Attachment.getSelect(commentAttachmentsId);
-  const attachmentsPath = attachments.map((attachment) => attachment.path);
+  const attachmentsPath = attachments.map((attachment) => {
+    if (typeof attachment === "string") {
+      return attachment;
+    }
+    return attachment.path;
+  });
 
   return { userName, text, attachments: attachmentsPath };
 };

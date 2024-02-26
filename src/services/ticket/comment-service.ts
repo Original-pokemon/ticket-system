@@ -1,5 +1,6 @@
 import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
+import { AttachmentType } from "./attachment-service.js";
 
 export type CommentType = {
   id?: string;
@@ -7,7 +8,7 @@ export type CommentType = {
   user_id: string;
   text: string;
   created_at?: Date;
-  attachments: string[];
+  attachments: AttachmentType[] | string[];
 };
 
 export class CommentService extends BaseService<CommentType> {
