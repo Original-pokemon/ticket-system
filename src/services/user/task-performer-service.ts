@@ -2,7 +2,7 @@ import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
 
 type TaskPerformerType = {
-  user_id: string;
+  id: string;
   bush_id: string;
   category_id?: string;
   ticket?: string[];

@@ -27,7 +27,7 @@ export const handleGroupRegistration = async ({
         services,
         group,
         user: {
-          user_id: stringId,
+          id: stringId,
           bush_id: bush,
         },
       });
@@ -42,7 +42,7 @@ export const handleGroupRegistration = async ({
         services,
         group,
         user: {
-          user_id: stringId,
+          id: stringId,
           bush_id: bush,
         },
       });

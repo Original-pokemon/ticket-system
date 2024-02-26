@@ -8,7 +8,7 @@ type TicketType = {
 };
 
 export type ManagerType = {
-  user_id: string;
+  id: string;
   bush_id?: string;
   tickets?: TicketType[];
   petrol_stations?: string[];

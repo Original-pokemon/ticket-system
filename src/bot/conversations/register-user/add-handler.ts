@@ -2,7 +2,7 @@ import { UserGroup } from "#root/bot/const/user-group.js";
 import { ServicesType } from "#root/container.js";
 
 type User = {
-  user_id: string;
+  id: string;
   bush_id: string;
 };
 
