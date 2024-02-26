@@ -39,7 +39,7 @@ const createApi = async () => {
   );
 
   const { headers } = await api.post("/login", {
-    login: config.BACKEND_USERNAME,
+    username: config.BACKEND_USERNAME,
     password: config.BACKEND_PASSWORD,
   });
 
