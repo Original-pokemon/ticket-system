@@ -58,7 +58,9 @@ export const createFilteredPetrolStationsKeyboard = async (
     userId,
   });
 
-  const ticketsInfo = await services.Ticket.getSelect(ticketIds || []);
+  const ticketsInfo = ticketIds?.length
+    ? await services.Ticket.getSelect(ticketIds)
+    : [];
 
   const petrolStations = ticketsInfo
     .filter((ticket) => ticket.status_id === status)
