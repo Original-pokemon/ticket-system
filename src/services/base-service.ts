@@ -22,19 +22,16 @@ export class BaseService<T> {
   };
 
   getSelect = async (ids: string[]): Promise<T[]> => {
-    if (this.resource.Many) {
-      const searchParameters = ids.map((id) => ["ids", id]);
-      const parameters = new URLSearchParams(searchParameters);
-      try {
-        const { data } = await this.#api.get<T[]>(this.resource.Many, {
-          params: parameters,
-        });
-        return data;
-      } catch {
-        throw new Error("Error getting many items");
-      }
+    const searchParameters = ids.map((id) => ["id", id]);
+    const parameters = new URLSearchParams(searchParameters);
+    try {
+      const { data } = await this.#api.get<T[]>(this.resource.All, {
+        params: parameters,
+      });
+      return data;
+    } catch {
+      throw new Error("Error getting many items");
     }
-    throw new Error(`Method don't implement`);
   };
 
   getUnique = async (id: string): Promise<T> => {
@@ -82,11 +79,10 @@ export class BaseService<T> {
     throw new Error("this method is not implemented");
   };
 
-  delete = async (id: string): Promise<T> => {
+  delete = async (id: string) => {
     if (this.resource.Delete) {
       try {
-        const { data } = await this.#api.delete<T>(this.resource.Delete(id));
-        return data;
+        await this.#api.delete<T>(this.resource.Delete(id));
       } catch {
         throw new Error("Error deleting item");
       }
