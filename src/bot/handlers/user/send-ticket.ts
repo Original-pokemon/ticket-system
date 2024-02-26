@@ -31,6 +31,7 @@ const sendManagersNotificationAboutNewTicket = async ({
 }: Properties) => {
   await ctx.services.Ticket.update({
     ...ticket,
+    user_id: ctx.session.user.id,
     status_id: TicketStatus.ReviewedManager,
   });
 
@@ -60,6 +61,7 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
 
   await ctx.services.Ticket.update({
     ...ticket,
+    user_id: ctx.session.user.id,
     status_id: TicketStatus.ReviewedTaskPerformer,
   });
 
@@ -79,6 +81,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
 }: Properties) => {
   await ctx.services.Ticket.update({
     ...ticket,
+    user_id: ctx.session.user.id,
     status_id: TicketStatus.Performed,
   });
 
@@ -97,6 +100,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
 }: Properties) => {
   await ctx.services.Ticket.update({
     ...ticket,
+    user_id: ctx.session.user.id,
     status_id: TicketStatus.Completed,
   });
 
