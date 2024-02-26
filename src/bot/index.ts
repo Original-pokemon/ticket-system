@@ -37,7 +37,7 @@ export function createBot(
   options: Options,
   botConfig?: Omit<BotConfig<Context>, "ContextConstructor">,
 ) {
-  const { container /* sessionStorage */ } = options;
+  const { container, sessionStorage } = options;
   const { config } = container;
   const bot = new TelegramBot(token, {
     ...botConfig,
@@ -62,7 +62,7 @@ export function createBot(
         user: {},
         customData: {},
       }),
-      // storage: sessionStorage,
+      storage: sessionStorage,
       getSessionKey,
     }),
   );
