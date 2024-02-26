@@ -10,7 +10,7 @@ export const isTaskPerformer = (
   string: string,
 ): string is UserGroup.TaskPerformer => string === UserGroup.TaskPerformer;
 
-export const isUser = (
+export const isAuthUser = (
   string: string,
 ): string is
   | UserGroup.TaskPerformer

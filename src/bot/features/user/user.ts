@@ -23,13 +23,16 @@ import {
   PetrolStationButtons,
   TaskPerformerButtons,
 } from "#root/bot/const/index.js";
+import { isAuthUser } from "#root/bot/filters/is-user.js";
 import { managerFeature } from "./manager/manager.js";
 import { taskPerformerFeature } from "./task-performer/task-performer.js";
 import { petrolStationFeature } from "./petrol-station/petrol-station.js";
 
 const composer = new Composer<Context>();
 
-const feature = composer.chatType("private");
+const feature = composer.chatType("private").filter(({ session }) => {
+  return isAuthUser(session.user.user_group);
+});
 
 feature.use(managerFeature);
 feature.use(taskPerformerFeature);

@@ -7,7 +7,11 @@ import {
 } from "#root/bot/callback-data/index.js";
 
 import { ServicesType } from "#root/container.js";
-import { isBlocked, isUnauthorized, isUser } from "#root/bot/filters/index.js";
+import {
+  isBlocked,
+  isUnauthorized,
+  isAuthUser,
+} from "#root/bot/filters/index.js";
 import { getProfileText } from "#root/bot/helpers/index.js";
 import { AdminText } from "#root/bot/const/index.js";
 import { Context } from "../../context.js";
@@ -32,7 +36,7 @@ export const viewUserProfileHandler = async (
       keyboard.text("Заблокировать", blockUserData.pack({ id: user.id }));
     }
 
-    if (isUser(userGroup)) {
+    if (isAuthUser(userGroup)) {
       keyboard.text(
         "Настроить связи",
         setRelationshipUserData.pack({ id: user.id }),

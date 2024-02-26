@@ -1,4 +1,4 @@
-import { isUser } from "#root/bot/filters/index.js";
+import { isAuthUser } from "#root/bot/filters/index.js";
 import { UserGroup } from "#root/bot/const/index.js";
 import {
   createPetrolStationKeyboard,
@@ -13,7 +13,7 @@ const Keyboard = {
 };
 
 export const createUserKeyboard = async (group: string) => {
-  if (isUser(group)) {
+  if (isAuthUser(group)) {
     return Keyboard[group]();
   }
 };
