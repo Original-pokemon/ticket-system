@@ -4,7 +4,7 @@ import {
   selectTicketData,
   sendTicketData,
 } from "#root/bot/callback-data/index.js";
-import { TicketStatus, UserText } from "#root/bot/const/index.js";
+import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 import { TicketType } from "#root/services/index.js";
 
 type Properties = {
@@ -27,6 +27,24 @@ const sendManagers = async (
 
   const promises = managers.map(async (managerId) => {
     await ctx.api.sendMessage(managerId, text, { reply_markup: markup });
+  });
+
+  await Promise.all(promises);
+};
+
+const sendAdmins = async (
+  ctx: Context,
+  text: string,
+  markup: InlineKeyboard,
+) => {
+  const { users } = await ctx.services.Group.getUnique(UserGroup.Admin);
+
+  if (!users) {
+    throw new Error("Admins not found");
+  }
+
+  const promises = users.map(async (userId) => {
+    await ctx.api.sendMessage(userId, text, { reply_markup: markup });
   });
 
   await Promise.all(promises);
@@ -108,6 +126,7 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   });
 
   await Promise.all(promises);
+  await sendAdmins(ctx, text, markup);
 };
 
 const sendManagersNotificationAboutPerformTicket = async ({
