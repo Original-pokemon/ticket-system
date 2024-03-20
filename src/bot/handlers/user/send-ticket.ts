@@ -1,6 +1,9 @@
 import { Context } from "#root/bot/context.js";
-import { CallbackQueryContext } from "grammy";
-import { sendTicketData } from "#root/bot/callback-data/index.js";
+import { CallbackQueryContext, InlineKeyboard } from "grammy";
+import {
+  selectTicketData,
+  sendTicketData,
+} from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserText } from "#root/bot/const/index.js";
 import { TicketType } from "#root/services/index.js";
 
@@ -9,7 +12,11 @@ type Properties = {
   ticket: TicketType;
 };
 
-const sendManagers = async ({ ctx, ticket }: Properties, text: string) => {
+const sendManagers = async (
+  { ctx, ticket }: Properties,
+  text: string,
+  markup: InlineKeyboard,
+) => {
   const { petrol_station_id: petrolStationId } = ticket;
   const { managers } =
     await ctx.services.PetrolStation.getUnique(petrolStationId);
@@ -19,28 +26,44 @@ const sendManagers = async ({ ctx, ticket }: Properties, text: string) => {
   }
 
   const promises = managers.map(async (managerId) => {
-    await ctx.api.sendMessage(managerId, text);
+    await ctx.api.sendMessage(managerId, text, { reply_markup: markup });
   });
 
-  Promise.all(promises);
+  await Promise.all(promises);
 };
 
 const sendManagersNotificationAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
+  const { id: ticketId, title } = ticket;
+
   await ctx.services.Ticket.update({
     ...ticket,
     user_id: ctx.session.user.id,
     status_id: TicketStatus.ReviewedManager,
   });
 
+  if (!ticketId) {
+    throw new Error("Ticket Id not found");
+  }
+
+  const markup = InlineKeyboard.from([
+    [
+      {
+        text: "Посмотреть заявку",
+        callback_data: selectTicketData.pack({ id: ticketId }),
+      },
+    ],
+  ]);
+
   await sendManagers(
     {
       ctx,
       ticket,
     },
-    UserText.SendTicket.NEW_TICKET(ticket.title),
+    UserText.SendTicket.NEW_TICKET(title),
+    markup,
   );
 };
 
@@ -48,6 +71,7 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   const {
     ticket_category: categoryId,
     ticket_priority: priorityId,
+    id: ticketId,
     title,
   } = ticket;
 
@@ -65,11 +89,22 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
     status_id: TicketStatus.ReviewedTaskPerformer,
   });
 
+  const text = UserText.SendTicket.NEW_TICKET(title);
+
+  if (!ticketId) {
+    throw new Error("Ticket Id not found");
+  }
+  const markup = InlineKeyboard.from([
+    [
+      {
+        text: "Посмотреть заявку",
+        callback_data: selectTicketData.pack({ id: ticketId }),
+      },
+    ],
+  ]);
+
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
-    await ctx.api.sendMessage(
-      taskPerformerId,
-      UserText.SendTicket.NEW_TICKET(title),
-    );
+    await ctx.api.sendMessage(taskPerformerId, text, { reply_markup: markup });
   });
 
   await Promise.all(promises);
@@ -79,6 +114,21 @@ const sendManagersNotificationAboutPerformTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
+  const { id: ticketId, title } = ticket;
+
+  if (!ticketId) {
+    throw new Error("Ticket Id not found");
+  }
+
+  const markup = InlineKeyboard.from([
+    [
+      {
+        text: "Посмотреть заявку",
+        callback_data: selectTicketData.pack({ id: ticketId }),
+      },
+    ],
+  ]);
+
   await ctx.services.Ticket.update({
     ...ticket,
     user_id: ctx.session.user.id,
@@ -90,7 +140,8 @@ const sendManagersNotificationAboutPerformTicket = async ({
       ctx,
       ticket,
     },
-    UserText.SendTicket.PERFORMED(ticket.title),
+    UserText.SendTicket.PERFORMED(title),
+    markup,
   );
 };
 
@@ -98,6 +149,21 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
+  const { id: ticketId, title } = ticket;
+
+  if (!ticketId) {
+    throw new Error("Ticket Id not found");
+  }
+
+  const markup = InlineKeyboard.from([
+    [
+      {
+        text: "Посмотреть заявку",
+        callback_data: selectTicketData.pack({ id: ticketId }),
+      },
+    ],
+  ]);
+
   await ctx.services.Ticket.update({
     ...ticket,
     user_id: ctx.session.user.id,
@@ -109,7 +175,8 @@ const sendManagersNotificationAboutCompletedTicket = async ({
       ctx,
       ticket,
     },
-    UserText.SendTicket.COMPILED_TICKET(ticket.title),
+    UserText.SendTicket.COMPILED_TICKET(title),
+    markup,
   );
 };
 
