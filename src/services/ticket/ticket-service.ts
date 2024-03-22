@@ -12,7 +12,13 @@ export type TicketType = {
   ticket_priority?: string;
   status_id: string;
   created_at?: Date;
-  status_history?: string[];
+  status_history?: {
+    id?: string;
+    ticket_id?: string;
+    user_id: string;
+    ticket_status: string;
+    created_at?: Date;
+  }[];
   comments: string[];
 };
 

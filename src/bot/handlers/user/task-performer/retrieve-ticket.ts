@@ -31,8 +31,12 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
 }: Properties) => {
   await ctx.services.Ticket.update({
     ...ticket,
-    user_id: ctx.session.user.id,
-    status_id: TicketStatus.ReviewedManager,
+    status_history: [
+      {
+        user_id: ctx.session.user.id,
+        ticket_status: TicketStatus.ReviewedManager,
+      },
+    ],
   });
 
   await sendManagers(

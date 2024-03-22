@@ -104,10 +104,15 @@ export const editTicket = async ({ ctx, conversation, ticket }: Properties) => {
   const { id } = selectTicketPropertyData.unpack(selectProperty);
 
   if (isInclude(id)) {
-    const newTicket = await ButtonHandler[id]({
+    const newTicket: TicketType = await ButtonHandler[id]({
       ctx: editPanelCtx,
       conversation,
-      ticket,
+      ticket: {
+        ...ticket,
+        status_history: [
+          { user_id: ctx.session.user.id, ticket_status: ticket.status_id },
+        ],
+      },
     });
 
     return newTicket;
