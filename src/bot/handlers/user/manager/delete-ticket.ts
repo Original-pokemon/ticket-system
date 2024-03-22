@@ -7,6 +7,10 @@ export const deleteTicketHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
   const { id } = deleteTicketData.unpack(ctx.callbackQuery.data);
-  await ctx.services.Ticket.delete(id);
-  await ctx.editMessageText(UserText.DELETE_TICKET);
+  try {
+    await ctx.services.Ticket.delete(id);
+    await ctx.editMessageText(UserText.DELETE_TICKET);
+  } catch (error) {
+    ctx.logger.error(error);
+  }
 };
