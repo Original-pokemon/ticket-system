@@ -82,14 +82,14 @@ export const UserText = {
   },
   Consider: {
     PETROL_STATIONS: "Выберите АЗС",
-    TICKETS: "Выберите билет",
+    TICKETS: "Выберите заявку",
   },
   AllTickets: {
     PETROL_STATIONS: "Выберите АЗС",
-    TICKETS: "Выберите билет",
+    TICKETS: "Выберите заявку",
   },
-  DELETE_TICKET: "Билет удален",
-  RETRIEVE_TICKET: (name: string) => `Билет ${name} возвращен`,
+  DELETE_TICKET: "Заявка удалена",
+  RETRIEVE_TICKET: (name: string) => `Заявка ${name} возвращена`,
   GetPhotos: {
     MSG_TEXT:
       "Вы можете прикрепить фото\n\nДля этого отправьте фотографию\\фотографии",
