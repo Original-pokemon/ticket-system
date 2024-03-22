@@ -82,7 +82,8 @@ export class BaseService<T> {
   delete = async (id: string) => {
     if (this.resource.Delete) {
       try {
-        await this.#api.delete<T>(this.resource.Delete(id));
+        const data = await this.#api.delete<T>(this.resource.Delete(id));
+        return data;
       } catch {
         throw new Error("Error deleting item");
       }
