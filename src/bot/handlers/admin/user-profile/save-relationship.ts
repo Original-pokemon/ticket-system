@@ -8,11 +8,11 @@ export const saveRelationshipHandler = async (
 ) => {
   const { id } = saveRelationshipData.unpack(ctx.callbackQuery.data);
   const {
-    session: { customData },
+    session,
     services: { PetrolStation, Manager, User },
   } = ctx;
   const { user_group: userGroup } = await User.getUnique(id);
-  const saveItems = Object.entries(customData)
+  const saveItems = Object.entries(session.customData)
     .filter(([_key, value]) => value)
     .map(([key]) => key);
 

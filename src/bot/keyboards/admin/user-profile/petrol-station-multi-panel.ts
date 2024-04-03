@@ -12,9 +12,9 @@ export const createPetrolStationsMultiKeyboard = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
   const petrolStations = await ctx.services.PetrolStation.getAll();
-  const { customData, selectUser } = ctx.session;
+  const { session } = ctx;
 
-  if (!selectUser) {
+  if (!session.selectUser) {
     throw new Error("User not Selected");
   }
 
@@ -23,7 +23,9 @@ export const createPetrolStationsMultiKeyboard = async (
       petrolStations.map(({ user }) => {
         if (user) {
           const { id, user_name: userName } = user;
-          const text = customData[id.toString()] ? `✅${userName}` : userName;
+          const text = session.customData[id.toString()]
+            ? `✅${userName}`
+            : userName;
 
           return {
             text,
@@ -42,7 +44,7 @@ export const createPetrolStationsMultiKeyboard = async (
     .row()
     .text(
       AdminText.Keyboard.SAVE,
-      saveRelationshipData.pack({ id: selectUser }),
+      saveRelationshipData.pack({ id: session.selectUser }),
     );
   return keyboard;
 };

@@ -7,16 +7,13 @@ import { CallbackQueryContext } from "grammy";
 export const selectPetrolStationsHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
-  const {
-    callbackQuery,
-    session: { customData },
-  } = ctx;
+  const { callbackQuery, session } = ctx;
   const { id } = selectPetrolStationAdminData.unpack(callbackQuery.data);
 
-  if (id in customData) {
-    delete customData[id];
+  if (id in session.customData) {
+    delete session.customData[id];
   } else {
-    customData[id] = true;
+    session.customData[id] = true;
   }
   await ctx.editMessageText(AdminText.Admin.USERS, {
     reply_markup: await createPetrolStationsMultiKeyboard(ctx),

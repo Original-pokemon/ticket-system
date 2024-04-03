@@ -44,16 +44,16 @@ const handlePhotoCallback = async (
   answerCtx: Context,
   conversation: Conversation<Context>,
 ) => {
-  const { customData } = conversation.session;
+  const { session } = conversation;
   const file = await answerCtx.getFile();
 
-  customData[file.file_unique_id] = {
+  session.customData[file.file_unique_id] = {
     id: file.file_unique_id,
     fileId: file.file_id,
     fileUrl: file.getUrl(),
   };
 
-  const photos = Object.values(customData);
+  const photos = Object.values(session.customData);
 
   await sendPhotos(answerCtx, photos);
 
@@ -74,9 +74,9 @@ const handleDeletePhotoCallback = async (
   conversation: Conversation<Context>,
 ) => {
   const { id } = deletePhotoData.unpack(answerCtx.callbackQuery!.data!);
-  const { customData } = conversation.session;
+  const { session } = conversation;
 
-  delete customData[id];
+  delete session.customData[id];
   await answerCtx.deleteMessage();
 };
 
