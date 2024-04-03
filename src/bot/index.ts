@@ -14,15 +14,8 @@ import { autoChatAction } from "@grammyjs/auto-chat-action";
 import { hydrate } from "@grammyjs/hydrate";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
-import { conversations } from "@grammyjs/conversations";
 import { hydrateFiles } from "@grammyjs/files";
-import {
-  registerUserConversation,
-  findUserConversation,
-  createTicketConversation,
-  editTicketConversation,
-  takeTicketConversation,
-} from "./conversations/index.js";
+import { conversationsFeature } from "./conversations/index.js";
 
 type Options = {
   container: Container;
@@ -69,12 +62,7 @@ export function createBot(
   bot.use(authMiddleware());
 
   // Conversations
-  bot.use(conversations());
-  bot.use(findUserConversation(container));
-  bot.use(registerUserConversation(container));
-  bot.use(createTicketConversation(container));
-  bot.use(editTicketConversation(container));
-  bot.use(takeTicketConversation(container));
+  bot.use(conversationsFeature(container));
 
   // Handlers
   bot.use(welcomeFeature);
