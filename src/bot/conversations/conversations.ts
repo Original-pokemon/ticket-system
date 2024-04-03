@@ -16,10 +16,8 @@ import {
 const useConversation = (container: Container) => {
   const composer = new Composer<Context>();
 
-  const feature = composer.errorBoundary((error, next) => {
-    logger.error(error);
-
-    return next();
+  const feature = composer.errorBoundary((error) => {
+    return logger.error(error);
   }, logHandle("errorBoundary-conversations"));
 
   feature.use(conversations());
