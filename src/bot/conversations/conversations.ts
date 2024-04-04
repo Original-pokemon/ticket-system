@@ -1,5 +1,4 @@
 import type { Context } from "#root/bot/context.js";
-import { logHandle } from "#root/bot/helpers/logging.js";
 import { Composer } from "grammy";
 
 import { Container } from "#root/container.js";
@@ -17,8 +16,8 @@ const useConversation = (container: Container) => {
   const composer = new Composer<Context>();
 
   const feature = composer.errorBoundary((error) => {
-    return logger.error(error);
-  }, logHandle("errorBoundary-conversations"));
+    logger.error(error);
+  });
 
   feature.use(conversations());
 
