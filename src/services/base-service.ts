@@ -22,6 +22,9 @@ export class BaseService<T> {
   };
 
   getSelect = async (ids: string[]): Promise<T[]> => {
+    if (ids.length === 0) {
+      return [];
+    }
     const searchParameters = ids.map((id) => ["id", id]);
     const parameters = new URLSearchParams(searchParameters);
     try {
