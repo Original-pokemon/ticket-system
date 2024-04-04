@@ -23,7 +23,7 @@ const getTicketIdsManager = async ({ services, userId }: Properties) => {
 };
 
 const getTicketIdsTaskPerformer = async ({ services, userId }: Properties) => {
-  const { ticket: ticketsId } = await services.TaskPerformer.getUnique(userId);
+  const { tickets: ticketsId } = await services.TaskPerformer.getUnique(userId);
 
   return ticketsId;
 };
