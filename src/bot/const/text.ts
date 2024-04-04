@@ -60,7 +60,7 @@ export const UserText = {
   EditTicketPanel: {
     TITLE: "Заголовок",
     DESCRIPTION: "Описание",
-    CATEGORY: "Катигорию",
+    CATEGORY: "Категорию",
     PRIORITY: "Приоритет",
   },
   TicketProfile: {
