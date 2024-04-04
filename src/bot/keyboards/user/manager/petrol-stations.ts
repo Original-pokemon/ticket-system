@@ -1,4 +1,4 @@
-import { selectPetrolStationData } from "#root/bot/callback-data/index.js";
+import { selectPetrolStationCreateTicketData } from "#root/bot/callback-data/index.js";
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
@@ -19,7 +19,7 @@ export const createPetrolStationsKeyboard = async (ctx: Context) => {
     chunk(
       users.map(({ user_name: userName, id }) => ({
         text: userName,
-        callback_data: selectPetrolStationData.pack({
+        callback_data: selectPetrolStationCreateTicketData.pack({
           id,
         }),
       })),

@@ -1,4 +1,4 @@
-import { selectPetrolStationData } from "#root/bot/callback-data/index.js";
+import { selectPetrolStationCreateTicketData } from "#root/bot/callback-data/index.js";
 import { UserText } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import { Conversation } from "@grammyjs/conversations";
@@ -17,14 +17,15 @@ export const getPetrolStation = async ({
     reply_markup: await createPetrolStationsKeyboard(ctx),
   });
 
-  const petrolStationCtx = await conversation.waitForCallbackQuery([
-    selectPetrolStationData.filter(),
-  ]);
+  const petrolStationCtx = await conversation.waitForCallbackQuery(
+    selectPetrolStationCreateTicketData.filter(),
+  );
 
   const {
     callbackQuery: { data: petrolStation },
   } = petrolStationCtx;
-  const { id: petrolStationId } = selectPetrolStationData.unpack(petrolStation);
+  const { id: petrolStationId } =
+    selectPetrolStationCreateTicketData.unpack(petrolStation);
 
   return [petrolStationId, petrolStationCtx];
 };
