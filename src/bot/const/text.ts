@@ -65,12 +65,12 @@ export const UserText = {
   },
   TicketProfile: {
     TICKET_TITLE: "<b>Профиль задачи:</b>",
-    TITLE: "- Заголовок",
-    NUMBER: "- Номер АЗС",
-    CATEGORY: "- Категория",
-    PRIORITY: "- Приоритет",
-    STATUS: "- Статус",
-    DESCRIPTION: "<b>Описание</b>",
+    TITLE: "<i>Заголовок</i>",
+    NUMBER: "<i>Объект</i>",
+    CATEGORY: "<i>Категория</i>",
+    PRIORITY: "<i>Приоритет</i>",
+    STATUS: "<i>Статус</i>",
+    DESCRIPTION: "<i>Описание</i>",
   },
   TicketProfilePanel: {
     ACCEPT_TEXT: "Принять задачу",

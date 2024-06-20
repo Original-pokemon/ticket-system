@@ -9,10 +9,18 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     ticket_category: ticketCategoryId,
     ticket_priority: ticketPriorityId,
     status_id: statusId,
+    description: ticketDescription,
   } = ticket;
 
-  const { TICKET_TITLE, TITLE, NUMBER, CATEGORY, PRIORITY, STATUS } =
-    UserText.TicketProfile;
+  const {
+    TICKET_TITLE,
+    TITLE,
+    NUMBER,
+    CATEGORY,
+    PRIORITY,
+    STATUS,
+    DESCRIPTION,
+  } = UserText.TicketProfile;
 
   const { user_name: userName } = await ctx.services.User.getUnique(
     petrolStationId.toString(),
@@ -36,5 +44,6 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     ${CATEGORY}: ${categoryDescription}
     ${PRIORITY}: ${priorityDescription}
     ${STATUS}: ${statusDescription}
+    ${DESCRIPTION}: ${ticketDescription}
   `;
 };

@@ -72,11 +72,12 @@ export const viewTicketProfile = async ({
     );
   }
 
+  await ctx.reply(profile, {
+    reply_markup: inlineKeyboard,
+  });
+
   await viewTicketComment({
     ctx,
     comments: commentObjects,
-  });
-  await ctx.reply(profile, {
-    reply_markup: inlineKeyboard,
   });
 };
