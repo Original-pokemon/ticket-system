@@ -36,7 +36,7 @@ export const editTicketConversation = (container: Container) =>
 
     await viewTicketProfile({
       ctx,
-      ticket: editedTicket,
+      ticketId,
       inlineKeyboard: ticketProfilePanelManager(ticket.id),
     });
   }, EDIT_TICKET_CONVERSATION);

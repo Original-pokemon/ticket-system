@@ -43,8 +43,6 @@ export const takeTicketConversation = (container: Container) =>
       attachments: photoUrs,
     });
 
-    const ticket = await services.Ticket.getUnique(ticketId);
-
     const keyboard = InlineKeyboard.from([
       [
         {
@@ -56,5 +54,5 @@ export const takeTicketConversation = (container: Container) =>
       ],
     ]);
 
-    await viewTicketProfile({ ctx, ticket, inlineKeyboard: keyboard });
+    await viewTicketProfile({ ctx, ticketId, inlineKeyboard: keyboard });
   }, TAKE_TICKET_CONVERSATION);

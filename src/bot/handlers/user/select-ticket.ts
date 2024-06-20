@@ -4,13 +4,11 @@ import { selectTicketData } from "#root/bot/callback-data/index.js";
 import { viewTicketProfile } from "./view-ticket-profile.js";
 
 export const showTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
-  const { id } = selectTicketData.unpack(ctx.callbackQuery.data);
-
-  const ticket = await ctx.services.Ticket.getUnique(id);
+  const { id: ticketId } = selectTicketData.unpack(ctx.callbackQuery.data);
 
   await viewTicketProfile({
     ctx,
-    ticket,
+    ticketId,
     inlineKeyboard: new InlineKeyboard(),
   });
 };

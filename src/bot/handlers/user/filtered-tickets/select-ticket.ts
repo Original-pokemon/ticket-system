@@ -24,10 +24,10 @@ const getKeyboard = {
 export const showFilteredTicketHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
-  const { services, callbackQuery } = ctx;
-  const { id, status } = selectConsiderTicketData.unpack(callbackQuery.data);
-
-  const ticket = await services.Ticket.getUnique(id);
+  const { callbackQuery } = ctx;
+  const { id: ticketId, status } = selectConsiderTicketData.unpack(
+    callbackQuery.data,
+  );
 
   if (!(status in getKeyboard)) {
     throw new Error("Invalid or unsupported ticket status");
@@ -37,7 +37,7 @@ export const showFilteredTicketHandler = async (
 
   await viewTicketProfile({
     ctx,
-    ticket,
-    inlineKeyboard: inlineKeyboard(id),
+    ticketId,
+    inlineKeyboard: inlineKeyboard(ticketId),
   });
 };

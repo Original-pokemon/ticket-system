@@ -1,14 +1,13 @@
 import { Context } from "#root/bot/context.js";
 import { InlineKeyboard } from "grammy";
-import { CommentType, TicketType } from "#root/services/index.js";
+import { CommentType } from "#root/services/index.js";
 import { getTicketText } from "#root/bot/helpers/index.js";
-import { UserText } from "#root/bot/const/index.js";
 import { ServicesType } from "#root/container.js";
 import { createPhotosGroup, viewTicketComment } from "./view-comments.js";
 
 type Properties = {
   ctx: Context;
-  ticket: TicketType;
+  ticketId: string;
   inlineKeyboard: InlineKeyboard;
 };
 
@@ -28,17 +27,15 @@ const getCommentObject = async (
   return { userName, text, attachments: attachmentsPath };
 };
 
-export const viewTicketProfile = async ({
+export const getTicketProfileData = async ({
   ctx,
-  ticket,
-  inlineKeyboard,
-}: Properties) => {
-  const {
-    comments: commentsId,
-    description,
-    attachments: ticketAttachmentIds,
-  } = ticket;
+  ticketId,
+}: Omit<Properties, "inlineKeyboard">) => {
+  const ticket = await ctx.services.Ticket.getUnique(ticketId);
+  const { comments: commentsId, attachments: ticketAttachmentIds } = ticket;
+
   const profile = await getTicketText(ctx, ticket);
+
   const descriptionAttachments =
     await ctx.services.Attachment.getSelect(ticketAttachmentIds);
   const descriptionAttachmentPaths = descriptionAttachments.map(
@@ -54,7 +51,20 @@ export const viewTicketProfile = async ({
 
   const commentObjects = await Promise.all(promises);
 
-  await ctx.reply(`${UserText.TicketProfile.DESCRIPTION}:\n ${description}`);
+  return {
+    profile,
+    descriptionAttachmentPaths,
+    commentObjects,
+  };
+};
+
+export const viewTicketProfile = async ({
+  ctx,
+  ticketId,
+  inlineKeyboard,
+}: Properties) => {
+  const { profile, descriptionAttachmentPaths, commentObjects } =
+    await getTicketProfileData({ ctx, ticketId });
 
   if (descriptionAttachmentPaths.length > 0) {
     await ctx.replyWithMediaGroup(

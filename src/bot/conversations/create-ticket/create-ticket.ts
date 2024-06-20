@@ -77,19 +77,17 @@ export const createTicketConversation = (container: Container) =>
     const createdTicketId = await services.Ticket.create(newTicket);
     await photosCtx.editMessageText(UserText.CreateTicket.SAVE_TICKET);
 
-    const ticket = await services.Ticket.getUnique(createdTicketId);
-
-    if (!ticket?.id) {
+    if (!createdTicketId) {
       throw new Error("ticket id not provided");
     }
 
     const keyboard = isManagerUser
-      ? ticketProfilePanelManager(ticket.id)
-      : ticketProfilePanelPetrolSTation(ticket.id);
+      ? ticketProfilePanelManager(createdTicketId)
+      : ticketProfilePanelPetrolSTation(createdTicketId);
 
     await viewTicketProfile({
       ctx: photosCtx,
-      ticket,
+      ticketId: createdTicketId,
       inlineKeyboard: keyboard,
     });
   }, CREATE_TICKET_CONVERSATION);
