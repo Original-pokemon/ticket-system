@@ -6,6 +6,7 @@ import {
 } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 import { TicketType } from "#root/services/index.js";
+import { createPhotosGroup, getTicketProfileData } from "./index.js";
 
 type Properties = {
   ctx: Context;
@@ -32,19 +33,27 @@ const sendManagers = async (
   await Promise.all(promises);
 };
 
-const sendAdmins = async (
-  ctx: Context,
-  text: string,
-  markup: InlineKeyboard,
-) => {
+const sendAdmins = async (ctx: Context, ticketId: string) => {
   const { users } = await ctx.services.Group.getUnique(UserGroup.Admin);
 
   if (!users) {
     throw new Error("Admins not found");
   }
 
+  const { profile, descriptionAttachmentPaths } = await getTicketProfileData({
+    ctx,
+    ticketId,
+  });
+
   const promises = users.map(async (userId) => {
-    await ctx.api.sendMessage(userId, text, { reply_markup: markup });
+    if (descriptionAttachmentPaths.length > 0) {
+      await ctx.api.sendMediaGroup(
+        userId,
+        createPhotosGroup(descriptionAttachmentPaths),
+      );
+    }
+
+    await ctx.api.sendMessage(userId, profile);
   });
 
   await Promise.all(promises);
@@ -136,7 +145,7 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   });
 
   await Promise.all(promises);
-  await sendAdmins(ctx, text, markup);
+  await sendAdmins(ctx, ticketId);
 };
 
 const sendManagersNotificationAboutPerformTicket = async ({
