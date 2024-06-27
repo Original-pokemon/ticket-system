@@ -7,14 +7,15 @@ import { BotText } from "#root/bot/const/text.js";
 import { createUserKeyboard } from "#root/bot/keyboards/user/user-panel.js";
 
 export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
+  const { services, session, conversation } = ctx;
+
   const {
-    services,
-    session: {
-      user: { user_group: userGroup },
-    },
-  } = ctx;
+    user: { user_group: userGroup },
+  } = session;
 
   const group = await services.Group.getUnique(userGroup);
+
+  await conversation.exit();
 
   if (isAdmin(userGroup)) {
     return ctx.reply(BotText.Welcome.ADMIN, {
