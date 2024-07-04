@@ -13,6 +13,17 @@ type Properties = {
   ticket: TicketType;
 };
 
+const createInlineKeyboard = (ticketId: string) => {
+  return InlineKeyboard.from([
+    [
+      {
+        text: "Посмотреть заявку",
+        callback_data: selectTicketData.pack({ id: ticketId }),
+      },
+    ],
+  ]);
+};
+
 const sendManagers = async (
   { ctx, ticket }: Properties,
   text: string,
@@ -80,14 +91,7 @@ const sendManagersNotificationAboutNewTicket = async ({
     throw new Error("Ticket Id not found");
   }
 
-  const markup = InlineKeyboard.from([
-    [
-      {
-        text: "Посмотреть заявку",
-        callback_data: selectTicketData.pack({ id: ticketId }),
-      },
-    ],
-  ]);
+  const markup = createInlineKeyboard(ticketId);
 
   await sendManagers(
     {
@@ -131,14 +135,7 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
-  const markup = InlineKeyboard.from([
-    [
-      {
-        text: "Посмотреть заявку",
-        callback_data: selectTicketData.pack({ id: ticketId }),
-      },
-    ],
-  ]);
+  const markup = createInlineKeyboard(ticketId);
 
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
     await ctx.api.sendMessage(taskPerformerId, text, { reply_markup: markup });
@@ -158,14 +155,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
     throw new Error("Ticket Id not found");
   }
 
-  const markup = InlineKeyboard.from([
-    [
-      {
-        text: "Посмотреть заявку",
-        callback_data: selectTicketData.pack({ id: ticketId }),
-      },
-    ],
-  ]);
+  const markup = createInlineKeyboard(ticketId);
 
   await ctx.services.Ticket.update({
     ...ticket,
@@ -198,14 +188,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
     throw new Error("Ticket Id not found");
   }
 
-  const markup = InlineKeyboard.from([
-    [
-      {
-        text: "Посмотреть заявку",
-        callback_data: selectTicketData.pack({ id: ticketId }),
-      },
-    ],
-  ]);
+  const markup = createInlineKeyboard(ticketId);
 
   await ctx.services.Ticket.update({
     ...ticket,
