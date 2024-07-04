@@ -80,22 +80,30 @@ const sendAdmins = async (ctx: Context, ticketId: string) => {
   await Promise.all(promises);
 };
 
+const updateTicketStatus = async (
+  ctx: Context,
+  ticket: TicketType,
+  statusId: TicketStatus,
+) => {
+  await ctx.services.Ticket.update({
+    ...ticket,
+    status_id: statusId,
+    status_history: [
+      {
+        user_id: ctx.session.user.id,
+        ticket_status: statusId,
+      },
+    ],
+  });
+};
+
 const sendManagersNotificationAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
   const { id: ticketId, title } = ticket;
 
-  await ctx.services.Ticket.update({
-    ...ticket,
-    status_id: TicketStatus.ReviewedManager,
-    status_history: [
-      {
-        user_id: ctx.session.user.id,
-        ticket_status: TicketStatus.ReviewedManager,
-      },
-    ],
-  });
+  await updateTicketStatus(ctx, ticket, TicketStatus.ReviewedManager);
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -129,16 +137,7 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   const { task_performers: TaskPerformerIds } =
     await ctx.services.Category.getUnique(categoryId.toString());
 
-  await ctx.services.Ticket.update({
-    ...ticket,
-    status_id: TicketStatus.ReviewedTaskPerformer,
-    status_history: [
-      {
-        user_id: ctx.session.user.id,
-        ticket_status: TicketStatus.ReviewedTaskPerformer,
-      },
-    ],
-  });
+  await updateTicketStatus(ctx, ticket, TicketStatus.ReviewedTaskPerformer);
 
   const text = UserText.SendTicket.NEW_TICKET(title);
 
@@ -175,16 +174,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
 
   const markup = createInlineKeyboard(ticketId);
 
-  await ctx.services.Ticket.update({
-    ...ticket,
-    status_id: TicketStatus.Performed,
-    status_history: [
-      {
-        user_id: ctx.session.user.id,
-        ticket_status: TicketStatus.Performed,
-      },
-    ],
-  });
+  await updateTicketStatus(ctx, ticket, TicketStatus.Performed);
 
   await sendManagers(
     {
@@ -208,16 +198,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
 
   const markup = createInlineKeyboard(ticketId);
 
-  await ctx.services.Ticket.update({
-    ...ticket,
-    status_id: TicketStatus.Completed,
-    status_history: [
-      {
-        user_id: ctx.session.user.id,
-        ticket_status: TicketStatus.Completed,
-      },
-    ],
-  });
+  await updateTicketStatus(ctx, ticket, TicketStatus.Completed);
 
   await sendManagers(
     {
@@ -244,6 +225,8 @@ export const sendTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
   const { id } = sendTicketData.unpack(ctx.callbackQuery.data);
   const ticket = await ctx.services.Ticket.getUnique(id);
   try {
+    // TODO: добавить отдельную функцию для обновления статуса, которая будет вызываться в этой функции
+
     await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
     await ctx.editMessageText(UserText.SendTicket.STATUS_EDIT);
   } catch (error) {
