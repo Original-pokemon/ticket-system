@@ -38,7 +38,13 @@ const sendManagers = async (
   }
 
   const promises = managers.map(async (managerId) => {
-    await ctx.api.sendMessage(managerId, text, { reply_markup: markup });
+    try {
+      await ctx.api.sendMessage(managerId, text, { reply_markup: markup });
+    } catch (error) {
+      ctx.logger.error(
+        `Failed to send message to manager ${managerId}: ${error}`,
+      );
+    }
   });
 
   await Promise.all(promises);
@@ -57,14 +63,18 @@ const sendAdmins = async (ctx: Context, ticketId: string) => {
   });
 
   const promises = users.map(async (userId) => {
-    if (descriptionAttachmentPaths.length > 0) {
-      await ctx.api.sendMediaGroup(
-        userId,
-        createPhotosGroup(descriptionAttachmentPaths),
-      );
-    }
+    try {
+      if (descriptionAttachmentPaths.length > 0) {
+        await ctx.api.sendMediaGroup(
+          userId,
+          createPhotosGroup(descriptionAttachmentPaths),
+        );
+      }
 
-    await ctx.api.sendMessage(userId, profile);
+      await ctx.api.sendMessage(userId, profile);
+    } catch (error) {
+      ctx.logger.error(`Failed to send message to admin ${userId}`, error);
+    }
   });
 
   await Promise.all(promises);
@@ -138,7 +148,15 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   const markup = createInlineKeyboard(ticketId);
 
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
-    await ctx.api.sendMessage(taskPerformerId, text, { reply_markup: markup });
+    try {
+      await ctx.api.sendMessage(taskPerformerId, text, {
+        reply_markup: markup,
+      });
+    } catch (error) {
+      ctx.logger.error(
+        `Failed to send message to task performer ${taskPerformerId}: ${error}`,
+      );
+    }
   });
 
   await Promise.all(promises);
