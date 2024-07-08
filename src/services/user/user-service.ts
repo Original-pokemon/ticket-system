@@ -1,3 +1,4 @@
+import { UserGroup } from "#root/bot/const/index.js";
 import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
 
@@ -6,7 +7,7 @@ export type UserType = {
   user_name: string;
   first_name: string;
   last_name?: string;
-  user_group: string;
+  user_group: UserGroup;
   created_at?: string;
 };
 

@@ -1,5 +1,5 @@
 import { selectGroupData } from "#root/bot/callback-data/index.js";
-import { AdminText } from "#root/bot/const/index.js";
+import { AdminText, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import { createGroupKeyboard } from "#root/bot/keyboards/index.js";
 import { ServicesType } from "#root/container.js";
@@ -16,7 +16,7 @@ export const getUserGroupId = async ({
   ctx,
   conversation,
   services,
-}: Properties): Promise<[CallbackQueryContext<Context>, string]> => {
+}: Properties): Promise<[CallbackQueryContext<Context>, UserGroup]> => {
   await ctx.editMessageText("Выберите группу пользователя", {
     reply_markup: await createGroupKeyboard({ ...ctx, services }),
   });
@@ -29,5 +29,5 @@ export const getUserGroupId = async ({
 
   await groupCtx.editMessageText(AdminText.Admin.EDIT_USER_NAME);
 
-  return [groupCtx, groupId];
+  return [groupCtx, groupId as UserGroup];
 };
