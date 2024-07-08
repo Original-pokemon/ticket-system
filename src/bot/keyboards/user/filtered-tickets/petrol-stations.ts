@@ -11,33 +11,31 @@ type Properties = {
   userId: string;
 };
 
-const getTicketIdsManager = async ({ services, userId }: Properties) => {
-  const { tickets } = await services.Manager.getUnique(userId);
-  const ticketsId = tickets
+const getTicketsManager = async ({ services, userId }: Properties) => {
+  const { tickets: ticketsPerPetrolStation } =
+    await services.Manager.getUnique(userId);
+  const ticketsId = ticketsPerPetrolStation
     ?.map((ticket) => {
       return ticket.tickets;
     })
     .flat();
 
-  return ticketsId;
+  const tickets = await services.Ticket.getSelect(ticketsId || []);
+
+  return tickets;
 };
 
-const getTicketIdsTaskPerformer = async ({ services, userId }: Properties) => {
+const getTicketsTaskPerformer = async ({ services, userId }: Properties) => {
   const { tickets: ticketsId } = await services.TaskPerformer.getUnique(userId);
 
-  return ticketsId;
+  const tickets = await services.Ticket.getSelect(ticketsId || []);
+
+  return tickets;
 };
 
-const getTicketIdsPetrolStation = async ({ services, userId }: Properties) => {
-  const { tickets: ticketsId } = await services.PetrolStation.getUnique(userId);
-
-  return ticketsId;
-};
-
-const getTicketIds = {
-  [UserGroup.Manager]: getTicketIdsManager,
-  [UserGroup.TaskPerformer]: getTicketIdsTaskPerformer,
-  [UserGroup.PetrolStation]: getTicketIdsPetrolStation,
+const getTickets = {
+  [UserGroup.Manager]: getTicketsManager,
+  [UserGroup.TaskPerformer]: getTicketsTaskPerformer,
 };
 
 export const createFilteredPetrolStationsKeyboard = async (
@@ -53,22 +51,16 @@ export const createFilteredPetrolStationsKeyboard = async (
     throw new Error("This group is not supported");
   }
 
-  const ticketIds = await getTicketIds[userGroup]({
+  const tickets = await getTickets[userGroup]({
     services,
     userId,
   });
 
-  const ticketsInfo = ticketIds?.length
-    ? await services.Ticket.getSelect(ticketIds)
-    : [];
-
-  const petrolStations = ticketsInfo
+  const petrolStations = tickets
     .filter((ticket) => ticket.status_id === status)
     .map((ticket) => ticket.petrol_station_id);
 
-  const users = petrolStations?.length
-    ? await services.User.getSelect(petrolStations)
-    : [];
+  const users = await services.User.getSelect(petrolStations || []);
 
   return InlineKeyboard.from(
     chunk(
