@@ -14,7 +14,7 @@ import {
   showFilteredTicketHandler,
   showTicketsFilteredHandler,
   viewPetrolStationsFilteredHandler,
-  sendTicketHandler,
+  ticketActionHandler,
   createTicketHandler,
 } from "#root/bot/handlers/index.js";
 
@@ -52,7 +52,7 @@ feature.callbackQuery(
   sendTicketData.filter(),
   logHandle("callbackQuery-send-ticket"),
   chatAction("typing"),
-  sendTicketHandler,
+  ticketActionHandler,
 );
 
 feature.hears(
