@@ -1,5 +1,6 @@
 import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
+import { TicketStatus } from "../../bot/const/index.js";
 
 export type TicketType = {
   id?: string;
@@ -26,4 +27,27 @@ export class TicketService extends BaseService<TicketType> {
   constructor() {
     super(ApiRouteKey.Ticket);
   }
+
+  updateTicketStatus = async ({
+    userId,
+    ticketId,
+    statusId,
+  }: {
+    userId: string;
+    ticketId: string;
+    statusId: TicketStatus;
+  }) => {
+    const ticket = await this.getUnique(ticketId);
+
+    await this.update({
+      ...ticket,
+      status_id: statusId,
+      status_history: [
+        {
+          user_id: userId,
+          ticket_status: statusId,
+        },
+      ],
+    });
+  };
 }
