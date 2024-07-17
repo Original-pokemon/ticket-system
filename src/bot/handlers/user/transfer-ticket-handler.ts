@@ -194,10 +194,16 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
   await sendTaskPerformers({ ctx, ticket });
   await sendAdmins({ ctx, ticket });
 };
-const actionForReviewedTaskPerformerTicket = async ({
-  ctx,
-  ticket,
-}: Properties) => {
+
+/* 
+  Т.к данный статус меняется при просмотре задачи на seenTaskPerformer в handlers\user\select-ticket.ts
+  Никакой преедачи не производится
+*/
+const actionForReviewedTaskPerformerTicket = async () => {
+  throw new Error("Not implemented");
+};
+
+const actionForSeenTaskPerformer = async ({ ctx, ticket }: Properties) => {
   if (!ticket.id) throw new Error("Ticket Id not found");
 
   await ctx.services.Ticket.updateTicketStatus({
@@ -221,14 +227,20 @@ const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
   await sendManagersNotificationAboutCompletedTicket({ ctx, ticket });
 };
 
+// логика обновления статуса тикета для передачи задачи по конвееру
 const statusActions = {
   [TicketStatus.Created]: actionForCreatedTicket,
   [TicketStatus.ReviewedManager]: actionForReviewedManagerTicket,
   [TicketStatus.ReviewedTaskPerformer]: actionForReviewedTaskPerformerTicket,
+  [TicketStatus.SeenTaskPerformer]: actionForSeenTaskPerformer,
   [TicketStatus.Performed]: actionForPerformedTicket,
   [TicketStatus.Completed]: deleteTicket,
 };
 
+/*
+  Данная фукнция отвечает за передачу задачи по конвееру
+  и уведомление заинтерисованных лиц
+*/
 export const transferTicketHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {

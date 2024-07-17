@@ -3,6 +3,7 @@ export enum TicketStatus {
   Created = "1",
   ReviewedManager = "2",
   ReviewedTaskPerformer = "3",
-  Performed = "4",
-  Completed = "5",
+  SeenTaskPerformer = "4",
+  Performed = "5",
+  Completed = "6",
 }

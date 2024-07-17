@@ -42,6 +42,10 @@ export const BotText = {
     BLOCKED: "Вы заблокированы",
   },
 };
+type NotificationTextProperties = {
+  title: string;
+  petrolStation: string;
+};
 
 export const UserText = {
   CreateTicket: {
@@ -106,6 +110,8 @@ export const UserText = {
     COMPILED_TICKET: (name: string) => `Задача ${name} выполнена`,
     WITHOUT_CATEGORY:
       "Вы не можете отправить заявку без категории и приоритета",
+    SEEN_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
+      `Заявка ${title} просмотрена. \nАЗС ${petrolStation}`,
   },
   ViewComment: {
     USER: "<i>Пользователь</i>",
