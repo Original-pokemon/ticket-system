@@ -1,6 +1,6 @@
 import { deleteTicketData } from "#root/bot/callback-data/user/ticket/delete-ticket.user.js";
 import { editTicketData } from "#root/bot/callback-data/user/ticket/edit-ticket.user.js";
-import { sendTicketData } from "#root/bot/callback-data/user/ticket/send-ticket.user.js";
+import { transferTicketData } from "#root/bot/callback-data/user/ticket/transfer-ticket.user.js";
 import { UserText } from "#root/bot/const/index.js";
 import { InlineKeyboard } from "grammy";
 
@@ -9,7 +9,7 @@ export const ticketProfilePanelManager = (id: string) =>
     [
       {
         text: UserText.TicketProfilePanel.SEND_TEXT,
-        callback_data: sendTicketData.pack({ id }),
+        callback_data: transferTicketData.pack({ id }),
       },
     ],
     [

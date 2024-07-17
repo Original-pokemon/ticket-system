@@ -3,7 +3,10 @@ import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.js";
 import { Container } from "#root/container.js";
 import { createConversation } from "@grammyjs/conversations";
 import { InlineKeyboard } from "grammy";
-import { performedTicketData, sendTicketData } from "../callback-data/index.js";
+import {
+  performedTicketData,
+  transferTicketData,
+} from "../callback-data/index.js";
 import { UserText } from "../const/index.js";
 
 export const TAKE_TICKET_CONVERSATION = "take-ticket";
@@ -47,7 +50,7 @@ export const takeTicketConversation = (container: Container) =>
       [
         {
           text: UserText.TakeTicket.BUTTON,
-          callback_data: sendTicketData.pack({
+          callback_data: transferTicketData.pack({
             id: ticketId,
           }),
         },

@@ -99,7 +99,7 @@ export const UserText = {
     PHOTO_CAPTION: "Прикрепленное фото",
     DELETE_PHOTO_BUTTON: "Удалить",
   },
-  SendTicket: {
+  TransferTicket: {
     NEW_TICKET: (name: string) => `У вас новая заявка: ${name}`,
     PERFORMED: (name: string) => `Задача ${name} взята в работу`,
     STATUS_EDIT: "Статус задачи изменен",

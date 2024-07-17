@@ -6,16 +6,15 @@ import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   selectTicketData,
   selectConsiderPetrolStationData,
-  sendTicketData,
+  transferTicketData,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
   showTicketsFilteredHandler,
   viewPetrolStationsFilteredHandler,
-  ticketActionHandler,
+  transferTicketHandler,
   createTicketHandler,
 } from "#root/bot/handlers/index.js";
-
 import {
   ManagerButtons,
   PetrolStationButtons,
@@ -47,10 +46,10 @@ feature.callbackQuery(
 );
 
 feature.callbackQuery(
-  sendTicketData.filter(),
+  transferTicketData.filter(),
   logHandle("callbackQuery-send-ticket"),
   chatAction("typing"),
-  ticketActionHandler,
+  transferTicketHandler,
 );
 
 feature.hears(
@@ -72,13 +71,6 @@ feature.callbackQuery(
   logHandle("select-filtered-petrol-station"),
   chatAction("typing"),
   showTicketsFilteredHandler,
-);
-
-feature.callbackQuery(
-  selectConsiderTicketData.filter(),
-  logHandle("callbackQuery-view-ticket"),
-  chatAction("typing"),
-  showFilteredTicketHandler,
 );
 
 export { composer as userFeature };

@@ -29,7 +29,6 @@ export const createPhotosGroup = (
 export const viewTicketComment = async ({ ctx, comments }: Properties) => {
   const promises = comments.map(async ({ attachments, text, userName }) => {
     await ctx.reply(getCommentText(text, userName));
-
     if (attachments && attachments.length > 0) {
       const photoInputs = createPhotosGroup(attachments);
 

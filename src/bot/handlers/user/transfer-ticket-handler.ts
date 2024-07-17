@@ -2,10 +2,11 @@ import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 import {
   selectTicketData,
-  sendTicketData,
+  transferTicketData,
 } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 import { TicketType } from "#root/services/index.js";
+import { sendManagers } from "#root/bot/helpers/index.js";
 import { createPhotosGroup, getTicketProfileData } from "./index.js";
 
 type Properties = {
@@ -13,41 +14,21 @@ type Properties = {
   ticket: TicketType;
 };
 
-const createInlineKeyboard = (ticketId: string) => {
+const createInlineKeyboard = ({
+  ticketId,
+  status,
+}: {
+  ticketId: string;
+  status: string;
+}) => {
   return InlineKeyboard.from([
     [
       {
         text: "Посмотреть заявку",
-        callback_data: selectTicketData.pack({ id: ticketId }),
+        callback_data: selectTicketData.pack({ id: ticketId, status }),
       },
     ],
   ]);
-};
-
-const sendManagers = async (
-  { ctx, ticket }: Properties,
-  text: string,
-  markup: InlineKeyboard,
-) => {
-  const { petrol_station_id: petrolStationId } = ticket;
-  const { managers } =
-    await ctx.services.PetrolStation.getUnique(petrolStationId);
-
-  if (!managers) {
-    throw new Error("Managers not found");
-  }
-
-  const promises = managers.map(async (managerId) => {
-    try {
-      await ctx.api.sendMessage(managerId, text, { reply_markup: markup });
-    } catch (error) {
-      ctx.logger.error(
-        `Failed to send message to manager ${managerId}: ${error}`,
-      );
-    }
-  });
-
-  await Promise.all(promises);
 };
 
 const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
@@ -84,41 +65,24 @@ const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
   await Promise.all(promises);
 };
 
-const updateTicketStatus = async (
-  ctx: Context,
-  ticket: TicketType,
-  statusId: TicketStatus,
-) => {
-  await ctx.services.Ticket.update({
-    ...ticket,
-    status_id: statusId,
-    status_history: [
-      {
-        user_id: ctx.session.user.id,
-        ticket_status: statusId,
-      },
-    ],
-  });
-};
-
 const sendManagersNotificationAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const { id: ticketId, title } = ticket;
+  const { id: ticketId, title, status_id: status } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
 
-  const markup = createInlineKeyboard(ticketId);
+  const markup = createInlineKeyboard({ ticketId, status });
 
   await sendManagers(
     {
       ctx,
       ticket,
     },
-    UserText.SendTicket.NEW_TICKET(title),
+    UserText.TransferTicket.NEW_TICKET(title),
     markup,
   );
 };
@@ -127,24 +91,25 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   const {
     ticket_category: categoryId,
     ticket_priority: priorityId,
+    status_id: status,
     id: ticketId,
     title,
   } = ticket;
 
   if (!categoryId || !priorityId) {
-    await ctx.reply(UserText.SendTicket.WITHOUT_CATEGORY);
+    await ctx.reply(UserText.TransferTicket.WITHOUT_CATEGORY);
     throw new Error("Category or Priority not found");
   }
 
   const { task_performers: TaskPerformerIds } =
     await ctx.services.Category.getUnique(categoryId.toString());
 
-  const text = UserText.SendTicket.NEW_TICKET(title);
+  const text = UserText.TransferTicket.NEW_TICKET(title);
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
-  const markup = createInlineKeyboard(ticketId);
+  const markup = createInlineKeyboard({ ticketId, status });
 
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
     try {
@@ -165,20 +130,20 @@ const sendManagersNotificationAboutPerformTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const { id: ticketId, title } = ticket;
+  const { id: ticketId, title, status_id: status } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
 
-  const markup = createInlineKeyboard(ticketId);
+  const markup = createInlineKeyboard({ ticketId, status });
 
   await sendManagers(
     {
       ctx,
       ticket,
     },
-    UserText.SendTicket.PERFORMED(title),
+    UserText.TransferTicket.PERFORMED(title),
     markup,
   );
 };
@@ -187,20 +152,20 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const { id: ticketId, title } = ticket;
+  const { id: ticketId, title, status_id: status } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
 
-  const markup = createInlineKeyboard(ticketId);
+  const markup = createInlineKeyboard({ ticketId, status });
 
   await sendManagers(
     {
       ctx,
       ticket,
     },
-    UserText.SendTicket.COMPILED_TICKET(title),
+    UserText.TransferTicket.COMPILED_TICKET(title),
     markup,
   );
 };
@@ -208,26 +173,51 @@ const sendManagersNotificationAboutCompletedTicket = async ({
 const deleteTicket = async () => {};
 
 const actionForCreatedTicket = async ({ ctx, ticket }: Properties) => {
-  await updateTicketStatus(ctx, ticket, TicketStatus.ReviewedManager);
+  if (!ticket.id) throw new Error("Ticket Id not found");
+
+  await ctx.services.Ticket.updateTicketStatus({
+    userId: ctx.session.user.id,
+    ticketId: ticket.id,
+    statusId: TicketStatus.ReviewedManager,
+  });
   await sendManagersNotificationAboutNewTicket({ ctx, ticket });
 };
 
 const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
-  await updateTicketStatus(ctx, ticket, TicketStatus.ReviewedTaskPerformer);
+  if (!ticket.id) throw new Error("Ticket Id not found");
+
+  await ctx.services.Ticket.updateTicketStatus({
+    userId: ctx.session.user.id,
+    ticketId: ticket.id,
+    statusId: TicketStatus.ReviewedTaskPerformer,
+  });
   await sendTaskPerformers({ ctx, ticket });
   await sendAdmins({ ctx, ticket });
 };
-
 const actionForReviewedTaskPerformerTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  await updateTicketStatus(ctx, ticket, TicketStatus.Performed);
+  if (!ticket.id) throw new Error("Ticket Id not found");
+
+  await ctx.services.Ticket.updateTicketStatus({
+    userId: ctx.session.user.id,
+    ticketId: ticket.id,
+    statusId: TicketStatus.Performed,
+  });
+
   await sendManagersNotificationAboutPerformTicket({ ctx, ticket });
 };
 
 const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
-  await updateTicketStatus(ctx, ticket, TicketStatus.Completed);
+  if (!ticket.id) throw new Error("Ticket Id not found");
+
+  await ctx.services.Ticket.updateTicketStatus({
+    userId: ctx.session.user.id,
+    ticketId: ticket.id,
+    statusId: TicketStatus.Completed,
+  });
+
   await sendManagersNotificationAboutCompletedTicket({ ctx, ticket });
 };
 
@@ -239,15 +229,15 @@ const statusActions = {
   [TicketStatus.Completed]: deleteTicket,
 };
 
-export const ticketActionHandler = async (
+export const transferTicketHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
-  const { id } = sendTicketData.unpack(ctx.callbackQuery.data);
+  const { id } = transferTicketData.unpack(ctx.callbackQuery.data);
   const ticket = await ctx.services.Ticket.getUnique(id);
   try {
     await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
 
-    await ctx.editMessageText(UserText.SendTicket.STATUS_EDIT);
+    await ctx.editMessageText(UserText.TransferTicket.STATUS_EDIT);
   } catch (error) {
     ctx.logger.info(error);
   }
