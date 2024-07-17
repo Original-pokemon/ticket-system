@@ -42,6 +42,7 @@ export const BotText = {
     BLOCKED: "Вы заблокированы",
   },
 };
+
 type NotificationTextProperties = {
   title: string;
   petrolStation: string;
@@ -103,11 +104,14 @@ export const UserText = {
     PHOTO_CAPTION: "Прикрепленное фото",
     DELETE_PHOTO_BUTTON: "Удалить",
   },
-  TransferTicket: {
-    NEW_TICKET: (name: string) => `У вас новая заявка: ${name}`,
-    PERFORMED: (name: string) => `Задача ${name} взята в работу`,
-    STATUS_EDIT: "Статус задачи изменен",
-    COMPILED_TICKET: (name: string) => `Задача ${name} выполнена`,
+  Notification: {
+    NEW_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
+      `У вас новая заявка: ${title}.\nАЗС: ${petrolStation}`,
+    PERFORMED: ({ title, petrolStation }: NotificationTextProperties) =>
+      `Задача ${title} взята в работу. \nАЗС: ${petrolStation}`,
+    STATUS_EDIT: (name: string) => `Статус задачи: ${name} изменен.`,
+    COMPILED_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
+      `Задача ${title} выполнена. \nАЗС: ${petrolStation}`,
     WITHOUT_CATEGORY:
       "Вы не можете отправить заявку без категории и приоритета",
     SEEN_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>

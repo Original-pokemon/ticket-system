@@ -69,11 +69,19 @@ const sendManagersNotificationAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const { id: ticketId, title, status_id: status } = ticket;
+  const {
+    id: ticketId,
+    title,
+    status_id: status,
+    petrol_station_id: petrolStationId,
+  } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
+
+  const { user_name: userName } =
+    await ctx.services.User.getUnique(petrolStationId);
 
   const markup = createInlineKeyboard({ ticketId, status });
 
@@ -82,7 +90,7 @@ const sendManagersNotificationAboutNewTicket = async ({
       ctx,
       ticket,
     },
-    UserText.TransferTicket.NEW_TICKET(title),
+    UserText.Notification.NEW_TICKET({ title, petrolStation: userName }),
     markup,
   );
 };
@@ -93,18 +101,25 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
     ticket_priority: priorityId,
     status_id: status,
     id: ticketId,
+    petrol_station_id: petrolStationId,
     title,
   } = ticket;
 
   if (!categoryId || !priorityId) {
-    await ctx.reply(UserText.TransferTicket.WITHOUT_CATEGORY);
+    await ctx.reply(UserText.Notification.WITHOUT_CATEGORY);
     throw new Error("Category or Priority not found");
   }
+
+  const { user_name: userName } =
+    await ctx.services.User.getUnique(petrolStationId);
 
   const { task_performers: TaskPerformerIds } =
     await ctx.services.Category.getUnique(categoryId.toString());
 
-  const text = UserText.TransferTicket.NEW_TICKET(title);
+  const text = UserText.Notification.NEW_TICKET({
+    title,
+    petrolStation: userName,
+  });
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -130,11 +145,18 @@ const sendManagersNotificationAboutPerformTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const { id: ticketId, title, status_id: status } = ticket;
+  const {
+    id: ticketId,
+    title,
+    status_id: status,
+    petrol_station_id: petrolStationId,
+  } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
+  const { user_name: userName } =
+    await ctx.services.User.getUnique(petrolStationId);
 
   const markup = createInlineKeyboard({ ticketId, status });
 
@@ -143,7 +165,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
       ctx,
       ticket,
     },
-    UserText.TransferTicket.PERFORMED(title),
+    UserText.Notification.PERFORMED({ title, petrolStation: userName }),
     markup,
   );
 };
@@ -152,11 +174,19 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const { id: ticketId, title, status_id: status } = ticket;
+  const {
+    id: ticketId,
+    title,
+    status_id: status,
+    petrol_station_id: petrolStationId,
+  } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
+
+  const { user_name: userName } =
+    await ctx.services.User.getUnique(petrolStationId);
 
   const markup = createInlineKeyboard({ ticketId, status });
 
@@ -165,7 +195,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
       ctx,
       ticket,
     },
-    UserText.TransferTicket.COMPILED_TICKET(title),
+    UserText.Notification.COMPILED_TICKET({ title, petrolStation: userName }),
     markup,
   );
 };
@@ -249,7 +279,7 @@ export const transferTicketHandler = async (
   try {
     await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
 
-    await ctx.editMessageText(UserText.TransferTicket.STATUS_EDIT);
+    await ctx.editMessageText(UserText.Notification.STATUS_EDIT(ticket.title));
   } catch (error) {
     ctx.logger.info(error);
   }
