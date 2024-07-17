@@ -1,6 +1,6 @@
 import {
-  selectPetrolStationData,
   selectTicketData,
+  selectPetrolStationData,
 } from "#root/bot/callback-data/index.js";
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
@@ -41,13 +41,14 @@ export const createTicketsPerPetrolStationKeyboard = async (
 
   return InlineKeyboard.from(
     chunk(
-      tickets.map(({ title, id }) => {
+      tickets.map(({ title, id, status_id: status }) => {
         if (!id) throw new Error("Invalid ticket id");
 
         return {
           text: title,
           callback_data: selectTicketData.pack({
             id,
+            status,
           }),
         };
       }),

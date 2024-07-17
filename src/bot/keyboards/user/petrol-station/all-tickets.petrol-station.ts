@@ -16,13 +16,14 @@ export const createAllTicketsKeyboard = async (ctx: Context) => {
 
   return InlineKeyboard.from(
     chunk(
-      tickets.map(({ title, id }) => {
+      tickets.map(({ title, id, status_id: status }) => {
         if (!id) throw new Error("Invalid ticket id");
 
         return {
           text: title,
           callback_data: selectTicketData.pack({
             id,
+            status,
           }),
         };
       }),

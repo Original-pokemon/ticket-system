@@ -1,6 +1,6 @@
 import {
   selectConsiderPetrolStationData,
-  selectConsiderTicketData,
+  selectTicketData,
 } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 
@@ -59,7 +59,7 @@ export const createFilteredTicketsKeyboard = async (
 
           return {
             text: title,
-            callback_data: selectConsiderTicketData.pack({
+            callback_data: selectTicketData.pack({
               id,
               status,
             }),

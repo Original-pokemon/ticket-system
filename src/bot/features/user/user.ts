@@ -6,12 +6,10 @@ import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   selectTicketData,
   selectConsiderPetrolStationData,
-  selectConsiderTicketData,
   sendTicketData,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
-  showFilteredTicketHandler,
   showTicketsFilteredHandler,
   viewPetrolStationsFilteredHandler,
   ticketActionHandler,

@@ -1,4 +1,3 @@
-export * from "../filtered-tickets/select-ticket.js";
 export * from "../filtered-tickets/view-petrol-stations.js";
 export * from "../filtered-tickets/view-tickets.js";
 export * from "./view-all-tickets/view-petrol-stations.js";
