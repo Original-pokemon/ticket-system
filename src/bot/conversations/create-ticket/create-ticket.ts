@@ -9,7 +9,7 @@ import {
 } from "#root/bot/keyboards/index.js";
 import { UserText, TicketStatus } from "#root/bot/const/index.js";
 import { isManager } from "#root/bot/filters/index.js";
-import { getPetrolStation, getCategory, getPriority } from "./index.js";
+import { getPetrolStation, getCategory } from "./index.js";
 
 export const CREATE_TICKET_CONVERSATION = "create-ticket";
 export const createTicketConversation = (container: Container) =>
@@ -48,12 +48,8 @@ export const createTicketConversation = (container: Container) =>
       ? getCategory(conversationProperties)
       : [undefined, ctx]);
 
-    const [priority, priorityCtx] = await (isManagerUser
-      ? getPriority({ ...conversationProperties, ctx: categoryCtx })
-      : [undefined, ctx]);
-
     if (isManagerUser) {
-      await priorityCtx.deleteMessage();
+      await categoryCtx.deleteMessage();
     }
 
     const [photoUrs, photosCtx] = await getPhotos({
@@ -67,7 +63,6 @@ export const createTicketConversation = (container: Container) =>
       description,
       attachments: photoUrs,
       ticket_category: category,
-      ticket_priority: priority,
       status_id: isManagerUser
         ? TicketStatus.ReviewedManager
         : TicketStatus.Created,

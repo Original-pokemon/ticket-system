@@ -98,16 +98,15 @@ const sendManagersNotificationAboutNewTicket = async ({
 const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   const {
     ticket_category: categoryId,
-    ticket_priority: priorityId,
     status_id: status,
     id: ticketId,
     petrol_station_id: petrolStationId,
     title,
   } = ticket;
 
-  if (!categoryId || !priorityId) {
+  if (!categoryId) {
     await ctx.reply(UserText.Notification.WITHOUT_CATEGORY);
-    throw new Error("Category or Priority not found");
+    throw new Error("Category not found");
   }
 
   const { user_name: userName } =

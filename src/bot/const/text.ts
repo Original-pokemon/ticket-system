@@ -73,7 +73,6 @@ export const UserText = {
     TITLE: "<i>Заголовок</i>",
     NUMBER: "<i>Объект</i>",
     CATEGORY: "<i>Категория</i>",
-    PRIORITY: "<i>Приоритет</i>",
     STATUS: "<i>Статус</i>",
     DESCRIPTION: "<i>Описание</i>",
   },
