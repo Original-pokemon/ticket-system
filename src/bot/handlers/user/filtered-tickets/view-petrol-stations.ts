@@ -13,9 +13,12 @@ type HearsTextType =
   | TaskPerformerButtons.TicketsForPerformance;
 
 const Status = {
-  [ManagerButtons.ConsiderTickets]: TicketStatus.ReviewedManager,
-  [TaskPerformerButtons.ConsiderTickets]: TicketStatus.ReviewedTaskPerformer,
-  [TaskPerformerButtons.TicketsForPerformance]: TicketStatus.Performed,
+  [ManagerButtons.ConsiderTickets]: [TicketStatus.ReviewedManager],
+  [TaskPerformerButtons.ConsiderTickets]: [
+    TicketStatus.SeenTaskPerformer,
+    TicketStatus.ReviewedTaskPerformer,
+  ],
+  [TaskPerformerButtons.TicketsForPerformance]: [TicketStatus.Performed],
 };
 
 export const viewPetrolStationsFilteredHandler = async (ctx: Context) => {
@@ -25,6 +28,9 @@ export const viewPetrolStationsFilteredHandler = async (ctx: Context) => {
 
   const status = Status[ctx.message?.text as HearsTextType];
 
+  if (!status) {
+    throw new Error("Status not found");
+  }
   await ctx.reply(UserText.Consider.PETROL_STATIONS, {
     reply_markup: await createFilteredPetrolStationsKeyboard(ctx, status),
   });

@@ -40,7 +40,7 @@ const getTickets = {
 
 export const createFilteredPetrolStationsKeyboard = async (
   ctx: Context,
-  status: TicketStatus,
+  statuses: TicketStatus[],
 ) => {
   const { services, session } = ctx;
   const {
@@ -57,10 +57,11 @@ export const createFilteredPetrolStationsKeyboard = async (
   });
 
   const petrolStations = tickets
-    .filter((ticket) => ticket.status_id === status)
+    .filter((ticket) => statuses.includes(ticket.status_id as TicketStatus))
     .map((ticket) => ticket.petrol_station_id);
 
-  const users = await services.User.getSelect(petrolStations || []);
+  const uniqueStations = [...new Set(petrolStations)];
+  const users = await services.User.getSelect(uniqueStations || []);
 
   return InlineKeyboard.from(
     chunk(
@@ -68,7 +69,7 @@ export const createFilteredPetrolStationsKeyboard = async (
         text: userName,
         callback_data: selectConsiderPetrolStationData.pack({
           id,
-          status,
+          statuses: statuses.join(","),
         }),
       })),
       2,

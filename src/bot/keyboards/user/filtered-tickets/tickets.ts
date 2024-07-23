@@ -6,13 +6,24 @@ import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
+import { ServicesType } from "#root/container.js";
 import { TicketType } from "#root/services/index.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
-const filterPerStatus = (tickets: TicketType[], status: TicketStatus) => {
-  return tickets.filter((ticket) => ticket.status_id === status);
+const filterPerStatus = (tickets: TicketType[], statuses: TicketStatus[]) => {
+  return tickets.filter((ticket) =>
+    statuses.includes(ticket.status_id as TicketStatus),
+  );
 };
 
+const filterPerPetrolStation = (tickets: TicketType[], stationId: string) => {
+  return tickets.filter((ticket) => ticket.petrol_station_id === stationId);
+};
+
+async function fetchTickets(service: ServicesType, ids: string[]) {
+  if (ids.length === 0) return [];
+  return service.Ticket.getSelect(ids);
+}
 export const createFilteredTicketsKeyboard = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
@@ -25,36 +36,33 @@ export const createFilteredTicketsKeyboard = async (
     logger,
   } = ctx;
 
-  const { id: stationId, status } =
+  const { id: stationId, statuses: statusesString } =
     selectConsiderPetrolStationData.unpack(data);
 
+  const statuses = statusesString.split(",") as TicketStatus[];
   try {
-    const { tickets: ticketIds } =
-      await services.PetrolStation.getUnique(stationId);
-
-    let filteredTickets;
+    let ticketIds: string[] = [];
 
     if (userGroup === UserGroup.Manager) {
-      const tickets = await services.Ticket.getSelect(ticketIds || []);
-      filteredTickets = filterPerStatus(tickets, status as TicketStatus);
+      const { tickets } = await services.PetrolStation.getUnique(stationId);
+      ticketIds = tickets || [];
+    } else if (userGroup === UserGroup.TaskPerformer) {
+      // tikckets are not filtered by specific filling station
+      const { tickets } = await services.TaskPerformer.getUnique(userId);
+      ticketIds = tickets || [];
     }
 
-    if (userGroup === UserGroup.TaskPerformer) {
-      const { tickets: ticketsPerTaskPerformer } =
-        await services.TaskPerformer.getUnique(userId);
-
-      const tickets = await services.Ticket.getSelect(
-        ticketsPerTaskPerformer || [],
-      );
-
-      filteredTickets = filterPerStatus(tickets, status as TicketStatus);
-    }
+    const tickets = await fetchTickets(services, ticketIds);
+    const filteredTickets = filterPerStatus(
+      filterPerPetrolStation(tickets, stationId),
+      statuses,
+    );
 
     if (!filteredTickets) throw new Error("No tickets found");
 
     return InlineKeyboard.from(
       chunk(
-        filteredTickets.map(({ title, id }) => {
+        filteredTickets.map(({ title, id, status_id: status }) => {
           if (!id) throw new Error("Invalid ticket id");
 
           return {
