@@ -39,7 +39,7 @@ export class TicketService extends BaseService<TicketType> {
   }) => {
     const ticket = await this.getUnique(ticketId);
 
-    await this.update({
+    const updatedTicket = await this.update({
       ...ticket,
       status_id: statusId,
       status_history: [
@@ -49,5 +49,7 @@ export class TicketService extends BaseService<TicketType> {
         },
       ],
     });
+
+    return updatedTicket;
   };
 }

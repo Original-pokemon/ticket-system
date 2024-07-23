@@ -205,23 +205,23 @@ const deleteTicket = async () => {};
 const actionForCreatedTicket = async ({ ctx, ticket }: Properties) => {
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  await ctx.services.Ticket.updateTicketStatus({
+  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
     userId: ctx.session.user.id,
     ticketId: ticket.id,
     statusId: TicketStatus.ReviewedManager,
   });
-  await sendManagersNotificationAboutNewTicket({ ctx, ticket });
+  await sendManagersNotificationAboutNewTicket({ ctx, ticket: updatedTicket });
 };
 
 const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  await ctx.services.Ticket.updateTicketStatus({
+  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
     userId: ctx.session.user.id,
     ticketId: ticket.id,
     statusId: TicketStatus.ReviewedTaskPerformer,
   });
-  await sendTaskPerformers({ ctx, ticket });
+  await sendTaskPerformers({ ctx, ticket: updatedTicket }); // я отправляю задачу со старым статусом
   await sendAdmins({ ctx, ticket });
 };
 
@@ -236,25 +236,36 @@ const actionForReviewedTaskPerformerTicket = async () => {
 const actionForSeenTaskPerformer = async ({ ctx, ticket }: Properties) => {
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  await ctx.services.Ticket.updateTicketStatus({
-    userId: ctx.session.user.id,
-    ticketId: ticket.id,
-    statusId: TicketStatus.Performed,
+  const updatedTicket = await ctx.services.Ticket.update({
+    ...ticket,
+    status_id: TicketStatus.Performed,
+    status_history: [
+      {
+        user_id: ctx.session.user.id,
+        ticket_status: TicketStatus.Performed,
+      },
+    ],
   });
 
-  await sendManagersNotificationAboutPerformTicket({ ctx, ticket });
+  await sendManagersNotificationAboutPerformTicket({
+    ctx,
+    ticket: updatedTicket,
+  });
 };
 
 const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  await ctx.services.Ticket.updateTicketStatus({
+  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
     userId: ctx.session.user.id,
     ticketId: ticket.id,
     statusId: TicketStatus.Completed,
   });
 
-  await sendManagersNotificationAboutCompletedTicket({ ctx, ticket });
+  await sendManagersNotificationAboutCompletedTicket({
+    ctx,
+    ticket: updatedTicket,
+  });
 };
 
 // логика обновления статуса тикета для передачи задачи по конвееру
