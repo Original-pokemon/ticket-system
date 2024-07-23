@@ -108,7 +108,10 @@ export const showTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
     inlineKeyboard,
   });
 
-  if (userGroup === UserGroup.TaskPerformer) {
+  if (
+    userGroup === UserGroup.TaskPerformer &&
+    status === TicketStatus.ReviewedTaskPerformer
+  ) {
     await handleTaskPerformerView({
       ctx,
       ticketId,
