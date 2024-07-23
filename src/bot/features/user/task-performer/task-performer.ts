@@ -6,11 +6,14 @@ import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   retrieveTicketData,
   performedTicketData,
+  showCalendarData,
 } from "#root/bot/callback-data/index.js";
 import {
   retrieveTicketHandler,
   viewPetrolStationsFilteredHandler,
   takeTicketHandler,
+  showCalendarHandler,
+  getDeadlineHandler,
 } from "#root/bot/handlers/index.js";
 import { TaskPerformerButtons } from "#root/bot/const/index.js";
 
@@ -37,6 +40,20 @@ feature.callbackQuery(
   logHandle("callback-performed-ticket"),
   chatAction("typing"),
   takeTicketHandler,
+);
+
+feature.callbackQuery(
+  showCalendarData.filter(),
+  logHandle("callback-calendar"),
+  chatAction("typing"),
+  showCalendarHandler,
+);
+
+feature.callbackQuery(
+  /n_./,
+  logHandle("on-message"),
+  chatAction("typing"),
+  getDeadlineHandler,
 );
 
 export { composer as taskPerformerFeature };

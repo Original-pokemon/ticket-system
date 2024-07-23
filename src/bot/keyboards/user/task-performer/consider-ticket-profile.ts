@@ -1,5 +1,8 @@
-import { retrieveTicketData } from "#root/bot/callback-data/index.js";
-import { transferTicketData } from "#root/bot/callback-data/user/ticket/transfer-ticket.user.js";
+import {
+  retrieveTicketData,
+  showCalendarData,
+} from "#root/bot/callback-data/index.js";
+
 import { UserText } from "#root/bot/const/index.js";
 import { InlineKeyboard } from "grammy";
 
@@ -8,7 +11,7 @@ export const considerTicketProfilePanelTaskPerformer = (id: string) =>
     [
       {
         text: UserText.TicketProfilePanel.ACCEPT_TEXT,
-        callback_data: transferTicketData.pack({ id }),
+        callback_data: showCalendarData.pack({ ticketId: id }),
       },
       {
         text: UserText.TicketProfilePanel.RETRIEVE_TEXT,

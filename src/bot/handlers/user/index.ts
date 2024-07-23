@@ -7,4 +7,6 @@ export * from "./view-comments.js";
 export * from "./view-ticket-profile.js";
 export * from "./task-performer/retrieve-ticket.js";
 export * from "./task-performer/take-ticket.js";
+export * from "./task-performer/show-calendar.js";
+export * from "./task-performer/get-deadline.js";
 export * from "./petrol-station/view-all-tickets.js";

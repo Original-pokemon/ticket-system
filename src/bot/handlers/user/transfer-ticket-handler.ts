@@ -7,6 +7,7 @@ import {
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 import { TicketType } from "#root/services/index.js";
 import { sendManagers } from "#root/bot/helpers/index.js";
+import formatDateString from "#root/bot/helpers/format-date.js";
 import { createPhotosGroup, getTicketProfileData } from "./index.js";
 
 type Properties = {
@@ -149,11 +150,17 @@ const sendManagersNotificationAboutPerformTicket = async ({
     title,
     status_id: status,
     petrol_station_id: petrolStationId,
+    deadline,
   } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
+
+  if (!deadline) {
+    throw new Error("Deadline not found");
+  }
+
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
@@ -164,7 +171,11 @@ const sendManagersNotificationAboutPerformTicket = async ({
       ctx,
       ticket,
     },
-    UserText.Notification.PERFORMED({ title, petrolStation: userName }),
+    UserText.Notification.PERFORMED({
+      title,
+      petrolStation: userName,
+      deadline: formatDateString(deadline),
+    }),
     markup,
   );
 };
@@ -228,15 +239,23 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
   Т.к данный статус меняется при просмотре задачи на seenTaskPerformer в handlers\user\select-ticket.ts
   Никакой преедачи не производится
 */
-const actionForReviewedTaskPerformerTicket = async () => {
+const actionForReviewedTaskPerformerTicket = async ({ ctx }: Properties) => {
+  await ctx.deleteMessage();
+
   throw new Error("Not implemented");
 };
 
 const actionForSeenTaskPerformer = async ({ ctx, ticket }: Properties) => {
+  const { deadline } = ctx.session.customData;
   if (!ticket.id) throw new Error("Ticket Id not found");
+
+  if (!deadline) {
+    throw new Error("Deadline not found");
+  }
 
   const updatedTicket = await ctx.services.Ticket.update({
     ...ticket,
+    deadline,
     status_id: TicketStatus.Performed,
     status_history: [
       {

@@ -1,3 +1,5 @@
+import formatDateString from "../helpers/format-date.js";
+
 export const AdminText = {
   FindUser: {
     TEXT: "Введите ID пользователя",
@@ -73,6 +75,7 @@ export const UserText = {
     TITLE: "<i>Заголовок</i>",
     NUMBER: "<i>Объект</i>",
     CATEGORY: "<i>Категория</i>",
+    DEADLINE: "<i>Дата исполнения</i>",
     STATUS: "<i>Статус</i>",
     DESCRIPTION: "<i>Описание</i>",
   },
@@ -105,16 +108,21 @@ export const UserText = {
   },
   Notification: {
     NEW_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
-      `У вас новая заявка: ${title}.\nАЗС: ${petrolStation}`,
-    PERFORMED: ({ title, petrolStation }: NotificationTextProperties) =>
-      `Задача ${title} взята в работу. \nАЗС: ${petrolStation}`,
-    STATUS_EDIT: (name: string) => `Статус задачи: ${name} изменен.`,
+      `У вас новая заявка: ${title}.\nОбъект: ${petrolStation}`,
+    PERFORMED: ({
+      title,
+      petrolStation,
+      deadline,
+    }: NotificationTextProperties & { deadline: string }) =>
+      `Задача: "${title}" взята в работу. \nОбъект: ${petrolStation}\nСрок выполнения: ${formatDateString(
+        deadline,
+      )}`,
+    STATUS_EDIT: (name: string) => `Статус задачи: "${name}" изменен.`,
     COMPILED_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
-      `Задача ${title} выполнена. \nАЗС: ${petrolStation}`,
-    WITHOUT_CATEGORY:
-      "Вы не можете отправить заявку без категории и приоритета",
+      `Задача: "${title}" выполнена. \nОбъект: ${petrolStation}`,
+    WITHOUT_CATEGORY: "Вы не можете отправить заявку без категории",
     SEEN_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
-      `Заявка ${title} просмотрена. \nАЗС ${petrolStation}`,
+      `Заявка: "${title}" просмотрена. \nОбъект: ${petrolStation}`,
   },
   ViewComment: {
     USER: "<i>Пользователь</i>",

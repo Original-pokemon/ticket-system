@@ -2,6 +2,7 @@ import { ServicesType } from "#root/container.js";
 import type { Logger } from "#root/logger.js";
 import { UserType } from "#root/services/user/user-service.js";
 import { type Api, Context as DefaultContext, SessionFlavor } from "grammy";
+import { Calendar } from "telegram-inline-calendar";
 
 import type { AutoChatActionFlavor } from "@grammyjs/auto-chat-action";
 import { ConversationFlavor } from "@grammyjs/conversations";
@@ -20,6 +21,7 @@ export type SessionData = {
 type ExtendedContextFlavor = {
   logger: Logger;
   services: ServicesType;
+  calendar: Calendar;
 };
 
 export type Context = ParseModeFlavor<
@@ -45,6 +47,8 @@ export function createContextConstructor({ logger, services }: Dependencies) {
 
     services: ServicesType;
 
+    calendar: Calendar;
+
     constructor(update: Update, api: Api, me: UserFromGetMe) {
       super(update, api, me);
       Object.defineProperty(this, "logger", {
@@ -55,10 +59,24 @@ export function createContextConstructor({ logger, services }: Dependencies) {
         writable: true,
       });
 
+      Object.defineProperty(this, "calendar", {
+        writable: true,
+      });
+
       this.services = services;
 
       this.logger = logger.child({
         update_id: this.update.update_id,
+      });
+
+      this.calendar = new Calendar(this.api, {
+        date_format: "DD-MM-YYYY",
+        start_date: new Date(),
+        stop_date: new Date(new Date().getFullYear() + 1, 11, 31),
+        initialDate: new Date(),
+        language: "ru",
+        bot_api: "grammy",
+        custom_start_msg: "📅 Выберите крайнюю дату выполнения задачи",
       });
     }
   } as unknown as new (update: Update, api: Api, me: UserFromGetMe) => Context;

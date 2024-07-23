@@ -7,4 +7,5 @@ export * from "./save-photos.js";
 export * from "./manager/index.js";
 export * from "./task-performer/performed-ticket.js";
 export * from "./task-performer/retrieve-ticket.js";
+export * from "./task-performer/show-calendar.js";
 export * from "./show-petrol-stations.js";

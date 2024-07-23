@@ -31,6 +31,7 @@
     "axios": "1.5.1",
     "axios-retry": "3.8.0",
     "callback-data": "1.1.1",
+    "dayjs": "^1.11.12",
     "dotenv": "16.3.1",
     "fastify": "4.23.2",
     "grammy": "1.18.1",
@@ -40,6 +41,7 @@
     "pg": "8.11.3",
     "pino": "8.15.1",
     "pino-pretty": "10.2.0",
+    "telegram-inline-calendar": "^2.1.0",
     "tsx": "3.12.10",
     "zod": "3.22.2"
   },
