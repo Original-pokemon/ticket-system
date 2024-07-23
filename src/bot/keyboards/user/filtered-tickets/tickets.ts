@@ -1,7 +1,9 @@
 import {
   selectConsiderPetrolStationData,
   selectTicketData,
+  showPetrolStationsData,
 } from "#root/bot/callback-data/index.js";
+
 import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 
 import { Context } from "#root/bot/context.js";
@@ -60,7 +62,7 @@ export const createFilteredTicketsKeyboard = async (
 
     if (!filteredTickets) throw new Error("No tickets found");
 
-    return InlineKeyboard.from(
+    const keyboardRows = InlineKeyboard.from(
       chunk(
         filteredTickets.map(({ title, id, status_id: status }) => {
           if (!id) throw new Error("Invalid ticket id");
@@ -73,9 +75,16 @@ export const createFilteredTicketsKeyboard = async (
             }),
           };
         }),
-        1,
+        2,
       ),
     );
+
+    keyboardRows.row().add({
+      text: "Назад",
+      callback_data: showPetrolStationsData.pack({ status: statusesString }),
+    });
+
+    return keyboardRows;
   } catch (error) {
     logger.error(`Failed to create filtered tickets keyboard: ${error}`);
     throw error;

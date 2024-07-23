@@ -7,6 +7,7 @@ import {
   selectTicketData,
   selectConsiderPetrolStationData,
   transferTicketData,
+  showPetrolStationsData,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
@@ -22,6 +23,7 @@ import {
 } from "#root/bot/const/index.js";
 import { isAuthUser } from "#root/bot/filters/is-user.js";
 import { isAdmin } from "#root/bot/filters/is-bot-admin.js";
+
 import { managerFeature } from "./manager/manager.js";
 import { taskPerformerFeature } from "./task-performer/task-performer.js";
 import { petrolStationFeature } from "./petrol-station/petrol-station.js";
@@ -55,6 +57,13 @@ feature.callbackQuery(
 feature.hears(
   [ManagerButtons.ConsiderTickets, TaskPerformerButtons.ConsiderTickets],
   logHandle("hears-consider-tickets"),
+  chatAction("typing"),
+  viewPetrolStationsFilteredHandler,
+);
+
+feature.callbackQuery(
+  showPetrolStationsData.filter(),
+  logHandle("callbackQuery-show-petrol-stations"),
   chatAction("typing"),
   viewPetrolStationsFilteredHandler,
 );
