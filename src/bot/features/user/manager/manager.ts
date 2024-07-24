@@ -9,11 +9,13 @@ import {
   viewPetrolStationsHandler,
   deleteTicketHandler,
   editTicketHandler,
+  withdrawTicketHandler,
 } from "#root/bot/handlers/index.js";
 import {
   selectPetrolStationData,
   editTicketData,
   deleteTicketData,
+  withdrawTicketData,
 } from "#root/bot/callback-data/index.js";
 
 const composer = new Composer<Context>();
@@ -46,6 +48,13 @@ feature.callbackQuery(
   logHandle("callbackQuery-delete-ticket"),
   chatAction("typing"),
   deleteTicketHandler,
+);
+
+feature.callbackQuery(
+  withdrawTicketData.filter(),
+  logHandle("callbackQuery-withdraw-ticket"),
+  chatAction("typing"),
+  withdrawTicketHandler,
 );
 
 export { composer as managerFeature };

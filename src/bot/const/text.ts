@@ -121,6 +121,8 @@ export const UserText = {
       `Заявка: "${title}" просмотрена. \nОбъект: ${petrolStation}`,
     COMPLIED: ({ title, petrolStation }: NotificationTextProperties) =>
       `Задача ${title} выполнена\nОбъект: ${petrolStation}`,
+    WITHDRAW: ({ title, petrolStation }: NotificationTextProperties) =>
+      `Заявка ${title} отклонена\nОбъект: ${petrolStation}`,
   },
   ViewComment: {
     USER: "<i>Пользователь</i>",

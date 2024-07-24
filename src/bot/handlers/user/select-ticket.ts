@@ -5,6 +5,7 @@ import {
   considerTicketProfilePanelTaskPerformer,
   performedTicketProfileTaskPerformer,
   createReviewTaskCompletionKeyboard,
+  createWithdrawTicketKeyboard,
 } from "#root/bot/keyboards/index.js";
 import { selectTicketData } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
@@ -66,9 +67,12 @@ const ManagerStatus = {
   [TicketStatus.Created]: () => new InlineKeyboard(),
   [TicketStatus.ReviewedManager]: (ticketId: string) =>
     ticketProfilePanelManager(ticketId),
-  [TicketStatus.ReviewedTaskPerformer]: () => new InlineKeyboard(),
-  [TicketStatus.SeenTaskPerformer]: () => new InlineKeyboard(),
-  [TicketStatus.Performed]: () => new InlineKeyboard(),
+  [TicketStatus.ReviewedTaskPerformer]: (ticketId: string) =>
+    createWithdrawTicketKeyboard(ticketId),
+  [TicketStatus.SeenTaskPerformer]: (ticketId: string) =>
+    createWithdrawTicketKeyboard(ticketId),
+  [TicketStatus.Performed]: (ticketId: string) =>
+    createWithdrawTicketKeyboard(ticketId),
   [TicketStatus.WaitingConfirmation]: (ticketId: string) =>
     createReviewTaskCompletionKeyboard(ticketId),
   [TicketStatus.Completed]: () => new InlineKeyboard(),
