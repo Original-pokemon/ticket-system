@@ -8,3 +8,4 @@ export * from "./petrol-stations.js";
 export * from "./priorities.manager.js";
 export * from "./ticket-profile-panel.js";
 export * from "./edit-ticket-panel.js";
+export * from "./review-task-completion.js";

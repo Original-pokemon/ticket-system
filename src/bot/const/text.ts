@@ -1,5 +1,3 @@
-import formatDateString from "../helpers/format-date.js";
-
 export const AdminText = {
   FindUser: {
     TEXT: "Введите ID пользователя",
@@ -114,15 +112,15 @@ export const UserText = {
       petrolStation,
       deadline,
     }: NotificationTextProperties & { deadline: string }) =>
-      `Задача: "${title}" взята в работу. \nОбъект: ${petrolStation}\nСрок выполнения: ${formatDateString(
-        deadline,
-      )}`,
+      `Задача: "${title}" взята в работу. \nОбъект: ${petrolStation}\nСрок выполнения: ${deadline}`,
     STATUS_EDIT: (name: string) => `Статус задачи: "${name}" изменен.`,
-    COMPILED_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
-      `Задача: "${title}" выполнена. \nОбъект: ${petrolStation}`,
+    WAITING_CONFIRM: ({ title, petrolStation }: NotificationTextProperties) =>
+      `Задача: "${title}" выполнена. \nОбъект: ${petrolStation}\nПожалуйста подтвердите выполнение задачи`,
     WITHOUT_CATEGORY: "Вы не можете отправить заявку без категории",
     SEEN_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
       `Заявка: "${title}" просмотрена. \nОбъект: ${petrolStation}`,
+    COMPLIED: ({ title, petrolStation }: NotificationTextProperties) =>
+      `Задача ${title} выполнена\nОбъект: ${petrolStation}`,
   },
   ViewComment: {
     USER: "<i>Пользователь</i>",

@@ -4,11 +4,13 @@ import {
   ticketProfilePanelManager,
   considerTicketProfilePanelTaskPerformer,
   performedTicketProfileTaskPerformer,
+  createReviewTaskCompletionKeyboard,
 } from "#root/bot/keyboards/index.js";
 import { selectTicketData } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 
 import { sendManagers } from "#root/bot/helpers/index.js";
+
 import { viewTicketProfile } from "./view-ticket-profile.js";
 
 const handleTaskPerformerView = async ({
@@ -54,6 +56,9 @@ const TaskPerformerStatus = {
     considerTicketProfilePanelTaskPerformer(ticketId),
   [TicketStatus.Performed]: (ticketId: string) =>
     performedTicketProfileTaskPerformer(ticketId),
+  [TicketStatus.WaitingConfirmation]: () => {
+    throw new Error("unsupported ticket status");
+  },
   [TicketStatus.Completed]: () => new InlineKeyboard(),
 };
 
@@ -64,6 +69,8 @@ const ManagerStatus = {
   [TicketStatus.ReviewedTaskPerformer]: () => new InlineKeyboard(),
   [TicketStatus.SeenTaskPerformer]: () => new InlineKeyboard(),
   [TicketStatus.Performed]: () => new InlineKeyboard(),
+  [TicketStatus.WaitingConfirmation]: (ticketId: string) =>
+    createReviewTaskCompletionKeyboard(ticketId),
   [TicketStatus.Completed]: () => new InlineKeyboard(),
 };
 
@@ -73,6 +80,7 @@ const PetrolStationStatus = {
   [TicketStatus.ReviewedTaskPerformer]: () => new InlineKeyboard(),
   [TicketStatus.SeenTaskPerformer]: () => new InlineKeyboard(),
   [TicketStatus.Performed]: () => new InlineKeyboard(),
+  [TicketStatus.WaitingConfirmation]: () => new InlineKeyboard(),
   [TicketStatus.Completed]: () => new InlineKeyboard(),
 };
 

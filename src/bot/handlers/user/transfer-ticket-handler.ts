@@ -1,35 +1,16 @@
 import { Context } from "#root/bot/context.js";
-import { CallbackQueryContext, InlineKeyboard } from "grammy";
-import {
-  selectTicketData,
-  transferTicketData,
-} from "#root/bot/callback-data/index.js";
+import { CallbackQueryContext } from "grammy";
+import { transferTicketData } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 import { TicketType } from "#root/services/index.js";
-import { sendManagers } from "#root/bot/helpers/index.js";
+import { sendManagers, sendTaskPerformers } from "#root/bot/helpers/index.js";
 import formatDateString from "#root/bot/helpers/format-date.js";
+import { createTicketNotificationKeyboard } from "#root/bot/keyboards/index.js";
 import { createPhotosGroup, getTicketProfileData } from "./index.js";
 
 type Properties = {
   ctx: Context;
   ticket: TicketType;
-};
-
-const createInlineKeyboard = ({
-  ticketId,
-  status,
-}: {
-  ticketId: string;
-  status: string;
-}) => {
-  return InlineKeyboard.from([
-    [
-      {
-        text: "Посмотреть заявку",
-        callback_data: selectTicketData.pack({ id: ticketId, status }),
-      },
-    ],
-  ]);
 };
 
 const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
@@ -84,7 +65,7 @@ const sendManagersNotificationAboutNewTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createInlineKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId, status });
 
   await sendManagers(
     {
@@ -96,7 +77,10 @@ const sendManagersNotificationAboutNewTicket = async ({
   );
 };
 
-const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
+const sendTaskPerformersAboutNewTicket = async ({
+  ctx,
+  ticket,
+}: Properties) => {
   const {
     ticket_category: categoryId,
     status_id: status,
@@ -113,9 +97,6 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const { task_performers: TaskPerformerIds } =
-    await ctx.services.Category.getUnique(categoryId.toString());
-
   const text = UserText.Notification.NEW_TICKET({
     title,
     petrolStation: userName,
@@ -124,21 +105,9 @@ const sendTaskPerformers = async ({ ctx, ticket }: Properties) => {
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
-  const markup = createInlineKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId, status });
 
-  const promises = TaskPerformerIds.map(async (taskPerformerId) => {
-    try {
-      await ctx.api.sendMessage(taskPerformerId, text, {
-        reply_markup: markup,
-      });
-    } catch (error) {
-      ctx.logger.error(
-        `Failed to send message to task performer ${taskPerformerId}: ${error}`,
-      );
-    }
-  });
-
-  await Promise.all(promises);
+  sendTaskPerformers({ ctx, ticket }, text, markup);
 };
 
 const sendManagersNotificationAboutPerformTicket = async ({
@@ -164,7 +133,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createInlineKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId, status });
 
   await sendManagers(
     {
@@ -198,14 +167,44 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createInlineKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId, status });
 
   await sendManagers(
     {
       ctx,
       ticket,
     },
-    UserText.Notification.COMPILED_TICKET({ title, petrolStation: userName }),
+    UserText.Notification.WAITING_CONFIRM({ title, petrolStation: userName }),
+    markup,
+  );
+};
+
+const sendTaskPerformersNotificationAboutCompletedTicket = async ({
+  ctx,
+  ticket,
+}: Properties) => {
+  const {
+    id: ticketId,
+    title,
+    status_id: status,
+    petrol_station_id: petrolStationId,
+  } = ticket;
+
+  if (!ticketId) {
+    throw new Error("Ticket Id not found");
+  }
+
+  const { user_name: userName } =
+    await ctx.services.User.getUnique(petrolStationId);
+
+  const markup = createTicketNotificationKeyboard({ ticketId, status });
+
+  await sendTaskPerformers(
+    {
+      ctx,
+      ticket,
+    },
+    UserText.Notification.COMPLIED({ title, petrolStation: userName }),
     markup,
   );
 };
@@ -231,7 +230,7 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
     ticketId: ticket.id,
     statusId: TicketStatus.ReviewedTaskPerformer,
   });
-  await sendTaskPerformers({ ctx, ticket: updatedTicket }); // я отправляю задачу со старым статусом
+  await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket }); // я отправляю задачу со старым статусом
   await sendAdmins({ ctx, ticket });
 };
 
@@ -255,7 +254,7 @@ const actionForSeenTaskPerformer = async ({ ctx, ticket }: Properties) => {
 
   const updatedTicket = await ctx.services.Ticket.update({
     ...ticket,
-    deadline,
+    deadline: new Date(deadline).toISOString(),
     status_id: TicketStatus.Performed,
     status_history: [
       {
@@ -277,10 +276,25 @@ const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
   const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
     userId: ctx.session.user.id,
     ticketId: ticket.id,
-    statusId: TicketStatus.Completed,
+    statusId: TicketStatus.WaitingConfirmation,
   });
 
   await sendManagersNotificationAboutCompletedTicket({
+    ctx,
+    ticket: updatedTicket,
+  });
+};
+
+const actionForConfirmTask = async ({ ctx, ticket }: Properties) => {
+  if (!ticket.id) throw new Error("Ticket Id not found");
+
+  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+    userId: ctx.session.user.id,
+    ticketId: ticket.id,
+    statusId: TicketStatus.Completed,
+  });
+
+  await sendTaskPerformersNotificationAboutCompletedTicket({
     ctx,
     ticket: updatedTicket,
   });
@@ -293,6 +307,7 @@ const statusActions = {
   [TicketStatus.ReviewedTaskPerformer]: actionForReviewedTaskPerformerTicket,
   [TicketStatus.SeenTaskPerformer]: actionForSeenTaskPerformer,
   [TicketStatus.Performed]: actionForPerformedTicket,
+  [TicketStatus.WaitingConfirmation]: actionForConfirmTask,
   [TicketStatus.Completed]: deleteTicket,
 };
 
