@@ -4,7 +4,7 @@ export const AdminText = {
     NOT_FOUND: "Пользователь не найден",
   },
   Admin: {
-    USERS: "Выберете нужного пользователя",
+    USERS: "Выберите нужного пользователя",
     BUSHES: "Выберите куст пользователя",
     EDIT_USER_NAME:
       "Измените имя.\nОно должно соотвествовать инициалам (Петровкин Петр Петрович) или номеру АЗС (АЗС №0000)",
@@ -122,7 +122,7 @@ export const UserText = {
     COMPLIED: ({ title, petrolStation }: NotificationTextProperties) =>
       `Задача ${title} выполнена\nОбъект: ${petrolStation}`,
     WITHDRAW: ({ title, petrolStation }: NotificationTextProperties) =>
-      `Заявка ${title} отклонена\nОбъект: ${petrolStation}`,
+      `Заявка ${title} отозвана\nОбъект: ${petrolStation}`,
   },
   ViewComment: {
     USER: "<i>Пользователь</i>",
