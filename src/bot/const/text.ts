@@ -72,6 +72,7 @@ export const UserText = {
     TICKET_TITLE: "<b>Профиль задачи:</b>",
     TITLE: "<i>Заголовок</i>",
     NUMBER: "<i>Объект</i>",
+    MANAGER: "<i>Контыкты менеджера</i>",
     CATEGORY: "<i>Категория</i>",
     DEADLINE: "<i>Дата исполнения</i>",
     STATUS: "<i>Статус</i>",
