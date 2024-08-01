@@ -1,7 +1,6 @@
 import { selectConsiderPetrolStationData } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
-import { isManager, isTaskPerformer } from "#root/bot/filters/index.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { ServicesType } from "#root/container.js";
 import { InlineKeyboard } from "grammy";
@@ -47,11 +46,11 @@ export const createFilteredPetrolStationsKeyboard = async (
     user: { id: userId, user_group: userGroup },
   } = session;
 
-  if (!isManager(userGroup) && !isTaskPerformer(userGroup)) {
+  if (!(userGroup in getTickets)) {
     throw new Error("This group is not supported");
   }
 
-  const tickets = await getTickets[userGroup]({
+  const tickets = await getTickets[userGroup as keyof typeof getTickets]({
     services,
     userId,
   });
@@ -62,6 +61,9 @@ export const createFilteredPetrolStationsKeyboard = async (
 
   const uniqueStations = [...new Set(petrolStations)];
   const users = await services.User.getSelect(uniqueStations || []);
+  if (users.length === 0) {
+    throw new Error("Tickets not found");
+  }
 
   return InlineKeyboard.from(
     chunk(

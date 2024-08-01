@@ -26,6 +26,18 @@ async function fetchTickets(service: ServicesType, ids: string[]) {
   if (ids.length === 0) return [];
   return service.Ticket.getSelect(ids);
 }
+
+const getUserTickets = {
+  [UserGroup.Manager]: async (services: ServicesType, stationId: string) => {
+    const { tickets } = await services.PetrolStation.getUnique(stationId);
+    return tickets || [];
+  },
+  [UserGroup.TaskPerformer]: async (services: ServicesType, userId: string) => {
+    const { tickets } = await services.TaskPerformer.getUnique(userId);
+    return tickets || [];
+  },
+};
+
 export const createFilteredTicketsKeyboard = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
@@ -42,16 +54,18 @@ export const createFilteredTicketsKeyboard = async (
     selectConsiderPetrolStationData.unpack(data);
 
   const statuses = statusesString.split(",") as TicketStatus[];
+
   try {
     let ticketIds: string[] = [];
 
-    if (userGroup === UserGroup.Manager) {
-      const { tickets } = await services.PetrolStation.getUnique(stationId);
-      ticketIds = tickets || [];
-    } else if (userGroup === UserGroup.TaskPerformer) {
-      // tikckets are not filtered by specific filling station
-      const { tickets } = await services.TaskPerformer.getUnique(userId);
-      ticketIds = tickets || [];
+    if (userGroup in getUserTickets) {
+      const id = userGroup === UserGroup.TaskPerformer ? userId : stationId;
+
+      ticketIds = await getUserTickets[
+        userGroup as keyof typeof getUserTickets
+      ](services, id);
+    } else {
+      throw new Error("Unsupported user group");
     }
 
     const tickets = await fetchTickets(services, ticketIds);
@@ -60,7 +74,7 @@ export const createFilteredTicketsKeyboard = async (
       statuses,
     );
 
-    if (!filteredTickets) throw new Error("No tickets found");
+    if (filteredTickets.length === 0) throw new Error("No tickets found");
 
     const keyboardRows = InlineKeyboard.from(
       chunk(

@@ -92,6 +92,7 @@ const getKeyboard = {
   [UserGroup.Manager]: ManagerStatus,
   [UserGroup.TaskPerformer]: TaskPerformerStatus,
   [UserGroup.PetrolStation]: PetrolStationStatus,
+  [UserGroup.Admin]: PetrolStationStatus,
 };
 
 type KeyboardGroupType = keyof typeof getKeyboard;

@@ -230,7 +230,7 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
     ticketId: ticket.id,
     statusId: TicketStatus.ReviewedTaskPerformer,
   });
-  await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket }); // я отправляю задачу со старым статусом
+  await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket });
   await sendAdmins({ ctx, ticket });
 };
 
