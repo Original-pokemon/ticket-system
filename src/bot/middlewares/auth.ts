@@ -4,49 +4,117 @@ import { Context } from "../context.js";
 import { UserGroup, BotText } from "../const/index.js";
 import { getProfileText } from "../helpers/index.js";
 
+async function getUser(ctx: Context, id: string) {
+  try {
+    return await ctx.services.User.getUnique(id);
+  } catch (error) {
+    ctx.logger.error(`Failed to get user: ${error}`);
+    throw error;
+  }
+}
+
+async function createUser(
+  ctx: Context,
+  id: string,
+  firstName: string,
+  lastName: string | undefined,
+  login: string | undefined,
+) {
+  const userName = `${firstName.replaceAll(" ", "")}${
+    lastName ? `_${lastName}` : ""
+  }`;
+  const group = config.BOT_ADMIN_USER_ID.includes(Number.parseInt(id, 10))
+    ? UserGroup.Admin
+    : UserGroup.Unauthorized;
+
+  try {
+    const userId = await ctx.services.User.create({
+      id,
+      user_name: userName,
+      first_name: firstName,
+      last_name: lastName,
+      user_group: group,
+      login,
+    });
+
+    const newUser = await ctx.services.User.getUnique(userId);
+    const adminMessages = config.BOT_ADMIN_USER_ID.map((adminId) => {
+      const text = getProfileText(newUser);
+      return ctx.api.sendMessage(adminId, text);
+    });
+
+    await Promise.all(adminMessages);
+    return newUser;
+  } catch (error) {
+    ctx.logger.error(`Failed to create user: ${error}`);
+    throw error;
+  }
+}
+
+async function updateUserIfNeeded(
+  ctx: Context,
+  userId: string,
+  firstName: string,
+  lastName: string | undefined,
+  login: string | undefined,
+) {
+  try {
+    const user = await ctx.services.User.getUnique(userId);
+
+    if (
+      user.first_name !== firstName ||
+      user.last_name !== lastName ||
+      user.login !== login
+    ) {
+      const updatedUser = await ctx.services.User.update({
+        ...user,
+        login,
+        first_name: firstName,
+        last_name: lastName,
+      });
+
+      ctx.logger.info(`User data updated for userId: ${userId}`);
+      return updatedUser;
+    }
+
+    return user;
+  } catch (error) {
+    ctx.logger.error(`Failed to update user: ${error}`);
+    throw error;
+  }
+}
+
 export function authMiddleware(): Middleware<Context> {
   return async (ctx, next) => {
-    const { id, first_name: firstName, last_name: lastName } = ctx.from || {};
+    const {
+      id,
+      first_name: firstName,
+      last_name: lastName,
+      username,
+    } = ctx.from || {};
 
-    if (!id || !firstName) return;
+    if (!id || !firstName) {
+      ctx.logger.warn("Authorization failed: Missing id or first name.");
+      return;
+    }
 
     try {
-      try {
-        ctx.session.user = await ctx.services.User.getUnique(id.toString());
-      } catch {
-        const userName = `${firstName.replaceAll(" ", "")}${
-          lastName ? `_${lastName}` : ""
-        }`;
+      let user = await getUser(ctx, id.toString());
 
-        const group = config.BOT_ADMIN_USER_ID.includes(id)
-          ? UserGroup.Admin
-          : UserGroup.Unauthorized;
+      user = await (user
+        ? updateUserIfNeeded(ctx, id.toString(), firstName, lastName, username)
+        : createUser(ctx, id.toString(), firstName, lastName, username));
 
-        const userId = await ctx.services.User.create({
-          id: id.toString(),
-          user_name: userName,
-          first_name: firstName,
-          last_name: lastName,
-          user_group: group,
-        });
+      ctx.session.user = user;
 
-        ctx.session.user = await ctx.services.User.getUnique(userId);
-
-        const adminMessages = config.BOT_ADMIN_USER_ID.map((adminId) => {
-          const text = getProfileText(ctx.session.user);
-          return ctx.api.sendMessage(adminId, text);
-        });
-
-        await Promise.all(adminMessages);
-      }
-
-      if (ctx.session.user.user_group === UserGroup.Blocked) {
+      if (user.user_group === UserGroup.Blocked) {
         return ctx.reply(BotText.Welcome.BLOCKED);
       }
 
       return next();
     } catch (error) {
-      ctx.logger.error(`auth.mv: ${error}`);
+      ctx.logger.error(`authMiddleware: ${error}`);
+      return ctx.reply("An error occurred during the authorization process.");
     }
   };
 }

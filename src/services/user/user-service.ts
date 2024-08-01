@@ -5,6 +5,7 @@ import { ApiRouteKey } from "../const.js";
 export type UserType = {
   id: string;
   user_name: string;
+  login?: string;
   first_name: string;
   last_name?: string;
   user_group: UserGroup;
