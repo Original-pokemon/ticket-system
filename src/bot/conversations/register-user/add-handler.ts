@@ -17,6 +17,7 @@ export function addHandler({ services, group, user }: Properties) {
     [UserGroup.Manager]: services.Manager,
     [UserGroup.PetrolStation]: services.PetrolStation,
     [UserGroup.TaskPerformer]: services.TaskPerformer,
+    [UserGroup.Supervisor]: undefined,
     [UserGroup.Admin]: undefined,
     [UserGroup.Blocked]: undefined,
     [UserGroup.Unauthorized]: undefined,

@@ -46,6 +46,42 @@ const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
 
   await Promise.all(promises);
 };
+const sendSupervisors = async ({
+  ctx,
+  ticket: { id: ticketId },
+}: Properties) => {
+  const { users } = await ctx.services.Group.getUnique(UserGroup.Supervisor);
+
+  if (!ticketId) {
+    throw new Error("Ticket Id not found");
+  }
+
+  if (!users) {
+    throw new Error("Admins not found");
+  }
+
+  const { profile, descriptionAttachmentPaths } = await getTicketProfileData({
+    ctx,
+    ticketId,
+  });
+
+  const promises = users.map(async (userId) => {
+    try {
+      if (descriptionAttachmentPaths.length > 0) {
+        await ctx.api.sendMediaGroup(
+          userId,
+          createPhotosGroup(descriptionAttachmentPaths),
+        );
+      }
+
+      await ctx.api.sendMessage(userId, profile);
+    } catch (error) {
+      ctx.logger.error(`Failed to send message to admin ${userId}`, error);
+    }
+  });
+
+  await Promise.all(promises);
+};
 
 const sendManagersNotificationAboutNewTicket = async ({
   ctx,
@@ -232,6 +268,7 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
   });
   await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket });
   await sendAdmins({ ctx, ticket });
+  await sendSupervisors({ ctx, ticket });
 };
 
 /* 

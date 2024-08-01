@@ -1,5 +1,5 @@
 import { Context } from "#root/bot/context.js";
-import { createConversation } from "@grammyjs/conversations";
+import { Conversation, createConversation } from "@grammyjs/conversations";
 import { Container } from "#root/container.js";
 import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.js";
 import { TicketType } from "#root/services/index.js";
@@ -7,11 +7,59 @@ import {
   ticketProfilePanelManager,
   ticketProfilePanelPetrolSTation,
 } from "#root/bot/keyboards/index.js";
-import { UserText, TicketStatus } from "#root/bot/const/index.js";
-import { isManager } from "#root/bot/filters/index.js";
+import { UserText, TicketStatus, UserGroup } from "#root/bot/const/index.js";
+import { isAuthUser } from "#root/bot/filters/is-user.js";
 import { getPetrolStation, getCategory } from "./index.js";
 
+type ConversationProperties = {
+  ctx: Context;
+  conversation: Conversation<Context>;
+};
+
+type SupportedUserGroup =
+  | UserGroup.Manager
+  | UserGroup.Supervisor
+  | UserGroup.PetrolStation;
+
 export const CREATE_TICKET_CONVERSATION = "create-ticket";
+
+const getUserActions = (conversationProperties: ConversationProperties) => ({
+  [UserGroup.Manager]: {
+    getPetrolStation: () => getPetrolStation(conversationProperties),
+    getCategory: () => getCategory(conversationProperties),
+    getStatus: () => TicketStatus.ReviewedManager,
+    getKeyboard: (ticketId: string) => ticketProfilePanelManager(ticketId),
+    editMessage: (ctx: Context, message: string) =>
+      ctx.editMessageText(message),
+  },
+  [UserGroup.Supervisor]: {
+    getPetrolStation: () => getPetrolStation(conversationProperties),
+    getCategory: (): [undefined, Context] => [
+      undefined,
+      conversationProperties.ctx,
+    ],
+    getStatus: () => TicketStatus.Created,
+    getKeyboard: (ticketId: string) =>
+      ticketProfilePanelPetrolSTation(ticketId),
+    editMessage: (ctx: Context, message: string) =>
+      ctx.editMessageText(message),
+  },
+  [UserGroup.PetrolStation]: {
+    getPetrolStation: (): [string, Context] => [
+      conversationProperties.ctx.session.user.id,
+      conversationProperties.ctx,
+    ],
+    getCategory: (): [undefined, Context] => [
+      undefined,
+      conversationProperties.ctx,
+    ],
+    getStatus: () => TicketStatus.Created,
+    getKeyboard: (ticketId: string) =>
+      ticketProfilePanelPetrolSTation(ticketId),
+    editMessage: (ctx: Context, message: string) => ctx.reply(message),
+  },
+});
+
 export const createTicketConversation = (container: Container) =>
   createConversation<Context>(async (conversation, ctx) => {
     const { services } = container;
@@ -24,37 +72,39 @@ export const createTicketConversation = (container: Container) =>
 
     ctx.services = services;
 
-    const conversationProperties = {
+    const conversationProperties: ConversationProperties = {
       ctx,
       conversation,
     };
 
-    const isManagerUser = isManager(userGroup);
+    if (!isAuthUser(userGroup)) {
+      throw new Error("Unsupported user group");
+    }
 
-    const [petrolStationNumber, petrolStationCtx] = isManagerUser
-      ? await getPetrolStation(conversationProperties)
-      : [userId, ctx];
+    const userActions = getUserActions(conversationProperties)[
+      userGroup as SupportedUserGroup
+    ];
 
-    await (isManagerUser
-      ? petrolStationCtx.editMessageText(UserText.CreateTicket.TICKET_TITLE)
-      : petrolStationCtx.reply(UserText.CreateTicket.TICKET_TITLE));
+    const [petrolStationNumber, petrolStationCtx] =
+      await userActions.getPetrolStation();
+
+    await userActions.editMessage(
+      petrolStationCtx,
+      UserText.CreateTicket.TICKET_TITLE,
+    );
 
     const ticketTitle = await form.text();
 
     await ctx.reply(UserText.CreateTicket.TICKET_DESCRIPTION);
     const description = await form.text();
 
-    const [category, categoryCtx] = await (isManagerUser
-      ? getCategory(conversationProperties)
-      : [undefined, ctx]);
+    const [category, categoryCtx] = await userActions.getCategory();
 
-    if (isManagerUser) {
+    if (categoryCtx && categoryCtx.deleteMessage) {
       await categoryCtx.deleteMessage();
     }
 
-    const [photoUrs, photosCtx] = await getPhotos({
-      ...conversationProperties,
-    });
+    const [photoUrs, photosCtx] = await getPhotos(conversationProperties);
 
     const newTicket: TicketType = {
       user_id: userId,
@@ -63,9 +113,7 @@ export const createTicketConversation = (container: Container) =>
       description,
       attachments: photoUrs,
       ticket_category: category,
-      status_id: isManagerUser
-        ? TicketStatus.ReviewedManager
-        : TicketStatus.Created,
+      status_id: userActions.getStatus(),
       comments: [],
     };
 
@@ -76,9 +124,7 @@ export const createTicketConversation = (container: Container) =>
       throw new Error("ticket id not provided");
     }
 
-    const keyboard = isManagerUser
-      ? ticketProfilePanelManager(createdTicketId)
-      : ticketProfilePanelPetrolSTation(createdTicketId);
+    const keyboard = userActions.getKeyboard(createdTicketId);
 
     await viewTicketProfile({
       ctx: photosCtx,

@@ -13,6 +13,7 @@ export const deleteHandler = ({ services, group, id }: Properties) => {
     [UserGroup.PetrolStation]: services.PetrolStation,
     [UserGroup.TaskPerformer]: services.TaskPerformer,
     [UserGroup.Admin]: undefined,
+    [UserGroup.Supervisor]: undefined,
     [UserGroup.Blocked]: undefined,
     [UserGroup.Unauthorized]: undefined,
   };

@@ -19,6 +19,7 @@ import {
 import {
   ManagerButtons,
   PetrolStationButtons,
+  SupervisorButtons,
   TaskPerformerButtons,
 } from "#root/bot/const/index.js";
 import { isAuthUser } from "#root/bot/filters/is-user.js";
@@ -55,7 +56,12 @@ feature.callbackQuery(
 );
 
 feature.hears(
-  [ManagerButtons.ConsiderTickets, TaskPerformerButtons.ConsiderTickets],
+  [
+    ManagerButtons.ConsiderTickets,
+    TaskPerformerButtons.ConsiderTickets,
+    ManagerButtons.AllTickets,
+    SupervisorButtons.AllTickets,
+  ],
   logHandle("hears-consider-tickets"),
   chatAction("typing"),
   viewPetrolStationsFilteredHandler,

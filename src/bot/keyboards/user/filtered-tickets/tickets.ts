@@ -36,6 +36,10 @@ const getUserTickets = {
     const { tickets } = await services.TaskPerformer.getUnique(userId);
     return tickets || [];
   },
+  [UserGroup.Supervisor]: async (services: ServicesType, stationId: string) => {
+    const { tickets } = await services.PetrolStation.getUnique(stationId);
+    return tickets || [];
+  },
 };
 
 export const createFilteredTicketsKeyboard = async (

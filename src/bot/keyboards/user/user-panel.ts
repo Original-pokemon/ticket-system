@@ -4,12 +4,14 @@ import {
   createPetrolStationKeyboard,
   createTaskPerformerKeyboard,
   createManagerKeyboard,
+  createSupervisorKeyboard,
 } from "./index.js";
 
 const Keyboard = {
   [UserGroup.Manager]: createManagerKeyboard,
   [UserGroup.PetrolStation]: createPetrolStationKeyboard,
   [UserGroup.TaskPerformer]: createTaskPerformerKeyboard,
+  [UserGroup.Supervisor]: createSupervisorKeyboard,
 };
 
 export const createUserKeyboard = async (group: string) => {

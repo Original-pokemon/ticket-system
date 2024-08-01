@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-shadow
 export enum UserGroup {
   Admin = "admin",
+  Supervisor = "supervisor",
   Unauthorized = "unauthorized",
   Blocked = "blocked",
   Manager = "manager",

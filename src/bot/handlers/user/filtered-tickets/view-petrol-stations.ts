@@ -2,6 +2,7 @@ import { showPetrolStationsData } from "#root/bot/callback-data/index.js";
 import {
   ManagerButtons,
   PetrolStationButtons,
+  SupervisorButtons,
   TaskPerformerButtons,
   TicketStatus,
   UserGroup,
@@ -14,7 +15,8 @@ import { CallbackQueryContext } from "grammy";
 type HearsTextType =
   | ManagerButtons.ConsiderTickets
   | TaskPerformerButtons.ConsiderTickets
-  | TaskPerformerButtons.TicketsForPerformance;
+  | TaskPerformerButtons.TicketsForPerformance
+  | SupervisorButtons.AllTickets;
 
 const AllStatus = Object.values(TicketStatus);
 
@@ -38,6 +40,13 @@ const getStatuses = {
     [TaskPerformerButtons.TicketsForPerformance]: [TicketStatus.Performed],
     [ManagerButtons.ConsiderTickets]: unsupportedButton,
     [ManagerButtons.AllTickets]: unsupportedButton,
+    [PetrolStationButtons.AllTickets]: unsupportedButton,
+  },
+  [UserGroup.Supervisor]: {
+    [SupervisorButtons.AllTickets]: AllStatus,
+    [ManagerButtons.ConsiderTickets]: unsupportedButton,
+    [TaskPerformerButtons.ConsiderTickets]: unsupportedButton,
+    [TaskPerformerButtons.TicketsForPerformance]: unsupportedButton,
     [PetrolStationButtons.AllTickets]: unsupportedButton,
   },
 };

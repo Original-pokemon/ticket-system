@@ -32,9 +32,16 @@ const getTicketsTaskPerformer = async ({ services, userId }: Properties) => {
   return tickets;
 };
 
+const getTicketsSupervisor = async ({ services }: Properties) => {
+  const tickets = await services.Ticket.getAll();
+
+  return tickets;
+};
+
 const getTickets = {
   [UserGroup.Manager]: getTicketsManager,
   [UserGroup.TaskPerformer]: getTicketsTaskPerformer,
+  [UserGroup.Supervisor]: getTicketsSupervisor,
 };
 
 export const createFilteredPetrolStationsKeyboard = async (
