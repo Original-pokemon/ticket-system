@@ -7,7 +7,6 @@ export const EditPanelButtonKey = {
   TITLE: "title",
   DESCRIPTION: "description",
   CATEGORY: "category",
-  PRIORITY: "priority",
 } as const;
 
 export type EditPanelButtons =
@@ -17,7 +16,6 @@ const EditPanelButtonText = {
   [EditPanelButtonKey.TITLE]: UserText.EditTicketPanel.TITLE,
   [EditPanelButtonKey.DESCRIPTION]: UserText.EditTicketPanel.DESCRIPTION,
   [EditPanelButtonKey.CATEGORY]: UserText.EditTicketPanel.CATEGORY,
-  [EditPanelButtonKey.PRIORITY]: UserText.EditTicketPanel.PRIORITY,
 } as const;
 
 const EditPanelButtonCallback = {
@@ -29,9 +27,6 @@ const EditPanelButtonCallback = {
   }),
   [EditPanelButtonKey.CATEGORY]: selectTicketPropertyData.pack({
     id: EditPanelButtonKey.CATEGORY,
-  }),
-  [EditPanelButtonKey.PRIORITY]: selectTicketPropertyData.pack({
-    id: EditPanelButtonKey.PRIORITY,
   }),
 } as const;
 
@@ -50,9 +45,6 @@ const EditPanelButton: Record<
   ),
   [EditPanelButtonKey.CATEGORY]: generateEditPanelButton(
     EditPanelButtonKey.CATEGORY,
-  ),
-  [EditPanelButtonKey.PRIORITY]: generateEditPanelButton(
-    EditPanelButtonKey.PRIORITY,
   ),
 };
 

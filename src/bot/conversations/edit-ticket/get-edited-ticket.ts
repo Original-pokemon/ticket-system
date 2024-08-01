@@ -6,10 +6,7 @@ import {
   createEditPanelKeyboard,
 } from "#root/bot/keyboards/index.js";
 import { selectTicketPropertyData } from "#root/bot/callback-data/index.js";
-import {
-  getPriority,
-  getCategory,
-} from "#root/bot/conversations/create-ticket/index.js";
+import { getCategory } from "#root/bot/conversations/create-ticket/index.js";
 import { TicketType } from "#root/services/index.js";
 import { getPhotos } from "#root/bot/handlers/index.js";
 import { UserText } from "#root/bot/const/index.js";
@@ -28,16 +25,6 @@ const editTitleHandler = async ({ ctx, conversation, ticket }: Properties) => {
   const title = await conversation.form.text();
 
   return { ...ticket, title };
-};
-
-const editPriorityHandler = async ({
-  ctx,
-  conversation,
-  ticket,
-}: Properties) => {
-  const [ticketPriority] = await getPriority({ ctx, conversation });
-
-  return { ...ticket, ticket_priority: ticketPriority };
 };
 
 const _editPhotoHandler = async ({ ctx, conversation, ticket }: Properties) => {
@@ -80,7 +67,6 @@ const editCategoryHandler = async ({
 
 const ButtonHandler = {
   [EditPanelButtonKey.TITLE]: editTitleHandler,
-  [EditPanelButtonKey.PRIORITY]: editPriorityHandler,
   [EditPanelButtonKey.DESCRIPTION]: editDescriptionHandler,
   [EditPanelButtonKey.CATEGORY]: editCategoryHandler,
 } as const;
