@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import "dayjs/locale/ru";
+import "dayjs/locale/ru.js";
 
 /**
  * Форматирует дату из строки ISO 8601 в более читабельный формат "DD MMM YYYY".

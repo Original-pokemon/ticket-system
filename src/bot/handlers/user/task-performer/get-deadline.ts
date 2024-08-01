@@ -6,7 +6,6 @@ import { Context } from "#root/bot/context.js";
 import { InlineKeyboard } from "grammy";
 import customParseFormat from "dayjs/plugin/customParseFormat.js";
 import dayjs from "dayjs";
-import "dayjs/locale/ru";
 import formatDateString from "#root/bot/helpers/format-date.js";
 
 dayjs.extend(customParseFormat);
