@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-null */
 import { Middleware } from "grammy";
 import { config } from "#root/config.js";
 import { Context } from "../context.js";
@@ -61,10 +62,14 @@ async function updateUserIfNeeded(
   try {
     const user = await ctx.services.User.getUnique(userId);
 
+    // Приводим undefined к null для корректного сравнения
+    const newLastName = lastName ?? null;
+    const newLogin = login ?? null;
+
     if (
       user.first_name !== firstName ||
-      user.last_name !== lastName ||
-      user.login !== login
+      user.last_name !== newLastName ||
+      user.login !== newLogin
     ) {
       const updatedUser = await ctx.services.User.update({
         ...user,
@@ -73,7 +78,6 @@ async function updateUserIfNeeded(
         last_name: lastName,
       });
 
-      ctx.logger.info(`User data updated for userId: ${userId}`);
       return updatedUser;
     }
 
