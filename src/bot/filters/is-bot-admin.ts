@@ -5,4 +5,5 @@ import { UserGroup } from "../const/user-group.js";
 
 export const isBotAdmin = isUserHasId(...config.BOT_ADMIN_USER_ID);
 
-export const isAdmin = (userGroup: string) => userGroup === UserGroup.Admin;
+export const isAdmin = (userGroup: string): userGroup is UserGroup.Admin =>
+  userGroup === UserGroup.Admin;
