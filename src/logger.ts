@@ -1,43 +1,41 @@
 import { pino } from "pino";
+import { ecsFormat } from "@elastic/ecs-pino-format";
+import path from "node:path";
+import { promises as fs } from "node:fs";
 import { config } from "#root/config.js";
-import { fileURLToPath } from "node:url";
 
-export const logger = pino({
-  level: config.LOG_LEVEL,
-  transport: {
-    targets: [
-      ...(config.isDev
-        ? [
-            {
-              target: "pino-pretty",
-              level: config.LOG_LEVEL,
-              options: {
-                ignore: "pid,hostname",
-                colorize: true,
-                translateTime: true,
-              },
-            },
-          ]
-        : [
-            {
-              target: "pino/file",
-              level: config.LOG_LEVEL,
-              options: {
-                destination: fileURLToPath(new URL("app.log", import.meta.url)),
-              },
-            },
-            {
-              target: "pino-pretty",
-              level: config.LOG_LEVEL,
-              options: {
-                ignore: "pid,hostname",
-                colorize: true,
-                translateTime: true,
-              },
-            },
-          ]),
-    ],
-  },
-});
+const createLogger = async () => {
+  if (config.NODE_ENV === "production") {
+    const logDirectory = path.join(process.cwd(), "logs");
+    const logFilePath = path.join(process.cwd(), "logs", "app.log");
+
+    try {
+      await fs.access(logDirectory);
+    } catch {
+      await fs.mkdir(logDirectory, { recursive: true });
+    }
+
+    return pino(
+      {
+        level: config.LOG_LEVEL,
+        ...ecsFormat(),
+      },
+      pino.destination(logFilePath),
+    );
+  }
+  return pino({
+    level: config.LOG_LEVEL,
+    transport: {
+      target: "pino-pretty",
+      options: {
+        colorize: true,
+        translateTime: "SYS:standard",
+        ignore: "pid,hostname",
+      },
+    },
+  });
+};
+
+export const logger = await createLogger();
 
 export type Logger = typeof logger;
