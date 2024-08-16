@@ -35,29 +35,13 @@ const createServices = () => ({
   Ticket: new TicketService(),
 });
 
-type ClientConfigType = {
-  database: string;
-  user: string;
-  password: string;
-  host: string;
-  port: number;
-};
-
-const createClient = (clientConfig: ClientConfigType) =>
-  new pg.Client(clientConfig);
+const createClient = (connectionString: string) =>
+  new pg.Client(connectionString);
 
 export const createAppContainer = () => {
-  const { DATA_BASE_HOST, DATA_BASE_PORT, DATA_BASE_USER, DATA_BASE_PASSWORD } =
-    config;
-  const clientConfig = {
-    database: "postgres",
-    user: DATA_BASE_USER,
-    password: DATA_BASE_PASSWORD,
-    host: DATA_BASE_HOST,
-    port: DATA_BASE_PORT,
-  };
+  const { DATABASE_URL } = config;
 
-  const client = createClient(clientConfig);
+  const client = createClient(DATABASE_URL);
 
   const services = createServices();
 

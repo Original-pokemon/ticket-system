@@ -20,14 +20,11 @@ function parseJsonSafe(path: string) {
 }
 
 const configSchema = z.object({
+  DATABASE_URL: z.string(),
   NODE_ENV: z.enum(["development", "production"]),
   LOG_LEVEL: z
     .enum(["trace", "debug", "info", "warn", "error", "fatal", "silent"])
     .default("info"),
-  DATA_BASE_HOST: z.string().default("127.0.0.1"),
-  DATA_BASE_PORT: z.coerce.number().positive().default(5432),
-  DATA_BASE_USER: z.string().default("postgres"),
-  DATA_BASE_PASSWORD: z.string(),
   BOT_ALLOWED_UPDATES: z
     .preprocess(
       parseJsonSafe("BOT_ALLOWED_UPDATES"),
