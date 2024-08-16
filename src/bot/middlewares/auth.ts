@@ -8,9 +8,8 @@ import { getProfileText } from "../helpers/index.js";
 async function getUser(ctx: Context, id: string) {
   try {
     return await ctx.services.User.getUnique(id);
-  } catch (error) {
-    ctx.logger.error(`Failed to get user: ${error}`);
-    throw error;
+  } catch {
+    return null;
   }
 }
 
