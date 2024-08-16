@@ -7,7 +7,7 @@ import { config } from "#root/config.js";
 const createLogger = async () => {
   if (config.NODE_ENV === "production") {
     const logDirectory = path.join(process.cwd(), "logs");
-    const logFilePath = path.join(process.cwd(), "logs", "app.log");
+    const logFilePath = path.join(process.cwd(), "logs", "bot.log");
 
     try {
       await fs.access(logDirectory);
