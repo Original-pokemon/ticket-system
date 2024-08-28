@@ -100,9 +100,11 @@ export const UserText = {
   DELETE_TICKET: "Заявка удалена",
   RETRIEVE_TICKET: (name: string) => `Заявка ${name} возвращена`,
   GetPhotos: {
+    BEEN_INTERRUPTED: "Создание заявки прервано",
+    ABORT: "Прервать создание фото",
     MSG_TEXT:
       "Вы можете прикрепить фото\n\nДля этого отправьте фотографию\\фотографии",
-    UNHANDLED_TEXT: "Plese send a photo or press the button",
+    UNHANDLED_TEXT: 'Пожалуйста отравьте фотографию или нажимите кнопу "Далее"',
     SAVE: "Сохранить ",
     NEXT: "Далее",
     PHOTO_CAPTION: "Прикрепленное фото",

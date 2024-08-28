@@ -86,6 +86,8 @@ const waitForPhotoCallback = async (
 ) => {
   return conversation.waitForCallbackQuery(savePhotoCallBackData, {
     otherwise: async (answerCtx: CallbackQueryContext<Context> | Context) => {
+      const cancelCallback = "exit_conversation";
+
       if (answerCtx.has("msg:photo")) {
         await handlePhotoCallback(answerCtx, conversation);
       } else if (
@@ -93,8 +95,16 @@ const waitForPhotoCallback = async (
         answerCtx.callbackQuery?.data
       ) {
         await handleDeletePhotoCallback(answerCtx, conversation);
+      } else if (answerCtx.hasCallbackQuery(cancelCallback)) {
+        await answerCtx.conversation.exit();
+
+        await ctx.reply(UserText.GetPhotos.BEEN_INTERRUPTED);
       } else {
-        await ctx.reply(UserText.GetPhotos.UNHANDLED_TEXT);
+        await ctx.reply(UserText.GetPhotos.UNHANDLED_TEXT, {
+          reply_markup: InlineKeyboard.from([
+            [{ text: UserText.GetPhotos.ABORT, callback_data: cancelCallback }],
+          ]),
+        });
       }
     },
     drop: true,
