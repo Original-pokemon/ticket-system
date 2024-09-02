@@ -73,12 +73,42 @@ export const getPetrolStation = async ({
     throw new Error("This group is not supported");
   }
 
+  const keyboard = await Keyboard[userGroup as KeyboardKeys](ctx);
+
   await ctx.reply(UserText.CreateTicket.PETROL_STATIONS, {
-    reply_markup: await Keyboard[userGroup as KeyboardKeys](ctx),
+    reply_markup: keyboard,
   });
+
+  const cancelCallback = "cancel_creation";
 
   const petrolStationCtx = await conversation.waitForCallbackQuery(
     selectPetrolStationCreateTicketData.filter(),
+    {
+      otherwise: async (answerCtx) => {
+        if (answerCtx.hasCallbackQuery(cancelCallback)) {
+          await answerCtx.conversation.exit();
+
+          await answerCtx.editMessageText(
+            UserText.CreateTicket.Interrupt.BEEN_INTERRUPTED,
+          );
+        } else {
+          await answerCtx.reply(UserText.CreateTicket.PETROL_STATIONS, {
+            reply_markup: keyboard,
+          });
+          await ctx.reply(UserText.CreateTicket.Interrupt.SELECT_STATION, {
+            reply_markup: InlineKeyboard.from([
+              [
+                {
+                  text: UserText.CreateTicket.Interrupt.ABORT,
+                  callback_data: cancelCallback,
+                },
+              ],
+            ]),
+          });
+        }
+      },
+      drop: true,
+    },
   );
 
   const {

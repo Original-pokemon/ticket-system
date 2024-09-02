@@ -9,6 +9,7 @@ import {
 } from "#root/bot/keyboards/index.js";
 import { UserText, TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { isAuthUser } from "#root/bot/filters/is-user.js";
+import { logger } from "#root/logger.js";
 import { getPetrolStation, getCategory } from "./index.js";
 
 type ConversationProperties = {
@@ -78,6 +79,10 @@ export const createTicketConversation = (container: Container) =>
     };
 
     if (!isAuthUser(userGroup)) {
+      await ctx.reply(
+        "Извините, вы не авторизованы для выполнения этого действия.",
+      );
+      logger.warn(`User ${userId} is not authorized`);
       throw new Error("Unsupported user group");
     }
 
@@ -96,6 +101,7 @@ export const createTicketConversation = (container: Container) =>
     const ticketTitle = await form.text();
 
     await ctx.reply(UserText.CreateTicket.TICKET_DESCRIPTION);
+
     const description = await form.text();
 
     const [category, categoryCtx] = await userActions.getCategory();

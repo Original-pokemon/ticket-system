@@ -18,6 +18,21 @@ export type PhotoType = {
   fileUrl: string;
 };
 
+const sendPromptMessage = async (ctx: Context) => {
+  const keyboard = InlineKeyboard.from([
+    [
+      {
+        text: UserText.GetPhotos.NEXT,
+        callback_data: savePhotoCallBackData,
+      },
+    ],
+  ]);
+
+  await ctx.reply(UserText.GetPhotos.MSG_TEXT, {
+    reply_markup: keyboard,
+  });
+};
+
 const sendPhotos = async (ctx: Context, values: PhotoType[]) => {
   const promises: Promise<unknown>[] = [];
 
@@ -98,11 +113,19 @@ const waitForPhotoCallback = async (
       } else if (answerCtx.hasCallbackQuery(cancelCallback)) {
         await answerCtx.conversation.exit();
 
-        await ctx.reply(UserText.GetPhotos.BEEN_INTERRUPTED);
+        await answerCtx.editMessageText(
+          UserText.CreateTicket.Interrupt.BEEN_INTERRUPTED,
+        );
       } else {
-        await ctx.reply(UserText.GetPhotos.UNHANDLED_TEXT, {
+        await sendPromptMessage(ctx);
+        await ctx.reply(UserText.CreateTicket.Interrupt.SEND_PHOTO, {
           reply_markup: InlineKeyboard.from([
-            [{ text: UserText.GetPhotos.ABORT, callback_data: cancelCallback }],
+            [
+              {
+                text: UserText.CreateTicket.Interrupt.ABORT,
+                callback_data: cancelCallback,
+              },
+            ],
           ]),
         });
       }
@@ -115,18 +138,7 @@ export const getPhotos = async ({
   ctx,
   conversation,
 }: Properties): Promise<[string[], Context]> => {
-  const keyboard = InlineKeyboard.from([
-    [
-      {
-        text: UserText.GetPhotos.NEXT,
-        callback_data: savePhotoCallBackData,
-      },
-    ],
-  ]);
-
-  await ctx.reply(UserText.GetPhotos.MSG_TEXT, {
-    reply_markup: keyboard,
-  });
+  await sendPromptMessage(ctx);
 
   const photosCtx = await waitForPhotoCallback(conversation, ctx);
 
