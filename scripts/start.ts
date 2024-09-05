@@ -2,13 +2,22 @@
 
 import { createBot } from "#root/bot/index.js";
 import { createAppContainer } from "#root/container.js";
-import { onShutdown } from "node-graceful-shutdown";
 import { PsqlAdapter } from "@grammyjs/storage-psql";
 
 import { run, RunnerHandle } from "@grammyjs/runner";
 
 const container = createAppContainer();
 const { logger, config, client } = container;
+function onShutdown(cleanUp: () => Promise<void>) {
+  let isShuttingDown = false;
+  const handleShutdown = async () => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+    await cleanUp();
+  };
+  process.on("SIGINT", handleShutdown);
+  process.on("SIGTERM", handleShutdown);
+}
 
 try {
   await client.connect();
@@ -21,6 +30,7 @@ try {
     container,
     sessionStorage,
   });
+
   let runner: undefined | RunnerHandle;
 
   // Graceful shutdown
@@ -31,10 +41,9 @@ try {
     await bot.stop();
   });
 
-  if (config.isProd) {
-    // to prevent receiving updates before the bot is ready
-    await bot.init();
+  await Promise.all([bot.init()]);
 
+  if (config.isProd) {
     logger.info({
       msg: "bot running...",
       username: bot.botInfo.username,
