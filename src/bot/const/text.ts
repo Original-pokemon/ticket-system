@@ -37,10 +37,12 @@ export const BotText = {
   Welcome: {
     UNAUTHORIZED:
       "Добро пожаловать в систему заявок!\n \nОжидайте, когда Вам выдадут роль, когда это произойдет Вы получите уведомление",
-    getUserText: (role: string, link?: string) =>
-      `Добро пожаловать! \nВаша роль: ${role} ${
-        link ? `\nCсылка на инструкцию: ${link}` : ""
-      }`,
+    getUserText: (role: string, manualLink?: string, siteLink?: string) =>
+      `Добро пожаловать! \nВаша роль: ${role} 
+      ${
+        manualLink ? `\nCсылка на инструкцию для вашей роли: ${manualLink}` : ""
+      }
+      ${siteLink ? `\nСсылка на инструкцию для сайта: ${siteLink}` : ""}`,
     ADMIN: "Приветствую, Господин! ",
     BLOCKED: "Вы заблокированы",
   },
