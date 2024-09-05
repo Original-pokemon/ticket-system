@@ -11,12 +11,24 @@ export function getUpdateInfo(ctx: Context): Omit<Update, "update_id"> {
 }
 
 export function logHandle(id: string): Middleware<Context> {
-  return (ctx, next) => {
-    ctx.logger.info({
-      msg: `handle ${id}`,
-      ...(id.startsWith("unhandled") ? { update: getUpdateInfo(ctx) } : {}),
-    });
+  return async (ctx, next) => {
+    const { user } = ctx.session;
+    const startTime = performance.now();
 
-    return next();
+    try {
+      await next();
+    } finally {
+      const endTime = performance.now();
+      ctx.logger.info({
+        msg: `handle ${id}`,
+        ...(id.startsWith("unhandled")
+          ? { update: getUpdateInfo(ctx) }
+          : {
+              user_id: user?.id,
+              user: user?.login || user.user_name,
+              duration: endTime - startTime,
+            }),
+      });
+    }
   };
 }
