@@ -36,20 +36,21 @@ export function createBot(
     ...botConfig,
     ContextConstructor: createContextConstructor(container),
   });
+  const protectedBot = bot.errorBoundary(errorHandler);
 
   // Middlewares
   bot.api.config.use(parseMode("HTML"));
 
   if (config.isDev) {
-    bot.use(updateLogger());
+    protectedBot.use(updateLogger());
   }
 
   bot.api.config.use(hydrateFiles(bot.token));
-  bot.use(autoChatAction(bot.api));
-  bot.use(hydrateReply);
-  bot.use(hydrate());
-  bot.use(sequentialize(getSessionKey));
-  bot.use(
+  protectedBot.use(autoChatAction(bot.api));
+  protectedBot.use(hydrateReply);
+  protectedBot.use(hydrate());
+  protectedBot.use(sequentialize(getSessionKey));
+  protectedBot.use(
     session({
       initial: () => ({
         user: {},
@@ -59,21 +60,18 @@ export function createBot(
       getSessionKey,
     }),
   );
-  bot.use(authMiddleware());
+  protectedBot.use(authMiddleware());
 
   // Conversations
-  bot.use(conversationsFeature(container));
+  protectedBot.use(conversationsFeature(container));
 
   // Handlers
-  bot.use(welcomeFeature);
-  bot.use(botAdminFeature);
-  bot.use(userFeature);
+  protectedBot.use(welcomeFeature);
+  protectedBot.use(botAdminFeature);
+  protectedBot.use(userFeature);
 
   // must be the last handler
-  bot.use(unhandledFeature);
-  if (config.isDev) {
-    bot.catch(errorHandler);
-  }
+  protectedBot.use(unhandledFeature);
 
   return bot;
 }
