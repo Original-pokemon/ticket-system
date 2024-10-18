@@ -39,7 +39,7 @@ async function createUser(
 
     const newUser = await ctx.services.User.getUnique(userId);
     const adminMessages = config.BOT_ADMIN_USER_ID.map((adminId) => {
-      const text = getProfileText(newUser);
+      const text = `Новый пользователь! \n${getProfileText(newUser)}`;
       return ctx.api.sendMessage(adminId, text);
     });
 

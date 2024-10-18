@@ -5,7 +5,9 @@ export const getProfileText = (user: UserType) => {
   const {
     UserProfile: { USER_NAME, NAME, LAST_NAME, USER_GROUP, CREATED_DATE },
   } = AdminText;
-  return `ID: ${user.id}
+  return `
+<b>Профиль пользователя:</b>,
+ID: ${user.id}
 ${USER_NAME}: ${user.user_name}
 ${NAME}: ${user.first_name}
 ${LAST_NAME}: ${user.last_name || "Отсутствует"}
