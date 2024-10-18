@@ -1,0 +1,48 @@
+version: '3'
+
+services: 
+  backend:
+    image: ${DOCKER_USERNAME}/backend:latest
+    ports:
+      - "3000:8000"
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      PORT: 8000
+      HOST: 0.0.0.0
+      DATABASE_URL: ${DATABASE_URL}
+      SHADOW_DATABASE_URL: ${SHADOW_DATABASE_URL}
+      JWT_SECRET: ${JWT_SECRET}
+      COOKIE_SECRET: ${COOKIE_SECRET}
+      EXTERNAL_SERVICE_LOGIN: ${EXTERNAL_SERVICE_LOGIN}
+      EXTERNAL_SERVICE_PASSWORD: ${EXTERNAL_SERVICE_PASSWORD}
+      S3_BUCKET_NAME: ${S3_BUCKET_NAME}
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_ENDPOINT: ${S3_ENDPOINT}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - ticket_system
+  bot:
+    image: ${DOCKER_USERNAME}/ticket-system_bot:latest
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: info
+      BOT_ALLOWED_UPDATES: ${BOT_ALLOWED_UPDATES}
+      BOT_ADMIN_USER_ID: ${BOT_ADMIN_USER_ID}
+      DATABASE_URL: ${DATABASE_URL} # TODO
+      BOT_TOKEN: ${BOT_TOKEN}
+      BACKEND_URL: ${http://backend:8000}
+      BACKEND_USERNAME: ${EXTERNAL_SERVICE_LOGIN}
+      BACKEND_PASSWORD: ${EXTERNAL_SERVICE_PASSWORD}
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      - backend
+    networks:
+      - ticket_system
+
+  networks:
+    ticket_system:
+      driver: bridge
