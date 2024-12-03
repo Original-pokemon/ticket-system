@@ -83,7 +83,7 @@ export const UserText = {
     PRIORITY: "Приоритет",
   },
   TicketProfile: {
-    TICKET_TITLE: "<b>Профиль задачи:</b>",
+    TICKET_TITLE: "<b>Профиль задачи</b>",
     TITLE: "<i>Заголовок</i>",
     NUMBER: "<i>Объект</i>",
     MANAGER: "<i>Контакты менеджера</i>",
