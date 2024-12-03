@@ -11,6 +11,7 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     deadline,
     description: ticketDescription,
     status_history: statusHistory,
+    title,
   } = ticket;
 
   const {
@@ -48,7 +49,7 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     await ctx.services.Status.getUnique(statusId.toString());
 
   return `
-    ${TICKET_TITLE}
+    ${TICKET_TITLE}: ${title}
     ${NUMBER}: ${userName}
     ${CATEGORY}: ${categoryDescription}
     ${DEADLINE}: ${deadline ? formatDateString(deadline) : "Не определена"}
