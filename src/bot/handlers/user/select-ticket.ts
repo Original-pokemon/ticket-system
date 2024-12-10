@@ -104,15 +104,18 @@ export const showTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
     session: {
       user: { user_group: userGroup },
     },
+    services,
   } = ctx;
-  const { id: ticketId, status } = selectTicketData.unpack(callbackQuery.data);
+  const { id: ticketId } = selectTicketData.unpack(callbackQuery.data);
+
+  const { status_id: statusId } = await services.Ticket.getUnique(ticketId);
 
   if (!(userGroup in getKeyboard)) {
     throw new Error("Invalid or unsupported ticket status");
   }
 
   const inlineKeyboard =
-    getKeyboard[userGroup as KeyboardGroupType][status as TicketStatus](
+    getKeyboard[userGroup as KeyboardGroupType][statusId as TicketStatus](
       ticketId,
     );
 
@@ -124,7 +127,7 @@ export const showTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
 
   if (
     userGroup === UserGroup.TaskPerformer &&
-    status === TicketStatus.ReviewedTaskPerformer
+    statusId === TicketStatus.ReviewedTaskPerformer
   ) {
     await handleTaskPerformerView({
       ctx,

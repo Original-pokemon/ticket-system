@@ -6,6 +6,7 @@ import { TicketType } from "#root/services/index.js";
 import { sendManagers, sendTaskPerformers } from "#root/bot/helpers/index.js";
 import formatDateString from "#root/bot/helpers/format-date.js";
 import { createTicketNotificationKeyboard } from "#root/bot/keyboards/index.js";
+import { isManager, isTaskPerformer } from "#root/bot/filters/is-user.js";
 import { createPhotosGroup, getTicketProfileData } from "./index.js";
 
 type Properties = {
@@ -118,17 +119,11 @@ const sendTaskPerformersAboutNewTicket = async ({
   ticket,
 }: Properties) => {
   const {
-    ticket_category: categoryId,
     status_id: status,
     id: ticketId,
     petrol_station_id: petrolStationId,
     title,
   } = ticket;
-
-  if (!categoryId) {
-    await ctx.reply(UserText.Notification.WITHOUT_CATEGORY);
-    throw new Error("Category not found");
-  }
 
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
@@ -255,20 +250,34 @@ const actionForCreatedTicket = async ({ ctx, ticket }: Properties) => {
     ticketId: ticket.id,
     statusId: TicketStatus.ReviewedManager,
   });
+
   await sendManagersNotificationAboutNewTicket({ ctx, ticket: updatedTicket });
 };
 
 const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
-  if (!ticket.id) throw new Error("Ticket Id not found");
+  const { user } = ctx.session;
+  const { id, ticket_category: ticketCategory } = ticket;
 
-  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-    userId: ctx.session.user.id,
-    ticketId: ticket.id,
-    statusId: TicketStatus.ReviewedTaskPerformer,
-  });
-  await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket });
-  await sendAdmins({ ctx, ticket });
-  await sendSupervisors({ ctx, ticket });
+  if (isManager(user.user_group)) {
+    if (!id) throw new Error("Ticket Id not found");
+    if (!ticketCategory) {
+      await ctx.reply(UserText.Notification.WITHOUT_CATEGORY);
+      throw new Error("Category not found");
+    }
+
+    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+      userId: user.id,
+      ticketId: id,
+      statusId: TicketStatus.ReviewedTaskPerformer,
+    });
+    await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket });
+    await sendAdmins({ ctx, ticket });
+    await sendSupervisors({ ctx, ticket });
+  } else {
+    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+    throw new Error("User group is not manager");
+  }
 };
 
 /* 
@@ -282,59 +291,79 @@ const actionForReviewedTaskPerformerTicket = async ({ ctx }: Properties) => {
 };
 
 const actionForSeenTaskPerformer = async ({ ctx, ticket }: Properties) => {
-  const { deadline } = ctx.session.customData;
+  const { user, customData } = ctx.session;
+  const { deadline } = customData;
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  if (!deadline) {
-    throw new Error("Deadline not found");
+  if (isTaskPerformer(user.user_group)) {
+    if (!deadline) {
+      throw new Error("Deadline not found");
+    }
+    const updatedTicket = await ctx.services.Ticket.update({
+      ...ticket,
+      deadline: new Date(deadline).toISOString(),
+      status_id: TicketStatus.Performed,
+      status_history: [
+        {
+          user_id: user.id,
+          ticket_status: TicketStatus.Performed,
+        },
+      ],
+    });
+
+    await sendManagersNotificationAboutPerformTicket({
+      ctx,
+      ticket: updatedTicket,
+    });
+  } else {
+    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+    throw new Error("User group is not manager");
   }
-
-  const updatedTicket = await ctx.services.Ticket.update({
-    ...ticket,
-    deadline: new Date(deadline).toISOString(),
-    status_id: TicketStatus.Performed,
-    status_history: [
-      {
-        user_id: ctx.session.user.id,
-        ticket_status: TicketStatus.Performed,
-      },
-    ],
-  });
-
-  await sendManagersNotificationAboutPerformTicket({
-    ctx,
-    ticket: updatedTicket,
-  });
 };
 
 const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
+  const { user } = ctx.session;
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-    userId: ctx.session.user.id,
-    ticketId: ticket.id,
-    statusId: TicketStatus.WaitingConfirmation,
-  });
+  if (isTaskPerformer(user.user_group)) {
+    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+      userId: user.id,
+      ticketId: ticket.id,
+      statusId: TicketStatus.WaitingConfirmation,
+    });
 
-  await sendManagersNotificationAboutCompletedTicket({
-    ctx,
-    ticket: updatedTicket,
-  });
+    await sendManagersNotificationAboutCompletedTicket({
+      ctx,
+      ticket: updatedTicket,
+    });
+  } else {
+    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+    throw new Error("User group is not manager");
+  }
 };
 
 const actionForConfirmTask = async ({ ctx, ticket }: Properties) => {
+  const { user } = ctx.session;
   if (!ticket.id) throw new Error("Ticket Id not found");
 
-  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-    userId: ctx.session.user.id,
-    ticketId: ticket.id,
-    statusId: TicketStatus.Completed,
-  });
+  if (isManager(user.user_group)) {
+    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+      userId: user.id,
+      ticketId: ticket.id,
+      statusId: TicketStatus.Completed,
+    });
 
-  await sendTaskPerformersNotificationAboutCompletedTicket({
-    ctx,
-    ticket: updatedTicket,
-  });
+    await sendTaskPerformersNotificationAboutCompletedTicket({
+      ctx,
+      ticket: updatedTicket,
+    });
+  } else {
+    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+    throw new Error("User group is not manager");
+  }
 };
 
 // логика обновления статуса тикета для передачи задачи по конвееру

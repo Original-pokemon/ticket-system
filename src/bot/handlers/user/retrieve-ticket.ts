@@ -19,27 +19,33 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
     throw new Error("Ticket Id not found");
   }
 
-  const statusId = TicketStatus.ReviewedManager;
+  if (ticket.status_id === TicketStatus.SeenTaskPerformer) {
+    const statusId = TicketStatus.ReviewedManager;
 
-  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-    statusId,
-    ticketId: ticket.id,
-    userId: ctx.session.user.id,
-  });
+    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+      statusId,
+      ticketId: ticket.id,
+      userId: ctx.session.user.id,
+    });
 
-  const markup = createTicketNotificationKeyboard({
-    ticketId: ticket.id,
-    status: statusId,
-  });
+    const markup = createTicketNotificationKeyboard({
+      ticketId: ticket.id,
+      status: statusId,
+    });
 
-  await sendManagers(
-    {
-      ctx,
-      ticket: updatedTicket,
-    },
-    UserText.RETRIEVE_TICKET(ticket.title),
-    markup,
-  );
+    await sendManagers(
+      {
+        ctx,
+        ticket: updatedTicket,
+      },
+      UserText.RETRIEVE_TICKET(ticket.title),
+      markup,
+    );
+  } else {
+    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+    throw new Error("Ticket status is not correct");
+  }
 };
 
 const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
@@ -49,25 +55,30 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
   if (!ticket.id) {
     throw new Error("Ticket Id not found");
   }
+  if (ticket.status_id === TicketStatus.WaitingConfirmation) {
+    const statusId = TicketStatus.ReviewedTaskPerformer;
 
-  const statusId = TicketStatus.ReviewedTaskPerformer;
+    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+      statusId,
+      ticketId: ticket.id,
+      userId: ctx.session.user.id,
+    });
 
-  const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-    statusId,
-    ticketId: ticket.id,
-    userId: ctx.session.user.id,
-  });
+    const markup = createTicketNotificationKeyboard({
+      ticketId: ticket.id,
+      status: statusId,
+    });
 
-  const markup = createTicketNotificationKeyboard({
-    ticketId: ticket.id,
-    status: statusId,
-  });
+    sendTaskPerformers(
+      { ctx, ticket: updatedTicket },
+      UserText.RETRIEVE_TICKET(ticket.title),
+      markup,
+    );
+  } else {
+    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 
-  sendTaskPerformers(
-    { ctx, ticket: updatedTicket },
-    UserText.RETRIEVE_TICKET(ticket.title),
-    markup,
-  );
+    throw new Error("Ticket status is not correct");
+  }
 };
 
 const Action = {

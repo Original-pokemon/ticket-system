@@ -119,6 +119,8 @@ export const UserText = {
     DELETE_PHOTO_BUTTON: "Удалить",
   },
   Notification: {
+    ERROR_USER_GROUP:
+      "Вы не можете отправить данную заявку т.к вы не соотвествуете группе пользователей",
     NEW_TICKET: ({ title, petrolStation }: NotificationTextProperties) =>
       `У вас новая заявка: ${title}.\nОбъект: ${petrolStation}`,
     PERFORMED: ({
