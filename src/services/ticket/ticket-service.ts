@@ -9,7 +9,7 @@ export type TicketType = {
   user_id?: string;
   attachments: string[];
   petrol_station_id: string;
-  ticket_category?: string;
+  ticket_category?: string | null;
   deadline?: string;
   status_id: string;
   created_at?: Date;

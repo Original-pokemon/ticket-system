@@ -22,10 +22,17 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
   if (ticket.status_id === TicketStatus.SeenTaskPerformer) {
     const statusId = TicketStatus.ReviewedManager;
 
-    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-      statusId,
-      ticketId: ticket.id,
-      userId: ctx.session.user.id,
+    const updatedTicket = await ctx.services.Ticket.update({
+      ...ticket,
+      // eslint-disable-next-line unicorn/no-null
+      ticket_category: null,
+      status_id: statusId,
+      status_history: [
+        {
+          user_id: ctx.session.user.id,
+          ticket_status: statusId,
+        },
+      ],
     });
 
     const markup = createTicketNotificationKeyboard({
