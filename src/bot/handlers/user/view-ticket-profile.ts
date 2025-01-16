@@ -11,45 +11,66 @@ type Properties = {
   inlineKeyboard: InlineKeyboard;
 };
 
-const getCommentObject = async (
-  comment: CommentType,
-  services: ServicesType,
-) => {
-  const { user_id: userId, text, attachments } = comment;
-  const { user_name: userName } = await services.User.getUnique(userId);
-  const attachmentsPath = attachments.map((attachment) => {
-    if (typeof attachment === "string") {
-      return attachment;
-    }
-    return attachment.path;
-  });
-
-  return { userName, text, attachments: attachmentsPath };
+type ExtendedComment = {
+  userName: string;
+  text: string;
+  attachments: string[];
 };
+
+async function getFormattedComments(
+  commentList: CommentType[],
+  services: ServicesType,
+): Promise<ExtendedComment[]> {
+  const userIds = [...new Set(commentList.map((c) => c.user_id))];
+
+  const users = await services.User.getSelect(userIds);
+  const userMap = new Map(users.map((u) => [u.id, u.user_name]));
+
+  return commentList.map((comment) => {
+    const { user_id: userId, text, attachments } = comment;
+
+    const userName = userMap.get(userId) ?? "Неизвестно";
+
+    const attachmentsPath = attachments.map((attachment) =>
+      typeof attachment === "string" ? attachment : attachment.path,
+    );
+
+    return {
+      userName,
+      text,
+      attachments: attachmentsPath,
+    };
+  });
+}
 
 export const getTicketProfileData = async ({
   ctx,
   ticketId,
 }: Omit<Properties, "inlineKeyboard">) => {
-  const ticket = await ctx.services.Ticket.getUnique(ticketId);
-  const { comments: commentsId, attachments: ticketAttachmentIds } = ticket;
+  const { services } = ctx;
+  const ticket = await services.Ticket.getUnique(ticketId);
 
-  const profile = await getTicketText(ctx, ticket);
+  const attachmentsPromise =
+    ticket.attachments.length > 0
+      ? services.Attachment.getSelect(ticket.attachments)
+      : Promise.resolve([]);
 
-  const descriptionAttachments =
-    await ctx.services.Attachment.getSelect(ticketAttachmentIds);
-  const descriptionAttachmentPaths = descriptionAttachments.map(
+  const commentsPromise =
+    ticket.comments.length > 0
+      ? services.Comment.getSelect(ticket.comments)
+      : Promise.resolve([]);
+
+  const [attachmentList, profile, commentList] = await Promise.all([
+    attachmentsPromise,
+    getTicketText(ctx, ticket),
+    commentsPromise,
+  ]);
+
+  const descriptionAttachmentPaths = attachmentList.map(
     (attachment) => attachment.path,
   );
 
-  const comments = await ctx.services.Comment.getSelect(commentsId);
-
-  const promises = comments.map(async (comment) => {
-    const commentsObject = await getCommentObject(comment, ctx.services);
-    return commentsObject;
-  });
-
-  const commentObjects = await Promise.all(promises);
+  const commentObjects = await getFormattedComments(commentList, services);
 
   return {
     profile,

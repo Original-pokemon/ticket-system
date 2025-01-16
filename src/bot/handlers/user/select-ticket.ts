@@ -12,18 +12,17 @@ import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 
 import { sendManagers } from "#root/bot/helpers/index.js";
 
+import { TicketType } from "#root/services/index.js";
 import { viewTicketProfile } from "./view-ticket-profile.js";
 
 const handleTaskPerformerView = async ({
   ctx,
-  ticketId,
+  ticket,
 }: {
   ctx: Context;
-  ticketId: string;
+  ticket: TicketType;
 }) => {
-  const ticket = await ctx.services.Ticket.getUnique(ticketId);
-
-  const { title, petrol_station_id: petrolStationId } = ticket;
+  const { title, petrol_station_id: petrolStationId, id: ticketId } = ticket;
 
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
@@ -108,16 +107,20 @@ export const showTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
   } = ctx;
   const { id: ticketId } = selectTicketData.unpack(callbackQuery.data);
 
-  const { status_id: statusId } = await services.Ticket.getUnique(ticketId);
+  const ticket = await services.Ticket.getUnique(ticketId);
 
   if (!(userGroup in getKeyboard)) {
     throw new Error("Invalid or unsupported ticket status");
   }
 
+  if (!ticketId) {
+    throw new Error("Ticket id not found");
+  }
+
   const inlineKeyboard =
-    getKeyboard[userGroup as KeyboardGroupType][statusId as TicketStatus](
-      ticketId,
-    );
+    getKeyboard[userGroup as KeyboardGroupType][
+      ticket.status_id as TicketStatus
+    ](ticketId);
 
   await viewTicketProfile({
     ctx,
@@ -127,11 +130,11 @@ export const showTicketHandler = async (ctx: CallbackQueryContext<Context>) => {
 
   if (
     userGroup === UserGroup.TaskPerformer &&
-    statusId === TicketStatus.ReviewedTaskPerformer
+    ticket.status_id === TicketStatus.ReviewedTaskPerformer
   ) {
     await handleTaskPerformerView({
       ctx,
-      ticketId,
+      ticket,
     });
   }
 };

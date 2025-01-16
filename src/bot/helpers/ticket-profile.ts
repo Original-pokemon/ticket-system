@@ -24,36 +24,41 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     MANAGER,
   } = UserText.TicketProfile;
 
-  const { user_name: userName } =
-    await ctx.services.User.getUnique(petrolStationId);
-
   const managers = statusHistory?.filter(
     (history) => history.ticket_status === TicketStatus.ReviewedTaskPerformer,
   );
 
-  let managerContacts = "Неизвестно";
+  const managerId =
+    managers && managers.length > 0 ? managers[0].user_id : undefined;
 
-  if (managers && managers.length > 0) {
-    const managerId = managers[0].user_id;
-    const { login: managerLogin } =
-      await ctx.services.User.getUnique(managerId);
+  const userPromise = ctx.services.User.getUnique(petrolStationId);
+  const categoryPromise = ticketCategoryId
+    ? ctx.services.Category.getUnique(ticketCategoryId.toString())
+    : Promise.resolve({ description: "Не определена" });
+  const statusPromise = ctx.services.Status.getUnique(statusId.toString());
+  const managerPromise = managerId
+    ? ctx.services.User.getUnique(managerId).then(
+        (user) => user?.login || "Неизвестно",
+      )
+    : Promise.resolve("Неизвестно");
 
-    managerContacts = managerLogin || "Неизвестно";
-  }
+  const [user, category, statusObject, managerLogin] = await Promise.all([
+    userPromise,
+    categoryPromise,
+    statusPromise,
+    managerPromise,
+  ]);
 
-  const { description: categoryDescription } = ticketCategoryId
-    ? await ctx.services.Category.getUnique(ticketCategoryId.toString())
-    : { description: "Не определена" };
-
-  const { description: statusDescription } =
-    await ctx.services.Status.getUnique(statusId.toString());
+  const userName = user?.user_name ?? "Неизвестно";
+  const categoryDescription = category?.description ?? "Не определена";
+  const statusDescription = statusObject?.description ?? "Неизвестен";
 
   return `
     ${TICKET_TITLE}: ${title}
     ${NUMBER}: ${userName}
     ${CATEGORY}: ${categoryDescription}
     ${DEADLINE}: ${deadline ? formatDateString(deadline) : "Не определена"}
-    ${MANAGER}: @${managerContacts}
+    ${MANAGER}: @${managerLogin}
     ${STATUS}: ${statusDescription}
     ${DESCRIPTION}: ${ticketDescription}
   `;
