@@ -63,15 +63,14 @@ const TaskPerformerStatus = {
 };
 
 const ManagerStatus = {
-  [TicketStatus.Created]: () => new InlineKeyboard(),
+  [TicketStatus.Created]: (ticketId: string) =>
+    ticketProfilePanelManager(ticketId),
   [TicketStatus.ReviewedManager]: (ticketId: string) =>
     ticketProfilePanelManager(ticketId),
   [TicketStatus.ReviewedTaskPerformer]: (ticketId: string) =>
     createWithdrawTicketKeyboard(ticketId),
-  [TicketStatus.SeenTaskPerformer]: (ticketId: string) =>
-    createWithdrawTicketKeyboard(ticketId),
-  [TicketStatus.Performed]: (ticketId: string) =>
-    createWithdrawTicketKeyboard(ticketId),
+  [TicketStatus.SeenTaskPerformer]: () => new InlineKeyboard(),
+  [TicketStatus.Performed]: () => new InlineKeyboard(),
   [TicketStatus.WaitingConfirmation]: (ticketId: string) =>
     createReviewTaskCompletionKeyboard(ticketId),
   [TicketStatus.Completed]: () => new InlineKeyboard(),

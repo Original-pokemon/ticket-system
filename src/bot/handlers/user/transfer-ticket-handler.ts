@@ -47,6 +47,7 @@ const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
 
   await Promise.all(promises);
 };
+
 const sendSupervisors = async ({
   ctx,
   ticket: { id: ticketId },

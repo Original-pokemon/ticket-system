@@ -3,7 +3,6 @@ export * from "./create-ticket.js";
 export * from "./get-photos.js";
 export * from "./select-ticket.js";
 export * from "./transfer-ticket-handler.js";
-export * from "./view-comments.js";
 export * from "./view-ticket-profile.js";
 export * from "./retrieve-ticket.js";
 export * from "./task-performer/take-ticket.js";
