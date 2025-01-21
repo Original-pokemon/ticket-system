@@ -3,7 +3,5 @@ export * from "../filtered-tickets/tickets.js";
 export * from "./categories.js";
 export * from "./manager-panel.js";
 export * from "./priorities.manager.js";
-export * from "./ticket-profile-panel.js";
 export * from "./edit-ticket-panel.js";
-export * from "./review-task-completion.js";
-export * from "./withdraw-ticket.js";
+export * from "./ticket-panels.js";
