@@ -7,7 +7,7 @@ import { sendManagers, sendTaskPerformers } from "#root/bot/helpers/index.js";
 import formatDateString from "#root/bot/helpers/format-date.js";
 import { createTicketNotificationKeyboard } from "#root/bot/keyboards/index.js";
 import { isManager, isTaskPerformer } from "#root/bot/filters/is-user.js";
-import { createPhotosGroup, getTicketProfileData } from "./index.js";
+import { createPhotosGroup, getTicketProfileData } from "../index.js";
 
 type Properties = {
   ctx: Context;
