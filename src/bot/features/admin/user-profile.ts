@@ -8,6 +8,8 @@ import {
   blockUserHandler,
   saveCategoryHandler,
   saveRelationshipHandler,
+  selectPetrolStationsHandler,
+  selectManagersHandler,
 } from "#root/bot/handlers/index.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 import { Composer } from "grammy";
@@ -22,9 +24,6 @@ import {
   selectPetrolStationAdminData,
   saveRelationshipData,
 } from "#root/bot/callback-data/index.js";
-import { selectPetrolStationsHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-stations.js";
-
-import { selectManagersHandler } from "#root/bot/handlers/admin/user-profile/select-managers.js";
 
 const composer = new Composer<Context>();
 

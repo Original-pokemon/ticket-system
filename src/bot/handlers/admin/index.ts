@@ -1,5 +1,3 @@
-export * from "./user-profile/index.js";
-export * from "./find-user.js";
+export * from "./user-actions.handlers.js";
+export * from "./relationship.handlers.js";
 export * from "./view-all-users.js";
-export * from "./view-user-profile.js";
-export * from "./select-user.js";

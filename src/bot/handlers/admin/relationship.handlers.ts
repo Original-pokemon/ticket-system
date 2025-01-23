@@ -1,4 +1,9 @@
-import { setRelationshipUserData } from "#root/bot/callback-data/index.js";
+import {
+  setRelationshipUserData,
+  saveRelationshipData,
+  selectPetrolStationAdminData,
+  selectManagerData,
+} from "#root/bot/callback-data/index.js";
 import { AdminText, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import {
@@ -60,5 +65,64 @@ export const setUpRelationshipHandler = async (
 
   await ctx.editMessageText(AdminText.Admin.USERS, {
     reply_markup: keyboard,
+  });
+};
+
+export const saveRelationshipHandler = async (
+  ctx: CallbackQueryContext<Context>,
+) => {
+  const { id } = saveRelationshipData.unpack(ctx.callbackQuery.data);
+  const {
+    session,
+    services: { PetrolStation, Manager, User },
+  } = ctx;
+  const { user_group: userGroup } = await User.getUnique(id);
+  const saveItems = Object.entries(session.customData)
+    .filter(([_key, value]) => value)
+    .map(([key]) => key);
+
+  if (userGroup === UserGroup.Manager) {
+    const manager = await Manager.getUnique(id.toString());
+    await Manager.update({ ...manager, petrol_stations: saveItems });
+  } else {
+    const petrolStation = await PetrolStation.getUnique(id.toString());
+    await PetrolStation.update({
+      ...petrolStation,
+      managers: saveItems,
+    });
+  }
+
+  ctx.editMessageText(AdminText.Admin.SAVE_RELATIONSHIP);
+};
+
+export const selectPetrolStationsHandler = async (
+  ctx: CallbackQueryContext<Context>,
+) => {
+  const { callbackQuery, session } = ctx;
+  const { id } = selectPetrolStationAdminData.unpack(callbackQuery.data);
+
+  if (id in session.customData) {
+    delete session.customData[id];
+  } else {
+    session.customData[id] = true;
+  }
+  await ctx.editMessageText(AdminText.Admin.USERS, {
+    reply_markup: await createPetrolStationsMultiKeyboard(ctx),
+  });
+};
+
+export const selectManagersHandler = async (
+  ctx: CallbackQueryContext<Context>,
+) => {
+  const { callbackQuery, session } = ctx;
+  const { id } = selectManagerData.unpack(callbackQuery.data);
+
+  if (id in session.customData) {
+    delete session.customData[id];
+  } else {
+    session.customData[id] = true;
+  }
+  await ctx.editMessageText(AdminText.Admin.USERS, {
+    reply_markup: await createManagersKeyboard(ctx),
   });
 };
