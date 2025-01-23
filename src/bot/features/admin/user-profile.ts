@@ -20,9 +20,10 @@ import {
   selectManagerData,
   selectCategoryAdminData,
   selectPetrolStationAdminData,
+  saveRelationshipData,
 } from "#root/bot/callback-data/index.js";
 import { selectPetrolStationsHandler } from "#root/bot/handlers/admin/user-profile/select-petrol-stations.js";
-import { saveRelationshipData } from "#root/bot/callback-data/admin/save-relationship.js";
+
 import { selectManagersHandler } from "#root/bot/handlers/admin/user-profile/select-managers.js";
 
 const composer = new Composer<Context>();

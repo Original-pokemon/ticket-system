@@ -2,11 +2,11 @@ import {
   withdrawTicketData,
   retrieveTicketData,
   transferTicketData,
+  editTicketData,
+  deleteTicketData,
 } from "#root/bot/callback-data/index.js";
 import { InlineKeyboard } from "grammy";
 
-import { deleteTicketData } from "#root/bot/callback-data/user/ticket/delete-ticket.user.js";
-import { editTicketData } from "#root/bot/callback-data/user/ticket/edit-ticket.user.js";
 import { UserText } from "#root/bot/const/index.js";
 
 export const createWithdrawTicketKeyboard = (ticketId: string) =>

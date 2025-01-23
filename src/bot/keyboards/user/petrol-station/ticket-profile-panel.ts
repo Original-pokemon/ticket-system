@@ -1,5 +1,7 @@
-import { deleteTicketData } from "#root/bot/callback-data/index.js";
-import { transferTicketData } from "#root/bot/callback-data/user/ticket/transfer-ticket.user.js";
+import {
+  deleteTicketData,
+  transferTicketData,
+} from "#root/bot/callback-data/index.js";
 import { UserText } from "#root/bot/const/index.js";
 import { InlineKeyboard } from "grammy";
 
