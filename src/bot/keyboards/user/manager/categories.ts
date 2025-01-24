@@ -4,11 +4,17 @@ import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const createCategoryKeyboard = async (ctx: Context) => {
-  const categories = await ctx.services.Category.getAll();
+  const { categories } = ctx.session;
+
+  if (!categories) {
+    throw new Error("Categories not found");
+  }
+
+  const categoriesArray = Object.values(categories);
 
   return InlineKeyboard.from(
     chunk(
-      categories.map(({ description, id }) => ({
+      categoriesArray.map(({ description, id }) => ({
         text: description,
         callback_data: selectCategoryData.pack({
           id,

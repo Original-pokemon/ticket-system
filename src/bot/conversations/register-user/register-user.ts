@@ -41,7 +41,11 @@ export const registerUserConversation = (container: Container) =>
         bush: bushId,
       });
 
-      const group = await services.Group.getUnique(groupId);
+      if (!ctx.session.gropes) {
+        throw new Error("Gropes not found");
+      }
+
+      const group = ctx.session.gropes[groupId];
 
       try {
         await ctx.api.sendMessage(

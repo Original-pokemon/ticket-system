@@ -9,7 +9,7 @@ import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { ServicesType } from "#root/container.js";
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 const filterPerStatus = (tickets: TicketType[], statuses: TicketStatus[]) => {

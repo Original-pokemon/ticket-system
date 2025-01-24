@@ -1,6 +1,14 @@
 import { ServicesType } from "#root/container.js";
 import type { Logger } from "#root/logger.js";
-import { UserType } from "#root/services/user/user-service.js";
+import {
+  UserType,
+  CategoryType,
+  GroupType,
+  ManagerType,
+  PetrolStationType,
+  StatusType,
+  TicketType,
+} from "#root/types/index.js";
 import { type Api, Context as DefaultContext, SessionFlavor } from "grammy";
 import { Calendar } from "telegram-inline-calendar";
 
@@ -16,6 +24,12 @@ export type SessionData = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   customData: { [key: string]: any };
   selectUser: string | null;
+  categories: { [key: string]: CategoryType } | null;
+  gropes: { [key: string]: GroupType } | null;
+  statuses: { [key: string]: StatusType } | null;
+  petrolStations: { [key: string]: PetrolStationType } | null;
+  tickets: { [key: string]: TicketType } | null;
+  managers: { [key: string]: ManagerType } | null;
 };
 
 type ExtendedContextFlavor = {

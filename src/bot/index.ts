@@ -16,6 +16,7 @@ import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
 import { hydrateFiles } from "@grammyjs/files";
 import { conversationsFeature } from "./conversations/index.js";
+import { dataCacheMiddleware } from "./middlewares/data-cache.js";
 
 type Options = {
   container: Container;
@@ -61,6 +62,7 @@ export function createBot(
     }),
   );
   protectedBot.use(authMiddleware());
+  protectedBot.use(dataCacheMiddleware());
 
   // Conversations
   protectedBot.use(conversationsFeature(container));

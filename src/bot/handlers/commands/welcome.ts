@@ -29,13 +29,17 @@ const SiteLink = {
 };
 
 export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
-  const { services, session, conversation } = ctx;
+  const { session, conversation } = ctx;
 
   const {
     user: { user_group: userGroup },
+    gropes,
   } = session;
 
-  const group = await services.Group.getUnique(userGroup);
+  if (!gropes) {
+    throw new Error("Gropes not found");
+  }
+  const group = gropes[userGroup];
 
   await conversation.exit();
 
