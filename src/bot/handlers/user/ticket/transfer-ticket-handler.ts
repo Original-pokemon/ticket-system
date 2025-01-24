@@ -2,7 +2,7 @@ import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
 import { transferTicketData } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import { sendManagers, sendTaskPerformers } from "#root/bot/helpers/index.js";
 import formatDateString from "#root/bot/helpers/format-date.js";
 import { createTicketNotificationKeyboard } from "#root/bot/keyboards/index.js";

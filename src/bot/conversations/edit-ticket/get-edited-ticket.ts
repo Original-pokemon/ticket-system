@@ -7,7 +7,7 @@ import {
 } from "#root/bot/keyboards/index.js";
 import { selectTicketPropertyData } from "#root/bot/callback-data/index.js";
 import { getCategory } from "#root/bot/conversations/create-ticket/index.js";
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import { getPhotos } from "#root/bot/handlers/index.js";
 import { UserText } from "#root/bot/const/index.js";
 

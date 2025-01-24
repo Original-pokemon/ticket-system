@@ -1,16 +1,6 @@
-import { UserGroup } from "#root/bot/const/index.js";
+import { UserType } from "#root/types/index.js";
 import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
-
-export type UserType = {
-  id: string;
-  user_name: string;
-  login?: string;
-  first_name: string;
-  last_name?: string;
-  user_group: UserGroup;
-  created_at?: string;
-};
 
 export class UserService extends BaseService<UserType> {
   constructor() {

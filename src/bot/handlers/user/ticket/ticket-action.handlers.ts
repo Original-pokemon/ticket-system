@@ -16,7 +16,7 @@ import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 
 import { sendManagers, sendTaskPerformers } from "#root/bot/helpers/index.js";
 
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import { CREATE_TICKET_CONVERSATION } from "#root/bot/conversations/create-ticket/create-ticket.js";
 import { viewTicketProfile } from "./view-ticket-profile.js";
 

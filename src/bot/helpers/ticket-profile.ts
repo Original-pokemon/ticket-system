@@ -1,4 +1,4 @@
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import { TicketStatus, UserText } from "../const/index.js";
 import { Context } from "../context.js";
 import formatDateString from "./format-date.js";

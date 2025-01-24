@@ -1,5 +1,5 @@
 import { InlineKeyboard } from "grammy";
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import { Context } from "../context.js";
 
 type Properties = {

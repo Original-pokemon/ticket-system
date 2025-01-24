@@ -2,7 +2,7 @@ import { Context } from "#root/bot/context.js";
 import { Conversation, createConversation } from "@grammyjs/conversations";
 import { Container } from "#root/container.js";
 import { getPhotos, viewTicketProfile } from "#root/bot/handlers/index.js";
-import { TicketType } from "#root/services/index.js";
+import { TicketType } from "#root/types/index.js";
 import {
   ticketProfilePanelManager,
   ticketProfilePanelPetrolSTation,

@@ -1,6 +1,6 @@
 import { Context } from "#root/bot/context.js";
 import { InlineKeyboard, InputFile } from "grammy";
-import { CommentType } from "#root/services/index.js";
+import { CommentType } from "#root/types/index.js";
 import { getTicketText, getCommentText } from "#root/bot/helpers/index.js";
 import { ServicesType } from "#root/container.js";
 

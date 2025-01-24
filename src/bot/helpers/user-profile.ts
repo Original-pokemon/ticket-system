@@ -1,4 +1,4 @@
-import { UserType } from "#root/services/index.js";
+import { UserType } from "#root/types/index.js";
 import { AdminText } from "../const/text.js";
 
 export const getProfileText = (user: UserType) => {

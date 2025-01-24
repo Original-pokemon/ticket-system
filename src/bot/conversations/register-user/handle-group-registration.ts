@@ -1,7 +1,7 @@
 import { isUserGroup } from "#root/bot/const/user-group.js";
 import { isUnauthorized } from "#root/bot/filters/index.js";
 import { ServicesType } from "#root/container.js";
-import { UserType } from "#root/services/user/user-service.js";
+import { UserType } from "#root/types/index.js";
 import { logger } from "#root/logger.js";
 import { deleteHandler } from "./delete-handler.js";
 import { addHandler } from "./add-handler.js";
