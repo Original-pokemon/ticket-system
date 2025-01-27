@@ -12,10 +12,10 @@ export function dataCacheMiddleware(): Middleware<Context> {
         ctx.session.categories = categoryMap;
       }
 
-      if (!ctx.session.gropes) {
+      if (!ctx.session.groups) {
         const allGroups = await ctx.services.Group.getAll();
         const groupMap = Object.fromEntries(allGroups.map((g) => [g.id, g]));
-        ctx.session.gropes = groupMap;
+        ctx.session.groups = groupMap;
       }
 
       if (!ctx.session.statuses) {

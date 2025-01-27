@@ -25,7 +25,7 @@ export type SessionData = {
   customData: { [key: string]: any };
   selectUser: string | null;
   categories: { [key: string]: CategoryType } | null;
-  gropes: { [key: string]: GroupType } | null;
+  groups: { [key: string]: GroupType } | null;
   statuses: { [key: string]: StatusType } | null;
   petrolStations: { [key: string]: PetrolStationType } | null;
   tickets: { [key: string]: TicketType } | null;

@@ -41,11 +41,11 @@ export const registerUserConversation = (container: Container) =>
         bush: bushId,
       });
 
-      if (!ctx.session.gropes) {
+      if (!ctx.session.groups) {
         throw new Error("Gropes not found");
       }
 
-      const group = ctx.session.gropes[groupId];
+      const group = ctx.session.groups[groupId];
 
       try {
         await ctx.api.sendMessage(
