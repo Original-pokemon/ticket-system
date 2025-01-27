@@ -1,7 +1,19 @@
 import { AdminButton } from "#root/bot/const/index.js";
 import { chunk } from "#root/bot/helpers/index.js";
-import { Keyboard } from "grammy";
+import { Keyboard, InlineKeyboard } from "grammy";
+
+import {
+  adminShowAllData,
+  adminFindUserData,
+} from "#root/bot/callback-data/index.js";
 
 const buttons = Object.values(AdminButton);
 
 export const createAdminKeyboard = async () => Keyboard.from(chunk(buttons, 2));
+
+export function createAdminStartMenu() {
+  return new InlineKeyboard()
+    .text(AdminButton.ShowAll, adminShowAllData.pack({}))
+    .row()
+    .text(AdminButton.FindUser, adminFindUserData.pack({}));
+}

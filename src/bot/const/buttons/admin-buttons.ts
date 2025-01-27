@@ -2,5 +2,4 @@
 export enum AdminButton {
   ShowAll = "Показать всех",
   FindUser = "Найти пользователя",
-  ConfigureTriggers = "Настроить триггеры",
 }

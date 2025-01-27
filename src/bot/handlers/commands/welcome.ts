@@ -1,6 +1,6 @@
 import { Context } from "#root/bot/context.js";
 import { CommandContext } from "grammy";
-import { createAdminKeyboard } from "#root/bot/keyboards/admin/admin-panel.js";
+import { createAdminStartMenu } from "#root/bot/keyboards/admin/admin-panel.js";
 import { isBlocked, isUnauthorized } from "#root/bot/filters/index.js";
 import { isAdmin } from "#root/bot/filters/is-bot-admin.js";
 import { BotText } from "#root/bot/const/text.js";
@@ -33,19 +33,19 @@ export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
 
   const {
     user: { user_group: userGroup },
-    gropes,
+    groups,
   } = session;
 
-  if (!gropes) {
+  if (!groups) {
     throw new Error("Gropes not found");
   }
-  const group = gropes[userGroup];
+  const group = groups[userGroup];
 
   await conversation.exit();
 
   if (isAdmin(userGroup)) {
     return ctx.reply(BotText.Welcome.ADMIN, {
-      reply_markup: await createAdminKeyboard(),
+      reply_markup: createAdminStartMenu(),
     });
   }
   if (isUnauthorized(userGroup)) {

@@ -4,13 +4,18 @@ import {
   viewAllUsersCommandHandler,
   findUserCommandHandler,
   selectUserHandler,
+  viewAllGroupsCommandHandler,
 } from "#root/bot/handlers/index.js";
 import { logHandle } from "#root/bot/helpers/index.js";
 import { Composer } from "grammy";
 
 import { chatAction } from "@grammyjs/auto-chat-action";
-import { AdminButton } from "#root/bot/const/buttons/admin-buttons.js";
-import { selectUserData } from "#root/bot/callback-data/index.js";
+import {
+  adminFindUserData,
+  adminShowAllData,
+  adminShowTickets,
+  selectUserData,
+} from "#root/bot/callback-data/index.js";
 import { userProfileFeature } from "./user-profile.js";
 
 const composer = new Composer<Context>();
@@ -19,24 +24,23 @@ const feature = composer.chatType("private").filter(isBotAdmin);
 
 feature.use(userProfileFeature);
 
-feature.hears(
-  AdminButton.FindUser,
-  logHandle("hears-find-user"),
+feature.callbackQuery(
+  adminFindUserData.filter(),
+  logHandle("callback-find-user-admin"),
   chatAction("typing"),
   findUserCommandHandler,
 );
 
-feature.hears(
-  AdminButton.ShowAll,
-  logHandle("hears-view-all-user"),
-  chatAction("typing"),
-  viewAllUsersCommandHandler,
+feature.callbackQuery(
+  adminShowAllData.filter(),
+  logHandle("callback-view-all-user-admin"),
+  viewAllGroupsCommandHandler,
 );
 
-feature.hears(
-  AdminButton.ConfigureTriggers,
-  logHandle("hears-configure-triggers"),
-  chatAction("typing"),
+feature.callbackQuery(
+  adminShowTickets.filter(),
+  logHandle("callback-view-all-user-admin"),
+  viewAllUsersCommandHandler,
 );
 
 feature.callbackQuery(

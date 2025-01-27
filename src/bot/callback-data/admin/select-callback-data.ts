@@ -26,3 +26,12 @@ export const selectPetrolStationAdminData = createCallbackData(
 export const selectUserData = createCallbackData("user", {
   id: String,
 });
+
+export const adminShowAllData = createCallbackData("admin-show-all", {});
+
+export const adminShowTickets = createCallbackData("admin-show-tickets", {
+  groupId: String,
+  pageIndex: Number,
+});
+
+export const adminFindUserData = createCallbackData("admin-find-user", {});

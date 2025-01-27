@@ -30,6 +30,7 @@ export type SessionData = {
   petrolStations: { [key: string]: PetrolStationType } | null;
   tickets: { [key: string]: TicketType } | null;
   managers: { [key: string]: ManagerType } | null;
+  users: { [key: string]: UserType } | null;
 };
 
 type ExtendedContextFlavor = {

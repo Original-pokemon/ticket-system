@@ -3,7 +3,7 @@ import {
   REGISTER_USER_CONVERSATION,
   FIND_USER_CONVERSATION,
 } from "#root/bot/conversations/index.js";
-import { CallbackQueryContext, InlineKeyboard, HearsContext } from "grammy";
+import { CallbackQueryContext, InlineKeyboard } from "grammy";
 import {
   selectCategoryAdminData,
   unBlockUserData,
@@ -11,16 +11,16 @@ import {
   registerUserData,
   setRelationshipUserData,
   selectUserData,
+  adminShowTickets,
 } from "#root/bot/callback-data/index.js";
 import { AdminText, UserGroup } from "#root/bot/const/index.js";
 
-import { ServicesType } from "#root/container.js";
 import {
   isBlocked,
   isUnauthorized,
   isAuthUser,
 } from "#root/bot/filters/index.js";
-import { getProfileText } from "#root/bot/helpers/index.js";
+import { chunk, getProfileText } from "#root/bot/helpers/index.js";
 
 export const registerUserHandler = async (
   ctx: CallbackQueryContext<Context>,
@@ -83,13 +83,16 @@ export const blockUserHandler = async (ctx: CallbackQueryContext<Context>) => {
   await ctx.api.sendMessage(user.id, AdminText.Block.USER_MESSAGE);
 };
 
-export const viewUserProfileHandler = async (
-  ctx: Context,
-  services: ServicesType,
-  id: string,
-) => {
+export const viewUserProfileHandler = async (ctx: Context, id: string) => {
+  const { session, services } = ctx;
+
   try {
     const user = await services.User.getUnique(id);
+
+    if (session.users) {
+      // eslint-disable-next-line unicorn/no-null
+      session.users = null;
+    }
     const { user_group: userGroup } = user;
 
     const keyboard = new InlineKeyboard();
@@ -112,20 +115,64 @@ export const viewUserProfileHandler = async (
 
     const text = getProfileText(user);
 
-    return ctx.reply(text, {
-      reply_markup: keyboard,
-    });
+    try {
+      await ctx.editMessageText(text, {
+        reply_markup: keyboard,
+      });
+    } catch {
+      await ctx.reply(text, {
+        reply_markup: keyboard,
+      });
+    }
   } catch {
     await ctx.reply(AdminText.FindUser.NOT_FOUND);
   }
 };
 
 export const selectUserHandler = async (ctx: CallbackQueryContext<Context>) => {
-  const { id } = selectUserData.unpack(ctx.callbackQuery.data);
+  const {
+    callbackQuery: { data },
+  } = ctx;
+  const { id } = selectUserData.unpack(data);
 
-  await viewUserProfileHandler(ctx, ctx.services, id);
+  await viewUserProfileHandler(ctx, id);
 };
 
-export const findUserCommandHandler = async (ctx: HearsContext<Context>) => {
+export const findUserCommandHandler = async (
+  ctx: CallbackQueryContext<Context>,
+) => {
   return ctx.conversation.enter(FIND_USER_CONVERSATION);
 };
+
+export async function viewAllGroupsCommandHandler(ctx: Context) {
+  const groups = ctx.session.groups
+    ? Object.values(ctx.session.groups)
+    : await ctx.services.Category.getAll();
+
+  if (!groups || groups.length === 0) {
+    await ctx.reply("Нет доступных категорий.");
+    return;
+  }
+
+  const keyboard = InlineKeyboard.from(
+    chunk(
+      groups.map((category) => ({
+        text: category.description,
+        callback_data: adminShowTickets.pack({
+          groupId: category.id,
+          pageIndex: 0,
+        }),
+      })),
+      2,
+    ),
+  );
+
+  if (ctx.session.users) {
+    // eslint-disable-next-line unicorn/no-null
+    ctx.session.users = null;
+  }
+
+  await ctx.reply("Выберите категорию:", {
+    reply_markup: keyboard,
+  });
+}

@@ -19,8 +19,8 @@ export const findUserConversation = (container: Container) =>
     if (text && !Number.isNaN(+text)) {
       const id = text;
       ctx.chatAction = "typing";
-
-      return viewUserProfileHandler(ctx, services, id);
+      ctx.services = services;
+      return viewUserProfileHandler(ctx, id);
     }
 
     await answerCtx.reply(AdminText.FindUser.NOT_FOUND);
