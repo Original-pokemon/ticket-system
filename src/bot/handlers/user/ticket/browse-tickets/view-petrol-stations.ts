@@ -26,7 +26,10 @@ const unsupportedButton = () => {
 
 const getStatuses = {
   [UserGroup.Manager]: {
-    [ManagerButtons.ConsiderTickets]: [TicketStatus.ReviewedManager],
+    [ManagerButtons.ConsiderTickets]: [
+      TicketStatus.ReviewedManager,
+      TicketStatus.WaitingConfirmation,
+    ],
     [ManagerButtons.AllTickets]: AllStatus,
     [TaskPerformerButtons.ConsiderTickets]: unsupportedButton,
     [TaskPerformerButtons.TicketsForPerformance]: unsupportedButton,
