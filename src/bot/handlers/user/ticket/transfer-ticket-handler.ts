@@ -15,7 +15,8 @@ type Properties = {
 };
 
 const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
-  const { users } = await ctx.services.Group.getUnique(UserGroup.Admin);
+  const { api, services, logger } = ctx;
+  const { users } = await services.Group.getUnique(UserGroup.Admin);
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -33,15 +34,15 @@ const sendAdmins = async ({ ctx, ticket: { id: ticketId } }: Properties) => {
   const promises = users.map(async (userId) => {
     try {
       if (descriptionAttachmentPaths.length > 0) {
-        await ctx.api.sendMediaGroup(
+        await api.sendMediaGroup(
           userId,
           createPhotosGroup(descriptionAttachmentPaths),
         );
       }
 
-      await ctx.api.sendMessage(userId, profile);
+      await api.sendMessage(userId, profile);
     } catch (error) {
-      ctx.logger.error(`Failed to send message to admin ${userId}`, error);
+      logger.error(`Failed to send message to admin ${userId}`, error);
     }
   });
 
@@ -52,7 +53,8 @@ const sendSupervisors = async ({
   ctx,
   ticket: { id: ticketId },
 }: Properties) => {
-  const { users } = await ctx.services.Group.getUnique(UserGroup.Supervisor);
+  const { api, services, logger } = ctx;
+  const { users } = await services.Group.getUnique(UserGroup.Supervisor);
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -70,15 +72,15 @@ const sendSupervisors = async ({
   const promises = users.map(async (userId) => {
     try {
       if (descriptionAttachmentPaths.length > 0) {
-        await ctx.api.sendMediaGroup(
+        await api.sendMediaGroup(
           userId,
           createPhotosGroup(descriptionAttachmentPaths),
         );
       }
 
-      await ctx.api.sendMessage(userId, profile);
+      await api.sendMessage(userId, profile);
     } catch (error) {
-      ctx.logger.error(`Failed to send message to admin ${userId}`, error);
+      logger.error(`Failed to send message to admin ${userId}`, error);
     }
   });
 

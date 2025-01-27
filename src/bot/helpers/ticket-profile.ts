@@ -32,26 +32,27 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     managers && managers.length > 0 ? managers[0].user_id : undefined;
 
   const userPromise = ctx.services.User.getUnique(petrolStationId);
-  const categoryPromise = ticketCategoryId
-    ? ctx.services.Category.getUnique(ticketCategoryId.toString())
-    : Promise.resolve({ description: "Не определена" });
-  const statusPromise = ctx.services.Status.getUnique(statusId.toString());
+
+  const category =
+    ticketCategoryId && ctx.session.categories
+      ? ctx.session.categories[ticketCategoryId]
+      : undefined;
+
+  const status = ctx.session.statuses
+    ? ctx.session.statuses[statusId]
+    : undefined;
+
   const managerPromise = managerId
     ? ctx.services.User.getUnique(managerId).then(
         (user) => user?.login || "Неизвестно",
       )
     : Promise.resolve("Неизвестно");
 
-  const [user, category, statusObject, managerLogin] = await Promise.all([
-    userPromise,
-    categoryPromise,
-    statusPromise,
-    managerPromise,
-  ]);
+  const [user, managerLogin] = await Promise.all([userPromise, managerPromise]);
 
   const userName = user?.user_name ?? "Неизвестно";
   const categoryDescription = category?.description ?? "Не определена";
-  const statusDescription = statusObject?.description ?? "Неизвестен";
+  const statusDescription = status?.description ?? "Неизвестен";
 
   return `
     ${TICKET_TITLE}: ${title}

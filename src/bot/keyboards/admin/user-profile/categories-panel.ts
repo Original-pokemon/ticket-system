@@ -5,20 +5,24 @@ import { InlineKeyboard } from "grammy";
 
 export const createCategoriesRelationKeyboard = async (ctx: Context) => {
   const {
-    services: { TaskPerformer, Category },
-    session: { selectUser },
+    services: { TaskPerformer },
+    session: { selectUser, categories },
   } = ctx;
 
   if (!selectUser) {
     throw new Error("User not Selected");
   }
 
+  if (!categories) {
+    throw new Error("Categories not found");
+  }
+
   const { category_id: categoryId } = await TaskPerformer.getUnique(selectUser);
-  const categories = await Category.getAll();
+  const categoriesArray = Object.values(categories);
 
   return InlineKeyboard.from(
     chunk(
-      categories.map(({ description, id }) => ({
+      categoriesArray.map(({ description, id }) => ({
         text: id === categoryId ? `✅${description}` : description,
         callback_data: selectCategoryAdminData.pack({
           id,

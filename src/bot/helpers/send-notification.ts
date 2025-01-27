@@ -38,22 +38,26 @@ export const sendTaskPerformers = async (
   text: string,
   markup?: InlineKeyboard,
 ) => {
+  const { session, api, logger } = ctx;
   const { ticket_category: categoryId } = ticket;
 
   if (!categoryId) {
     throw new Error("Category not found");
   }
 
-  const { task_performers: TaskPerformerIds } =
-    await ctx.services.Category.getUnique(categoryId.toString());
+  if (!session?.categories) {
+    throw new Error("Category not found in session");
+  }
+
+  const { task_performers: TaskPerformerIds } = session.categories[categoryId];
 
   const promises = TaskPerformerIds.map(async (taskPerformerId) => {
     try {
-      await ctx.api.sendMessage(taskPerformerId, text, {
+      await api.sendMessage(taskPerformerId, text, {
         reply_markup: markup,
       });
     } catch (error) {
-      ctx.logger.error(
+      logger.error(
         `Failed to send message to task performer ${taskPerformerId}: ${error}`,
       );
     }
