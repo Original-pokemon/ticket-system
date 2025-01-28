@@ -22,11 +22,6 @@ const filterPerPetrolStation = (tickets: TicketType[], stationId: string) => {
   return tickets.filter((ticket) => ticket.petrol_station_id === stationId);
 };
 
-async function fetchTickets(service: ServicesType, ids: string[]) {
-  if (ids.length === 0) return [];
-  return service.Ticket.getSelect(ids);
-}
-
 const getUserTickets = {
   [UserGroup.Manager]: async (services: ServicesType, stationId: string) => {
     const { tickets } = await services.PetrolStation.getUnique(stationId);
@@ -60,19 +55,19 @@ export const createFilteredTicketsKeyboard = async (
   const statuses = statusesString.split(",") as TicketStatus[];
 
   try {
-    let ticketIds: string[] = [];
+    let tickets: TicketType[] = [];
 
     if (userGroup in getUserTickets) {
       const id = userGroup === UserGroup.TaskPerformer ? userId : stationId;
 
-      ticketIds = await getUserTickets[
-        userGroup as keyof typeof getUserTickets
-      ](services, id);
+      tickets = await getUserTickets[userGroup as keyof typeof getUserTickets](
+        services,
+        id,
+      );
     } else {
       throw new Error("Unsupported user group");
     }
 
-    const tickets = await fetchTickets(services, ticketIds);
     const filteredTickets = filterPerStatus(
       filterPerPetrolStation(tickets, stationId),
       statuses,

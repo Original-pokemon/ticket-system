@@ -1,18 +1,24 @@
 import { selectTicketData } from "#root/bot/callback-data/index.js";
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
+import { ManagerType, PetrolStationType } from "#root/types/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const createAllTicketsKeyboard = async (ctx: Context) => {
   const { services, session } = ctx;
 
   const { user } = session;
-  const { tickets: ticketsPerStations } =
-    await services.PetrolStation.getUnique(user.id);
+  const { petrol_stations: petrolStations } = (await services.Manager.getUnique(
+    user.id,
+  )) as ManagerType & { petrol_stations: PetrolStationType[] };
 
-  const tickets = ticketsPerStations
-    ? await services.Ticket.getSelect(ticketsPerStations)
-    : [];
+  if (!petrolStations) {
+    throw new Error("Petrol stations not found");
+  }
+
+  const tickets = petrolStations.flatMap(
+    ({ tickets: petrolStationTickets }) => petrolStationTickets || [],
+  );
 
   return InlineKeyboard.from(
     chunk(

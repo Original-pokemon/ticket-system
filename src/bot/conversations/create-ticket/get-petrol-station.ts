@@ -5,6 +5,8 @@ import { Conversation } from "@grammyjs/conversations";
 
 import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
+import { PetrolStationType } from "#root/types/petrol-station.js";
+import { ManagerType } from "#root/types/index.js";
 
 type Properties = {
   ctx: Context;
@@ -14,13 +16,20 @@ type Properties = {
 const createPetrolStationsKeyboardForManager = async (ctx: Context) => {
   const { services, session } = ctx;
   const { user } = session;
-  const { tickets } = await services.Manager.getUnique(user.id);
-  const petrolStations = tickets?.map((ticket) => {
-    return ticket.petrol_station;
-  });
+  const { petrol_stations: petrolStations } = (await services.Manager.getUnique(
+    user.id,
+  )) as ManagerType & { petrol_stations: PetrolStationType[] };
+
+  if (!petrolStations) {
+    throw new Error("Petrol stations not found");
+  }
+
+  const petrolStationsId = petrolStations.map(
+    (petrolStation) => petrolStation.id,
+  );
 
   const users = petrolStations?.length
-    ? await services.User.getSelect(petrolStations)
+    ? await services.User.getSelect(petrolStationsId || [])
     : [];
 
   return InlineKeyboard.from(

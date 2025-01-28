@@ -1,14 +1,10 @@
-import type { UserType } from "./index.js";
-
-type TicketType = {
-  petrol_station: string;
-  tickets: string[];
-};
+import type { PetrolStationType, TicketType, UserType } from "./index.js";
 
 export type ManagerType = {
   id: string;
   bush_id?: string;
-  tickets?: TicketType[];
-  petrol_stations?: string[];
+  petrol_stations?:
+    | (PetrolStationType & { tickets: TicketType[] }[])
+    | string[];
   user?: UserType;
 };

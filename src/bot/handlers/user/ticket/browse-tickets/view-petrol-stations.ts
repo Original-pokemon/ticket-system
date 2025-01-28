@@ -84,6 +84,7 @@ export const viewPetrolStationsFilteredHandler = async (
     const callbackData = showPetrolStationsData.unpack(callbackQuery.data);
     statuses = callbackData.status.split(",") as TicketStatus[];
   }
+
   if (!statuses) {
     throw new Error("Status not found");
   }

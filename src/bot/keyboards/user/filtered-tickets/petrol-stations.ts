@@ -3,6 +3,8 @@ import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { ServicesType } from "#root/container.js";
+import { ManagerType } from "#root/types/manager.js";
+import { PetrolStationType } from "#root/types/petrol-station.js";
 import { InlineKeyboard } from "grammy";
 
 type Properties = {
@@ -11,23 +13,25 @@ type Properties = {
 };
 
 const getTicketsManager = async ({ services, userId }: Properties) => {
-  const { tickets: ticketsPerPetrolStation } =
-    await services.Manager.getUnique(userId);
-  const ticketsId = ticketsPerPetrolStation
-    ?.map((ticket) => {
-      return ticket.tickets;
-    })
-    .flat();
+  const { petrol_stations: petrolStations } = (await services.Manager.getUnique(
+    userId,
+  )) as ManagerType & {
+    petrol_stations: PetrolStationType[];
+  };
 
-  const tickets = await services.Ticket.getSelect(ticketsId || []);
+  if (!petrolStations) {
+    throw new Error("Petrol stations not found");
+  }
+
+  const tickets = petrolStations.flatMap(
+    ({ tickets: petrolStationTickets }) => petrolStationTickets || [],
+  );
 
   return tickets;
 };
 
 const getTicketsTaskPerformer = async ({ services, userId }: Properties) => {
-  const { tickets: ticketsId } = await services.TaskPerformer.getUnique(userId);
-
-  const tickets = await services.Ticket.getSelect(ticketsId || []);
+  const { tickets } = await services.TaskPerformer.getUnique(userId);
 
   return tickets;
 };
@@ -63,7 +67,7 @@ export const createFilteredPetrolStationsKeyboard = async (
   });
 
   const petrolStations = tickets
-    .filter((ticket) => statuses.includes(ticket.status_id as TicketStatus))
+    ?.filter((ticket) => statuses.includes(ticket.status_id as TicketStatus))
     .map((ticket) => ticket.petrol_station_id);
 
   const uniqueStations = [...new Set(petrolStations)];

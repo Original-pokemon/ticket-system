@@ -11,6 +11,8 @@ import {
   createManagersKeyboard,
   createCategoriesRelationKeyboard,
 } from "#root/bot/keyboards/index.js";
+import { ManagerType } from "#root/types/manager.js";
+import { PetrolStationType } from "#root/types/petrol-station.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 
 const getCustomArray = (array: string[]) => array.map((item) => [item, true]);
@@ -27,13 +29,21 @@ export const setUpRelationshipHandler = async (
 
   switch (userGroup) {
     case UserGroup.Manager: {
-      const manager = await Manager.getUnique(id.toString());
+      const manager = (await Manager.getUnique(
+        id.toString(),
+      )) as ManagerType & {
+        petrol_stations: PetrolStationType[];
+      };
 
       if (!manager.petrol_stations) {
         throw new Error("petrol station not found");
       }
 
-      const petrolStationsCustom = getCustomArray(manager.petrol_stations);
+      const petrolStationsCustom = getCustomArray(
+        manager.petrol_stations.map(
+          ({ id: petrolStationId }) => petrolStationId,
+        ),
+      );
 
       ctx.session.customData = Object.fromEntries(petrolStationsCustom);
 
