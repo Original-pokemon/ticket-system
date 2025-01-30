@@ -52,6 +52,10 @@ export const sendTaskPerformers = async (
   const { task_performers: taskPerformerIds } =
     await services.Category.getUnique(categoryId);
 
+  if (!taskPerformerIds) {
+    throw new Error("Not found taskPerformerIds");
+  }
+
   const promises = taskPerformerIds.map(async (taskPerformerId) => {
     try {
       await api.sendMessage(taskPerformerId, text, {
