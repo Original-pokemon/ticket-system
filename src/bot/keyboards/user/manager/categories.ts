@@ -4,13 +4,15 @@ import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const createCategoryKeyboard = async (ctx: Context) => {
-  const { categories } = ctx.session;
+  const {
+    categories: { data },
+  } = ctx.session;
 
-  if (!categories) {
+  if (!data) {
     throw new Error("Categories not found");
   }
 
-  const categoriesArray = Object.values(categories);
+  const categoriesArray = Object.values(data);
 
   return InlineKeyboard.from(
     chunk(

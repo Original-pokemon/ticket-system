@@ -1,31 +1,37 @@
 import { Middleware } from "grammy";
 import { Context } from "#root/bot/context.js";
 
+const TTL_MS = 12 * 60 * 60 * 1000; //  12 hours
+
 export function dataCacheMiddleware(): Middleware<Context> {
   return async (ctx, next) => {
+    const { session, services, logger } = ctx;
+    const now = Date.now();
+    const { categories, groups, statuses } = session;
+
     try {
-      if (!ctx.session.categories) {
-        const allCategories = await ctx.services.Category.getAll();
+      if (!categories || now - categories.lastUpdate > TTL_MS) {
+        const allCategories = await services.Category.getAll();
         const categoryMap = Object.fromEntries(
           allCategories.map((cat) => [cat.id, cat]),
         );
-        ctx.session.categories = categoryMap;
+        session.categories = { data: categoryMap, lastUpdate: now };
       }
 
-      if (!ctx.session.groups) {
-        const allGroups = await ctx.services.Group.getAll();
+      if (!groups.data || now - groups.lastUpdate > TTL_MS) {
+        const allGroups = await services.Group.getAll();
         const groupMap = Object.fromEntries(allGroups.map((g) => [g.id, g]));
-        ctx.session.groups = groupMap;
+        session.groups = { data: groupMap, lastUpdate: now };
       }
 
-      if (!ctx.session.statuses) {
-        const allStatuses = await ctx.services.Status.getAll();
+      if (!statuses.data || now - statuses.lastUpdate > TTL_MS) {
+        const allStatuses = await services.Status.getAll();
         const statusMap = Object.fromEntries(allStatuses.map((s) => [s.id, s]));
-        ctx.session.statuses = statusMap;
+        session.statuses = { data: statusMap, lastUpdate: now };
       }
       return next();
     } catch (error) {
-      ctx.logger.error(`dataCacheMiddleware error: ${error}`);
+      logger.error(`dataCacheMiddleware error: ${error}`);
     }
   };
 }

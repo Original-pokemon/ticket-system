@@ -19,18 +19,24 @@ import type { ParseModeFlavor } from "@grammyjs/parse-mode";
 import { Update, UserFromGetMe } from "@grammyjs/types";
 import { FileFlavor } from "@grammyjs/files";
 
+export type CachedData<T> = {
+  data: { [key: string]: T } | null;
+  lastUpdate: number; // ms
+};
+
 export type SessionData = {
   user: UserType;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   customData: { [key: string]: any };
   selectUser: string | null;
-  categories: { [key: string]: CategoryType } | null;
-  groups: { [key: string]: GroupType } | null;
-  statuses: { [key: string]: StatusType } | null;
-  petrolStations: { [key: string]: PetrolStationType } | null;
-  tickets: { [key: string]: TicketType } | null;
-  managers: { [key: string]: ManagerType } | null;
-  users: { [key: string]: UserType } | null;
+
+  categories: CachedData<CategoryType>;
+  groups: CachedData<GroupType>;
+  statuses: CachedData<StatusType>;
+  petrolStations: CachedData<PetrolStationType>;
+  tickets: CachedData<TicketType>;
+  managers: CachedData<ManagerType>;
+  users: CachedData<UserType>;
 };
 
 type ExtendedContextFlavor = {

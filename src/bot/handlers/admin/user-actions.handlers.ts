@@ -89,9 +89,9 @@ export const viewUserProfileHandler = async (ctx: Context, id: string) => {
   try {
     const user = await services.User.getUnique(id);
 
-    if (session.users) {
+    if (session.users.data) {
       // eslint-disable-next-line unicorn/no-null
-      session.users = null;
+      session.users.data = null;
     }
     const { user_group: userGroup } = user;
 
@@ -145,9 +145,11 @@ export const findUserCommandHandler = async (
 };
 
 export async function viewAllGroupsCommandHandler(ctx: Context) {
-  const groups = ctx.session.groups
-    ? Object.values(ctx.session.groups)
-    : await ctx.services.Category.getAll();
+  const { session, services } = ctx;
+
+  const groups = session.groups.data
+    ? Object.values(session.groups.data)
+    : await services.Group.getAll();
 
   if (!groups || groups.length === 0) {
     await ctx.reply("Нет доступных категорий.");
@@ -156,10 +158,10 @@ export async function viewAllGroupsCommandHandler(ctx: Context) {
 
   const keyboard = InlineKeyboard.from(
     chunk(
-      groups.map((category) => ({
-        text: category.description,
+      groups.map((group) => ({
+        text: group.description,
         callback_data: adminShowTickets.pack({
-          groupId: category.id,
+          groupId: group.id,
           pageIndex: 0,
         }),
       })),
@@ -167,9 +169,9 @@ export async function viewAllGroupsCommandHandler(ctx: Context) {
     ),
   );
 
-  if (ctx.session.users) {
+  if (session.users.data) {
     // eslint-disable-next-line unicorn/no-null
-    ctx.session.users = null;
+    session.users.data = null;
   }
 
   await ctx.reply("Выберите категорию:", {

@@ -67,7 +67,6 @@ export const createFilteredTicketsKeyboard = async (
     } else {
       throw new Error("Unsupported user group");
     }
-
     const filteredTickets = filterPerStatus(
       filterPerPetrolStation(tickets, stationId),
       statuses,

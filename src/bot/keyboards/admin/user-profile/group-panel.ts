@@ -4,12 +4,14 @@ import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const createGroupKeyboard = async (ctx: Context) => {
-  const { groups } = ctx.session;
+  const {
+    groups: { data },
+  } = ctx.session;
 
-  if (!groups) {
+  if (!data) {
     throw new Error("Groups not found");
   }
-  const groupsArray = Object.values(groups);
+  const groupsArray = Object.values(data);
 
   return InlineKeyboard.from(
     chunk(

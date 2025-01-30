@@ -33,13 +33,13 @@ export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
 
   const {
     user: { user_group: userGroup },
-    groups,
+    groups: { data: cachedGroups },
   } = session;
 
-  if (!groups) {
+  if (!cachedGroups) {
     throw new Error("Gropes not found");
   }
-  const group = groups[userGroup];
+  const group = cachedGroups[userGroup];
 
   await conversation.exit();
 

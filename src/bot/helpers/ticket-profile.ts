@@ -24,6 +24,11 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
     MANAGER,
   } = UserText.TicketProfile;
 
+  const {
+    session: { categories, statuses },
+    services,
+  } = ctx;
+
   const managers = statusHistory?.filter(
     (history) => history.ticket_status === TicketStatus.ReviewedTaskPerformer,
   );
@@ -31,19 +36,17 @@ export const getTicketText = async (ctx: Context, ticket: TicketType) => {
   const managerId =
     managers && managers.length > 0 ? managers[0].user_id : undefined;
 
-  const userPromise = ctx.services.User.getUnique(petrolStationId);
+  const userPromise = services.User.getUnique(petrolStationId);
 
   const category =
-    ticketCategoryId && ctx.session.categories
-      ? ctx.session.categories[ticketCategoryId]
+    ticketCategoryId && categories.data
+      ? categories.data[ticketCategoryId]
       : undefined;
 
-  const status = ctx.session.statuses
-    ? ctx.session.statuses[statusId]
-    : undefined;
+  const status = statuses.data ? statuses.data[statusId] : undefined;
 
   const managerPromise = managerId
-    ? ctx.services.User.getUnique(managerId).then(
+    ? services.User.getUnique(managerId).then(
         (user) => user?.login || "Неизвестно",
       )
     : Promise.resolve("Неизвестно");
