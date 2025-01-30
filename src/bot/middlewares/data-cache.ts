@@ -10,7 +10,7 @@ export function dataCacheMiddleware(): Middleware<Context> {
     const { categories, groups, statuses } = session;
 
     try {
-      if (!categories || now - categories.lastUpdate > TTL_MS) {
+      if (!categories.data || now - categories.lastUpdate > TTL_MS) {
         const allCategories = await services.Category.getAll();
         const categoryMap = Object.fromEntries(
           allCategories.map((cat) => [cat.id, cat]),

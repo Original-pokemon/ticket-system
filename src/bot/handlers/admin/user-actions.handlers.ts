@@ -169,7 +169,7 @@ export async function viewAllGroupsCommandHandler(ctx: Context) {
     ),
   );
 
-  if (session.users.data) {
+  if (session.users?.data) {
     // eslint-disable-next-line unicorn/no-null
     session.users.data = null;
   }
