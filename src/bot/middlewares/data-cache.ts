@@ -10,7 +10,7 @@ export function dataCacheMiddleware(): Middleware<Context> {
     const { categories, groups, statuses } = session;
 
     try {
-      if (!categories.data || now - categories.lastUpdate > TTL_MS) {
+      if (!categories?.data || now - categories.lastUpdate > TTL_MS) {
         const allCategories = await services.Category.getAll();
         const categoryMap = Object.fromEntries(
           allCategories.map((cat) => [cat.id, cat]),
@@ -18,13 +18,13 @@ export function dataCacheMiddleware(): Middleware<Context> {
         session.categories = { data: categoryMap, lastUpdate: now };
       }
 
-      if (!groups.data || now - groups.lastUpdate > TTL_MS) {
+      if (!groups?.data || now - groups.lastUpdate > TTL_MS) {
         const allGroups = await services.Group.getAll();
         const groupMap = Object.fromEntries(allGroups.map((g) => [g.id, g]));
         session.groups = { data: groupMap, lastUpdate: now };
       }
 
-      if (!statuses.data || now - statuses.lastUpdate > TTL_MS) {
+      if (!statuses?.data || now - statuses.lastUpdate > TTL_MS) {
         const allStatuses = await services.Status.getAll();
         const statusMap = Object.fromEntries(allStatuses.map((s) => [s.id, s]));
         session.statuses = { data: statusMap, lastUpdate: now };
