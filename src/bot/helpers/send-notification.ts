@@ -38,7 +38,7 @@ export const sendTaskPerformers = async (
   text: string,
   markup?: InlineKeyboard,
 ) => {
-  const { session, api, logger } = ctx;
+  const { session, api, logger, services } = ctx;
   const { ticket_category: categoryId } = ticket;
 
   if (!categoryId) {
@@ -49,9 +49,10 @@ export const sendTaskPerformers = async (
     throw new Error("Category not found in session");
   }
 
-  const { task_performers: TaskPerformerIds } = session.categories[categoryId];
+  const { task_performers: taskPerformerIds } =
+    await services.Category.getUnique(categoryId);
 
-  const promises = TaskPerformerIds.map(async (taskPerformerId) => {
+  const promises = taskPerformerIds.map(async (taskPerformerId) => {
     try {
       await api.sendMessage(taskPerformerId, text, {
         reply_markup: markup,
