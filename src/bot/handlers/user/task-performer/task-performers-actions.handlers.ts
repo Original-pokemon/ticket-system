@@ -29,18 +29,20 @@ export const showCalendarHandler = async (
 dayjs.extend(customParseFormat);
 
 export const getDeadlineHandler = async (ctx: Context) => {
-  const deadline = ctx.calendar.clickButtonCalendar(ctx);
-  const { ticketId } = ctx.session.customData;
-
-  if (!ticketId) {
-    throw new Error("Ticket id not found");
-  }
-
-  ctx.session.customData = {};
+  const { session, calendar } = ctx;
+  const deadline = calendar.clickButtonCalendar(ctx);
 
   if (deadline !== -1) {
+    const { ticketId } = session.customData;
+
+    if (!ticketId) {
+      throw new Error("Ticket id not found");
+    }
+
+    session.customData = {};
+
     const parsedDeadline = dayjs(deadline, "DD-MM-YYYY").toString();
-    ctx.session.customData.deadline = parsedDeadline;
+    session.customData.deadline = parsedDeadline;
 
     const date = formatDateString(parsedDeadline);
     await ctx.reply(`Выбрана дата: ${date}`, {
