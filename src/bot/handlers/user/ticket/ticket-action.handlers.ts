@@ -146,6 +146,8 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
+  const { user } = ctx.session;
+
   if (!ticket.id) {
     throw new Error("Ticket Id not found");
   }
@@ -160,7 +162,7 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
       status_id: statusId,
       status_history: [
         {
-          user_id: ctx.session.user.id,
+          user_id: user.id,
           ticket_status: statusId,
         },
       ],
@@ -175,7 +177,7 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
         ctx,
         ticket: updatedTicket,
       },
-      UserText.RETRIEVE_TICKET(ticket.title),
+      UserText.RETRIEVE_TICKET(ticket.title, user.user_name),
       markup,
     );
   } else {
@@ -189,6 +191,8 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
+  const { user } = ctx.session;
+
   if (!ticket.id) {
     throw new Error("Ticket Id not found");
   }
@@ -198,7 +202,7 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
     const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
       statusId,
       ticketId: ticket.id,
-      userId: ctx.session.user.id,
+      userId: user.id,
     });
 
     const markup = createTicketNotificationKeyboard({
@@ -207,7 +211,7 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
 
     sendTaskPerformers(
       { ctx, ticket: updatedTicket },
-      UserText.RETRIEVE_TICKET(ticket.title),
+      UserText.RETRIEVE_TICKET(ticket.title, user.user_name),
       markup,
     );
   } else {
@@ -229,7 +233,7 @@ export const retrieveTicketHandler = async (
     services,
     callbackQuery: { data },
     session: {
-      user: { user_group: userGroup },
+      user: { user_group: userGroup, user_name: userName },
     },
   } = ctx;
   const { id } = retrieveTicketData.unpack(data);
@@ -243,7 +247,7 @@ export const retrieveTicketHandler = async (
   }
   await Action[userGroup]({ ctx, ticket });
 
-  await ctx.editMessageText(UserText.RETRIEVE_TICKET(ticket.title));
+  await ctx.editMessageText(UserText.RETRIEVE_TICKET(ticket.title, userName));
 };
 
 export const createTicketHandler = async (ctx: HearsContext<Context>) => {

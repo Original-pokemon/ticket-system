@@ -109,7 +109,8 @@ export const UserText = {
     TICKETS: "Выберите заявку",
   },
   DELETE_TICKET: "Заявка удалена",
-  RETRIEVE_TICKET: (name: string) => `Заявка ${name} возвращена`,
+  RETRIEVE_TICKET: (name: string, userName: string) =>
+    `Заявка ${name} возвращена пользователем ${userName}`,
   GetPhotos: {
     MSG_TEXT:
       "Вы можете прикрепить фото\n\nДля этого отправьте фотографию\\фотографии",
