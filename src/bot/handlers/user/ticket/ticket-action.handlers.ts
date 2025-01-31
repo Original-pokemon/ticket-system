@@ -59,6 +59,8 @@ const TaskPerformerKeyboard = {
     performedTicketProfileTaskPerformer(ticketId),
   [TicketStatus.WaitingConfirmation]: () => new InlineKeyboard(),
   [TicketStatus.Completed]: () => new InlineKeyboard(),
+  [TicketStatus.Returned]: () => new InlineKeyboard(),
+  [TicketStatus.Revoked]: () => new InlineKeyboard(),
 };
 
 const ManagerKeyboard = {
@@ -73,12 +75,16 @@ const ManagerKeyboard = {
   [TicketStatus.WaitingConfirmation]: (ticketId: string) =>
     createReviewTaskCompletionKeyboard(ticketId),
   [TicketStatus.Completed]: () => new InlineKeyboard(),
+  [TicketStatus.Returned]: () => new InlineKeyboard(),
+  [TicketStatus.Revoked]: () => new InlineKeyboard(),
 };
 
 const PetrolStationKeyboard = {
   [TicketStatus.Created]: () => new InlineKeyboard(),
   [TicketStatus.ReviewedManager]: () => new InlineKeyboard(),
   [TicketStatus.ReviewedTaskPerformer]: () => new InlineKeyboard(),
+  [TicketStatus.Returned]: () => new InlineKeyboard(),
+  [TicketStatus.Revoked]: () => new InlineKeyboard(),
   [TicketStatus.SeenTaskPerformer]: () => new InlineKeyboard(),
   [TicketStatus.Performed]: () => new InlineKeyboard(),
   [TicketStatus.WaitingConfirmation]: () => new InlineKeyboard(),
@@ -153,19 +159,10 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
   }
 
   if (ticket.status_id === TicketStatus.SeenTaskPerformer) {
-    const statusId = TicketStatus.ReviewedManager;
-
-    const updatedTicket = await ctx.services.Ticket.update({
-      ...ticket,
-      // eslint-disable-next-line unicorn/no-null
-      ticket_category: null,
-      status_id: statusId,
-      status_history: [
-        {
-          user_id: user.id,
-          ticket_status: statusId,
-        },
-      ],
+    const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
+      statusId: TicketStatus.Returned,
+      ticketId: ticket.id,
+      userId: user.id,
     });
 
     const markup = createTicketNotificationKeyboard({
@@ -180,6 +177,12 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
       UserText.RETRIEVE_TICKET(ticket.title, user.user_name),
       markup,
     );
+
+    await ctx.services.Ticket.updateTicketStatus({
+      statusId: TicketStatus.ReviewedManager,
+      ticketId: ticket.id,
+      userId: user.id,
+    });
   } else {
     await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 
@@ -197,10 +200,8 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
     throw new Error("Ticket Id not found");
   }
   if (ticket.status_id === TicketStatus.WaitingConfirmation) {
-    const statusId = TicketStatus.ReviewedTaskPerformer;
-
     const updatedTicket = await ctx.services.Ticket.updateTicketStatus({
-      statusId,
+      statusId: TicketStatus.Returned,
       ticketId: ticket.id,
       userId: user.id,
     });
@@ -214,6 +215,12 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
       UserText.RETRIEVE_TICKET(ticket.title, user.user_name),
       markup,
     );
+
+    await ctx.services.Ticket.updateTicketStatus({
+      statusId: TicketStatus.ReviewedTaskPerformer,
+      ticketId: ticket.id,
+      userId: user.id,
+    });
   } else {
     await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 

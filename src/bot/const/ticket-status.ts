@@ -7,4 +7,6 @@ export enum TicketStatus {
   Performed = "5",
   WaitingConfirmation = "6",
   Completed = "7",
+  Returned = "8",
+  Revoked = "9",
 }

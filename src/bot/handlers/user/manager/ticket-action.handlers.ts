@@ -23,6 +23,11 @@ export const withdrawTicketHandler = async (
   await ctx.services.Ticket.updateTicketStatus({
     userId,
     ticketId,
+    statusId: TicketStatus.Revoked,
+  });
+  await ctx.services.Ticket.updateTicketStatus({
+    userId,
+    ticketId,
     statusId: TicketStatus.ReviewedManager,
   });
 

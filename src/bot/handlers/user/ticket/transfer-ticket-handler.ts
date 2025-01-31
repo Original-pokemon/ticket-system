@@ -363,6 +363,12 @@ const statusActions = {
   [TicketStatus.Performed]: actionForPerformedTicket,
   [TicketStatus.WaitingConfirmation]: actionForConfirmTask,
   [TicketStatus.Completed]: deleteTicket,
+  [TicketStatus.Returned]: () => {
+    throw new Error("transfer returned status ");
+  },
+  [TicketStatus.Revoked]: () => {
+    throw new Error("transfer revoked status ");
+  },
 };
 
 /*
