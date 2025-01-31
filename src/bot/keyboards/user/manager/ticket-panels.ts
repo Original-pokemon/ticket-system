@@ -25,7 +25,7 @@ export const createReviewTaskCompletionKeyboard = (ticketId: string) =>
   InlineKeyboard.from([
     [
       {
-        text: "Принять заявку",
+        text: "Отметить исполненой",
         callback_data: transferTicketData.pack({
           id: ticketId,
         }),
