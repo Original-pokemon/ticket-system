@@ -48,26 +48,20 @@ const handleTaskPerformerView = async ({
   );
 };
 
-const TaskPerformerStatus = {
-  [TicketStatus.Created]: () => {
-    throw new Error("unsupported ticket status");
-  },
-  [TicketStatus.ReviewedManager]: () => {
-    throw new Error("unsupported ticket status");
-  },
+const TaskPerformerKeyboard = {
+  [TicketStatus.Created]: () => new InlineKeyboard(),
+  [TicketStatus.ReviewedManager]: () => new InlineKeyboard(),
   [TicketStatus.ReviewedTaskPerformer]: (ticketId: string) =>
     considerTicketProfilePanelTaskPerformer(ticketId),
   [TicketStatus.SeenTaskPerformer]: (ticketId: string) =>
     considerTicketProfilePanelTaskPerformer(ticketId),
   [TicketStatus.Performed]: (ticketId: string) =>
     performedTicketProfileTaskPerformer(ticketId),
-  [TicketStatus.WaitingConfirmation]: () => {
-    throw new Error("unsupported ticket status");
-  },
+  [TicketStatus.WaitingConfirmation]: () => new InlineKeyboard(),
   [TicketStatus.Completed]: () => new InlineKeyboard(),
 };
 
-const ManagerStatus = {
+const ManagerKeyboard = {
   [TicketStatus.Created]: (ticketId: string) =>
     ticketProfilePanelManager(ticketId),
   [TicketStatus.ReviewedManager]: (ticketId: string) =>
@@ -81,7 +75,7 @@ const ManagerStatus = {
   [TicketStatus.Completed]: () => new InlineKeyboard(),
 };
 
-const PetrolStationStatus = {
+const PetrolStationKeyboard = {
   [TicketStatus.Created]: () => new InlineKeyboard(),
   [TicketStatus.ReviewedManager]: () => new InlineKeyboard(),
   [TicketStatus.ReviewedTaskPerformer]: () => new InlineKeyboard(),
@@ -92,11 +86,11 @@ const PetrolStationStatus = {
 };
 
 const getKeyboard = {
-  [UserGroup.Manager]: ManagerStatus,
-  [UserGroup.TaskPerformer]: TaskPerformerStatus,
-  [UserGroup.PetrolStation]: PetrolStationStatus,
-  [UserGroup.Admin]: PetrolStationStatus,
-  [UserGroup.Supervisor]: PetrolStationStatus,
+  [UserGroup.Manager]: ManagerKeyboard,
+  [UserGroup.TaskPerformer]: TaskPerformerKeyboard,
+  [UserGroup.PetrolStation]: PetrolStationKeyboard,
+  [UserGroup.Admin]: PetrolStationKeyboard,
+  [UserGroup.Supervisor]: PetrolStationKeyboard,
 };
 
 type KeyboardGroupType = keyof typeof getKeyboard;
