@@ -129,7 +129,8 @@ export const UserText = {
       deadline,
     }: NotificationTextProperties & { deadline: string }) =>
       `Задача: "${title}" взята в работу. \nОбъект: ${petrolStation}\nСрок выполнения: ${deadline}`,
-    STATUS_EDIT: (name: string) => `Статус задачи: "${name}" изменен.`,
+    STATUS_EDIT: (name: string, statusDec: string) =>
+      `Статус задачи: "${name}" изменен на ${statusDec}.`,
     WAITING_CONFIRM: ({ title, petrolStation }: NotificationTextProperties) =>
       `Задача: "${title}" выполнена. \nОбъект: ${petrolStation}\nПожалуйста подтвердите выполнение задачи`,
     WITHOUT_CATEGORY: "Вы не можете отправить заявку без категории",

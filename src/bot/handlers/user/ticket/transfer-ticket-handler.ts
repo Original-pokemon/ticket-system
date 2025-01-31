@@ -91,12 +91,7 @@ const sendManagersNotificationAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const {
-    id: ticketId,
-    title,
-    status_id: status,
-    petrol_station_id: petrolStationId,
-  } = ticket;
+  const { id: ticketId, title, petrol_station_id: petrolStationId } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -105,7 +100,7 @@ const sendManagersNotificationAboutNewTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createTicketNotificationKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId });
 
   await sendManagers(
     {
@@ -121,12 +116,7 @@ const sendTaskPerformersAboutNewTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const {
-    status_id: status,
-    id: ticketId,
-    petrol_station_id: petrolStationId,
-    title,
-  } = ticket;
+  const { id: ticketId, petrol_station_id: petrolStationId, title } = ticket;
 
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
@@ -139,7 +129,7 @@ const sendTaskPerformersAboutNewTicket = async ({
   if (!ticketId) {
     throw new Error("Ticket Id not found");
   }
-  const markup = createTicketNotificationKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId });
 
   sendTaskPerformers({ ctx, ticket }, text, markup);
 };
@@ -151,7 +141,6 @@ const sendManagersNotificationAboutPerformTicket = async ({
   const {
     id: ticketId,
     title,
-    status_id: status,
     petrol_station_id: petrolStationId,
     deadline,
   } = ticket;
@@ -167,7 +156,7 @@ const sendManagersNotificationAboutPerformTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createTicketNotificationKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId });
 
   await sendManagers(
     {
@@ -187,12 +176,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const {
-    id: ticketId,
-    title,
-    status_id: status,
-    petrol_station_id: petrolStationId,
-  } = ticket;
+  const { id: ticketId, title, petrol_station_id: petrolStationId } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -201,7 +185,7 @@ const sendManagersNotificationAboutCompletedTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createTicketNotificationKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId });
 
   await sendManagers(
     {
@@ -217,12 +201,7 @@ const sendTaskPerformersNotificationAboutCompletedTicket = async ({
   ctx,
   ticket,
 }: Properties) => {
-  const {
-    id: ticketId,
-    title,
-    status_id: status,
-    petrol_station_id: petrolStationId,
-  } = ticket;
+  const { id: ticketId, title, petrol_station_id: petrolStationId } = ticket;
 
   if (!ticketId) {
     throw new Error("Ticket Id not found");
@@ -231,7 +210,7 @@ const sendTaskPerformersNotificationAboutCompletedTicket = async ({
   const { user_name: userName } =
     await ctx.services.User.getUnique(petrolStationId);
 
-  const markup = createTicketNotificationKeyboard({ ticketId, status });
+  const markup = createTicketNotificationKeyboard({ ticketId });
 
   await sendTaskPerformers(
     {
@@ -243,7 +222,7 @@ const sendTaskPerformersNotificationAboutCompletedTicket = async ({
   );
 };
 
-const deleteTicket = async () => {};
+const deleteTicket = async ({ ticket }: Properties) => ticket;
 
 const actionForCreatedTicket = async ({ ctx, ticket }: Properties) => {
   if (!ticket.id) throw new Error("Ticket Id not found");
@@ -255,6 +234,8 @@ const actionForCreatedTicket = async ({ ctx, ticket }: Properties) => {
   });
 
   await sendManagersNotificationAboutNewTicket({ ctx, ticket: updatedTicket });
+
+  return updatedTicket;
 };
 
 const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
@@ -276,11 +257,12 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
     await sendTaskPerformersAboutNewTicket({ ctx, ticket: updatedTicket });
     await sendAdmins({ ctx, ticket });
     await sendSupervisors({ ctx, ticket });
-  } else {
-    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 
-    throw new Error("User group is not manager");
+    return updatedTicket;
   }
+  await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+  throw new Error("User group is not manager");
 };
 
 /* 
@@ -318,11 +300,12 @@ const actionForSeenTaskPerformer = async ({ ctx, ticket }: Properties) => {
       ctx,
       ticket: updatedTicket,
     });
-  } else {
-    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 
-    throw new Error("User group is not manager");
+    return updatedTicket;
   }
+  await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+  throw new Error("User group is not manager");
 };
 
 const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
@@ -340,11 +323,12 @@ const actionForPerformedTicket = async ({ ctx, ticket }: Properties) => {
       ctx,
       ticket: updatedTicket,
     });
-  } else {
-    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 
-    throw new Error("User group is not manager");
+    return updatedTicket;
   }
+  await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+  throw new Error("User group is not manager");
 };
 
 const actionForConfirmTask = async ({ ctx, ticket }: Properties) => {
@@ -362,11 +346,12 @@ const actionForConfirmTask = async ({ ctx, ticket }: Properties) => {
       ctx,
       ticket: updatedTicket,
     });
-  } else {
-    await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
 
-    throw new Error("User group is not manager");
+    return updatedTicket;
   }
+  await ctx.editMessageText(UserText.Notification.ERROR_USER_GROUP);
+
+  throw new Error("User group is not manager");
 };
 
 // логика обновления статуса тикета для передачи задачи по конвееру
@@ -387,12 +372,27 @@ const statusActions = {
 export const transferTicketHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
-  const { id } = transferTicketData.unpack(ctx.callbackQuery.data);
-  const ticket = await ctx.services.Ticket.getUnique(id);
+  const { data: cachedStatuses } = ctx.session.statuses;
+  const { id: ticketId } = transferTicketData.unpack(ctx.callbackQuery.data);
+  const ticket = await ctx.services.Ticket.getUnique(ticketId);
   try {
-    await statusActions[ticket.status_id as TicketStatus]({ ctx, ticket });
+    const { status_id: ticketStatus } = await statusActions[
+      ticket.status_id as TicketStatus
+    ]({ ctx, ticket });
 
-    await ctx.editMessageText(UserText.Notification.STATUS_EDIT(ticket.title));
+    if (!cachedStatuses) {
+      throw new Error("cachedStatuses not found");
+    }
+
+    await ctx.editMessageText(
+      UserText.Notification.STATUS_EDIT(
+        ticket.title,
+        cachedStatuses[ticketStatus].description,
+      ),
+      {
+        reply_markup: createTicketNotificationKeyboard({ ticketId }),
+      },
+    );
   } catch (error) {
     ctx.logger.info(error);
   }

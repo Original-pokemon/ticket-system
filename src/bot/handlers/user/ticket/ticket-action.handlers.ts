@@ -174,7 +174,6 @@ const sendManagersNotificationAboutRetrieveTicket = async ({
 
     const markup = createTicketNotificationKeyboard({
       ticketId: ticket.id,
-      status: statusId,
     });
 
     await sendManagers(
@@ -210,7 +209,6 @@ const sendTaskPerformerNotificationAboutRetrieveTicket = async ({
 
     const markup = createTicketNotificationKeyboard({
       ticketId: ticket.id,
-      status: statusId,
     });
 
     sendTaskPerformers(
