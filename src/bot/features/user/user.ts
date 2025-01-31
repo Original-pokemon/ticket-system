@@ -8,6 +8,7 @@ import {
   transferTicketData,
   showPetrolStationsData,
   selectTicketsData,
+  showAllTickets,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
@@ -67,7 +68,13 @@ feature.hears(
   logHandle("hears-consider-tickets"),
   chatAction("typing"),
   viewStatusSectionHandler,
-  viewPetrolStationsFilteredHandler,
+);
+
+feature.callbackQuery(
+  showAllTickets.filter(),
+  logHandle("callback-show-all-tickets"),
+  chatAction("typing"),
+  viewStatusSectionHandler,
 );
 
 feature.callbackQuery(

@@ -15,19 +15,17 @@ export const createSelectUserKeyboard = async (
     services,
   } = ctx;
 
-  const { users: cachedUsers } = session;
-
   const { pageIndex, groupId } = adminShowTickets.unpack(data);
 
-  if (!cachedUsers.data) {
+  if (!session.users?.data) {
     const group = await services.Group.getUnique(groupId);
     const usersIdList = group.users || [];
     const users = await services.User.getSelect(usersIdList);
     const usersMap = Object.fromEntries(users.map((user) => [user.id, user]));
-    cachedUsers.data = usersMap;
+    session.users.data = usersMap;
   }
 
-  const usersArray = Object.values(cachedUsers.data);
+  const usersArray = Object.values(session.users?.data);
 
   const usersPages = paginateItems(usersArray, 20);
 

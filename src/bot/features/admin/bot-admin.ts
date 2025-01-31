@@ -33,7 +33,7 @@ feature.callbackQuery(
 
 feature.callbackQuery(
   adminShowAllData.filter(),
-  logHandle("callback-view-all-user-admin"),
+  logHandle("callback-view-all-groups-admin"),
   viewAllGroupsCommandHandler,
 );
 
