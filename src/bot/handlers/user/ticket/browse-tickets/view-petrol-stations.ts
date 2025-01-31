@@ -1,99 +1,97 @@
-import { showPetrolStationsData } from "#root/bot/callback-data/index.js";
-import {
-  ManagerButtons,
-  PetrolStationButtons,
-  SupervisorButtons,
-  TaskPerformerButtons,
-  TicketStatus,
-  UserGroup,
-  UserText,
-} from "#root/bot/const/index.js";
+import { selectTicketsData } from "#root/bot/callback-data/index.js";
+import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
-import { createFilteredPetrolStationsKeyboard } from "#root/bot/keyboards/index.js";
-import { CallbackQueryContext } from "grammy";
+import { CallbackQueryContext, InlineKeyboard } from "grammy";
+import { chunk } from "#root/bot/helpers/index.js";
+import { getAllTicketsForUserGroup } from "./get-all-tickets-for-user-group.js";
 
-type HearsTextType =
-  | ManagerButtons.ConsiderTickets
-  | TaskPerformerButtons.ConsiderTickets
-  | TaskPerformerButtons.TicketsForPerformance
-  | SupervisorButtons.AllTickets;
+const createFilteredPetrolStationsKeyboard = async (
+  ctx: Context,
+  statuses: TicketStatus[],
+) => {
+  const { services, session } = ctx;
+  const {
+    user: { id: userId, user_group: userGroup },
+  } = session;
 
-const AllStatus = Object.values(TicketStatus);
+  const tickets = await getAllTicketsForUserGroup(userGroup as UserGroup, {
+    ctx,
+    services,
+    userId,
+  });
 
-const unsupportedButton = () => {
-  throw new Error("unsupported button");
-};
+  const filteredTickets = tickets?.filter((ticket) =>
+    statuses.includes(ticket.status_id as TicketStatus),
+  );
 
-const getStatuses = {
-  [UserGroup.Manager]: {
-    [ManagerButtons.ConsiderTickets]: [
-      TicketStatus.ReviewedManager,
-      TicketStatus.WaitingConfirmation,
-    ],
-    [ManagerButtons.AllTickets]: AllStatus,
-    [TaskPerformerButtons.ConsiderTickets]: unsupportedButton,
-    [TaskPerformerButtons.TicketsForPerformance]: unsupportedButton,
-    [PetrolStationButtons.AllTickets]: unsupportedButton,
-  },
-  [UserGroup.TaskPerformer]: {
-    [TaskPerformerButtons.ConsiderTickets]: [
-      TicketStatus.SeenTaskPerformer,
-      TicketStatus.ReviewedTaskPerformer,
-    ],
-    [TaskPerformerButtons.TicketsForPerformance]: [TicketStatus.Performed],
-    [ManagerButtons.ConsiderTickets]: unsupportedButton,
-    [ManagerButtons.AllTickets]: unsupportedButton,
-    [PetrolStationButtons.AllTickets]: unsupportedButton,
-  },
-  [UserGroup.Supervisor]: {
-    [SupervisorButtons.AllTickets]: AllStatus,
-    [ManagerButtons.ConsiderTickets]: unsupportedButton,
-    [TaskPerformerButtons.ConsiderTickets]: unsupportedButton,
-    [TaskPerformerButtons.TicketsForPerformance]: unsupportedButton,
-    [PetrolStationButtons.AllTickets]: unsupportedButton,
-  },
+  if (!filteredTickets || filteredTickets.length === 0) {
+    throw new Error("Tickets not found");
+  }
+
+  const stationCountMap = new Map<string, number>();
+  // eslint-disable-next-line no-restricted-syntax
+  for (const t of filteredTickets) {
+    const stId = t.petrol_station_id;
+    stationCountMap.set(stId, (stationCountMap.get(stId) ?? 0) + 1);
+  }
+
+  const uniqueStations = [...stationCountMap.keys()];
+  const users = await services.User.getSelect(uniqueStations || []);
+
+  if (users.length === 0) {
+    throw new Error("Tickets not found");
+  }
+
+  const buttons = users.map(({ user_name: userName, id }) => {
+    const count = stationCountMap.get(id) ?? 0;
+    const text = `${userName} (${count})`;
+    return {
+      text,
+      callback_data: selectTicketsData.pack({
+        selectStatusId: statuses[0],
+        isSelectPetrolStation: true,
+        selectPetrolStationId: id,
+      }),
+    };
+  });
+
+  const keyboardRows = chunk(buttons, 2);
+
+  return InlineKeyboard.from(keyboardRows);
 };
 
 export const viewPetrolStationsFilteredHandler = async (
-  ctx: Context | CallbackQueryContext<Context>,
+  ctx: CallbackQueryContext<Context>,
 ) => {
   const {
     session: {
-      user: { user_group: userGroup },
+      statuses: { data: cachedStatuses },
     },
-    message,
     callbackQuery,
   } = ctx;
+  const { selectStatusId } = selectTicketsData.unpack(callbackQuery?.data);
 
-  let statuses;
-
-  if (message?.text && userGroup in getStatuses) {
-    const userGroupStatuses =
-      getStatuses[userGroup as keyof typeof getStatuses];
-    const getStatusFunction = userGroupStatuses[message.text as HearsTextType];
-    if (typeof getStatusFunction === "function") {
-      getStatusFunction(); // throw error if not found
-    } else {
-      statuses = getStatusFunction;
-    }
-  }
-
-  // to return from task selection (manager or task performer)
-  if (callbackQuery?.data) {
-    await ctx.deleteMessage();
-    const callbackData = showPetrolStationsData.unpack(callbackQuery.data);
-    statuses = callbackData.status.split(",") as TicketStatus[];
-  }
-
-  if (!statuses) {
-    throw new Error("Status not found");
+  if (!cachedStatuses) {
+    throw new Error("Statuses not found");
   }
 
   try {
-    await ctx.reply(UserText.Consider.PETROL_STATIONS, {
-      reply_markup: await createFilteredPetrolStationsKeyboard(ctx, statuses),
-    });
+    await ctx.editMessageText(
+      `Отфильтрованные АЗС для статуса ${cachedStatuses[selectStatusId].description}`,
+      {
+        reply_markup: await createFilteredPetrolStationsKeyboard(ctx, [
+          selectStatusId as TicketStatus,
+        ]),
+      },
+    );
   } catch {
-    await ctx.reply("Задачи не найдены");
+    await ctx.reply(
+      `Отфильтрованные АЗС для статуса ${cachedStatuses[selectStatusId].description}`,
+      {
+        reply_markup: await createFilteredPetrolStationsKeyboard(ctx, [
+          selectStatusId as TicketStatus,
+        ]),
+      },
+    );
   }
 };

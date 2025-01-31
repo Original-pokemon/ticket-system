@@ -1,5 +1,7 @@
 import { createCallbackData } from "callback-data";
 
+export const showAllTickets = createCallbackData("show-all-tickets", {});
+
 export const deleteTicketData = createCallbackData("delete-ticket", {
   id: String,
 });
@@ -10,7 +12,6 @@ export const editTicketData = createCallbackData("edit-ticket", {
 
 export const selectTicketData = createCallbackData("select-ticket", {
   id: String,
-  status: String,
 });
 
 export const transferTicketData = createCallbackData("transfer-ticket", {
@@ -23,3 +24,9 @@ export const selectTicketPropertyData = createCallbackData(
     id: String,
   },
 );
+
+export const selectTicketsData = createCallbackData("select-status", {
+  selectStatusId: String,
+  isSelectPetrolStation: Boolean,
+  selectPetrolStationId: String,
+});

@@ -10,23 +10,14 @@ import {
 } from "#root/bot/callback-data/index.js";
 import {
   retrieveTicketHandler,
-  viewPetrolStationsFilteredHandler,
   takeTicketHandler,
   showCalendarHandler,
   getDeadlineHandler,
 } from "#root/bot/handlers/index.js";
-import { TaskPerformerButtons } from "#root/bot/const/index.js";
 
 const composer = new Composer<Context>();
 
 const feature = composer.chatType("private");
-
-feature.hears(
-  TaskPerformerButtons.TicketsForPerformance,
-  logHandle("callback-task-for-performance"),
-  chatAction("typing"),
-  viewPetrolStationsFilteredHandler,
-);
 
 feature.callbackQuery(
   retrieveTicketData.filter(),
@@ -51,7 +42,7 @@ feature.callbackQuery(
 
 feature.callbackQuery(
   /n_./,
-  logHandle("on-message"),
+  logHandle("callback-set-dead-line"),
   chatAction("typing"),
   getDeadlineHandler,
 );

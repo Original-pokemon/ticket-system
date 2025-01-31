@@ -5,9 +5,9 @@ import { Composer } from "grammy";
 import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   selectTicketData,
-  selectConsiderPetrolStationData,
   transferTicketData,
   showPetrolStationsData,
+  selectTicketsData,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
@@ -15,6 +15,7 @@ import {
   viewPetrolStationsFilteredHandler,
   transferTicketHandler,
   createTicketHandler,
+  viewStatusSectionHandler,
 } from "#root/bot/handlers/index.js";
 import {
   ManagerButtons,
@@ -58,12 +59,14 @@ feature.callbackQuery(
 feature.hears(
   [
     ManagerButtons.ConsiderTickets,
-    TaskPerformerButtons.ConsiderTickets,
     ManagerButtons.AllTickets,
+    TaskPerformerButtons.ConsiderTickets,
+    TaskPerformerButtons.TicketsForPerformance,
     SupervisorButtons.AllTickets,
   ],
   logHandle("hears-consider-tickets"),
   chatAction("typing"),
+  viewStatusSectionHandler,
   viewPetrolStationsFilteredHandler,
 );
 
@@ -82,7 +85,18 @@ feature.hears(
 );
 
 feature.callbackQuery(
-  selectConsiderPetrolStationData.filter(),
+  selectTicketsData.filter({
+    isSelectPetrolStation: false,
+  }),
+  logHandle("select-filtered-petrol-station"),
+  chatAction("typing"),
+  viewPetrolStationsFilteredHandler,
+);
+
+feature.callbackQuery(
+  selectTicketsData.filter({
+    isSelectPetrolStation: true,
+  }),
   logHandle("select-filtered-petrol-station"),
   chatAction("typing"),
   showTicketsFilteredHandler,
