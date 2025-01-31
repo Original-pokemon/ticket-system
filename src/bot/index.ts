@@ -1,4 +1,9 @@
-import { Context, createContextConstructor } from "#root/bot/context.js";
+import {
+  CachedData,
+  Context,
+  createContextConstructor,
+  SessionData,
+} from "#root/bot/context.js";
 import {
   botAdminFeature,
   userFeature,
@@ -15,8 +20,16 @@ import { hydrate } from "@grammyjs/hydrate";
 import { hydrateReply, parseMode } from "@grammyjs/parse-mode";
 import { sequentialize } from "@grammyjs/runner";
 import { hydrateFiles } from "@grammyjs/files";
-import { conversationsFeature } from "./conversations/index.js";
+import { CategoryType } from "#root/types/category.js";
+import { GroupType } from "#root/types/group.js";
+import { ManagerType } from "#root/types/manager.js";
+import { PetrolStationType } from "#root/types/petrol-station.js";
+import { StatusType } from "#root/types/status.js";
+import { TicketType } from "#root/types/ticket.js";
+import { UserType } from "#root/types/user.js";
 import { dataCacheMiddleware } from "./middlewares/data-cache.js";
+import { conversationsFeature } from "./conversations/index.js";
+import { UserGroup } from "./const/user-group.js";
 
 type Options = {
   container: Container;
@@ -25,6 +38,37 @@ type Options = {
 
 const getSessionKey = (ctx: Omit<Context, "session">) =>
   ctx.chat?.id.toString();
+
+function createEmptyCache<T>(): CachedData<T> {
+  return {
+    // eslint-disable-next-line unicorn/no-null
+    data: null,
+    lastUpdate: Date.now(),
+  };
+}
+
+function initialSessionData(): SessionData {
+  return {
+    user: {
+      id: "",
+      user_name: "",
+      first_name: "",
+      user_group: UserGroup.Unauthorized,
+    },
+    customData: {},
+    // eslint-disable-next-line unicorn/no-null
+    selectUser: null,
+
+    // Кэшируемые справочники
+    categories: createEmptyCache<CategoryType>(),
+    groups: createEmptyCache<GroupType>(),
+    statuses: createEmptyCache<StatusType>(),
+    petrolStations: createEmptyCache<PetrolStationType>(),
+    tickets: createEmptyCache<TicketType>(),
+    managers: createEmptyCache<ManagerType>(),
+    users: createEmptyCache<UserType>(),
+  };
+}
 
 export function createBot(
   token: string,
@@ -53,10 +97,7 @@ export function createBot(
   protectedBot.use(sequentialize(getSessionKey));
   protectedBot.use(
     session({
-      initial: () => ({
-        user: {},
-        customData: {},
-      }),
+      initial: initialSessionData,
       storage: sessionStorage,
       getSessionKey,
     }),
