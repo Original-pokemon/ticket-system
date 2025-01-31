@@ -152,7 +152,7 @@ export async function viewAllGroupsCommandHandler(ctx: Context) {
     : await services.Group.getAll();
 
   if (!groups || groups.length === 0) {
-    await ctx.reply("Нет доступных категорий.");
+    await ctx.reply("Нет доступных групп.");
     return;
   }
 
@@ -174,7 +174,7 @@ export async function viewAllGroupsCommandHandler(ctx: Context) {
     session.users.data = null;
   }
 
-  await ctx.reply("Выберите категорию:", {
+  await ctx.reply("Выберите группу пользователя:", {
     reply_markup: keyboard,
   });
 }
