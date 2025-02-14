@@ -17,7 +17,11 @@ export const createSelectUserKeyboard = async (
 
   const { pageIndex, groupId } = adminShowTickets.unpack(data);
 
-  if (!session.users?.data) {
+  if (!session?.users?.data) {
+    session.users = {
+      data: {},
+      lastUpdate: Date.now(),
+    };
     const group = await services.Group.getUnique(groupId);
     const usersIdList = group.users || [];
     const users = await services.User.getSelect(usersIdList);
