@@ -20,7 +20,7 @@ export const createAllTicketsKeyboard = async (ctx: Context) => {
     ({ tickets: petrolStationTickets }) => petrolStationTickets || [],
   );
 
-  return InlineKeyboard.from(
+  const keyboard = InlineKeyboard.from(
     chunk(
       tickets.map(({ title, id }) => {
         if (!id) throw new Error("Invalid ticket id");
@@ -35,4 +35,6 @@ export const createAllTicketsKeyboard = async (ctx: Context) => {
       1,
     ),
   );
+
+  return keyboard;
 };

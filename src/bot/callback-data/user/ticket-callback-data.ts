@@ -29,4 +29,6 @@ export const selectTicketsData = createCallbackData("select-status", {
   selectStatusId: String,
   isSelectPetrolStation: Boolean,
   selectPetrolStationId: String,
+  pageIndex: Number,
+  pageSize: Number,
 });

@@ -6,7 +6,6 @@ import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   selectTicketData,
   transferTicketData,
-  showPetrolStationsData,
   selectTicketsData,
   showAllTickets,
 } from "#root/bot/callback-data/index.js";
@@ -77,13 +76,6 @@ feature.callbackQuery(
   viewStatusSectionHandler,
 );
 
-feature.callbackQuery(
-  showPetrolStationsData.filter(),
-  logHandle("callbackQuery-show-petrol-stations"),
-  chatAction("typing"),
-  viewPetrolStationsFilteredHandler,
-);
-
 feature.hears(
   [ManagerButtons.CreateTicket, PetrolStationButtons.CreateTicket],
   logHandle("hears-create-ticket"),
@@ -104,7 +96,7 @@ feature.callbackQuery(
   selectTicketsData.filter({
     isSelectPetrolStation: true,
   }),
-  logHandle("select-filtered-petrol-station"),
+  logHandle("select-filtered-tickets-station"),
   chatAction("typing"),
   showTicketsFilteredHandler,
 );

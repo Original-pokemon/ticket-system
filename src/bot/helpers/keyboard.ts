@@ -22,7 +22,9 @@ export function paginateItems<T>(items: T[], pageSize: number) {
   });
 }
 
-type PaginatedSchema = Schema & { pageIndex: NumberConstructor };
+type PaginatedSchema = Schema & {
+  pageIndex: NumberConstructor;
+};
 
 export function getPageKeyboard<S extends PaginatedSchema>(
   pageItems: { text: string; callback_data: string }[],
@@ -45,9 +47,13 @@ export function getPageKeyboard<S extends PaginatedSchema>(
   }
 
   keyboard.row();
+
+  if (totalPages > 1) {
+    keyboard.text(" ", " ").row();
+  }
   if (pageIndex > 0) {
     keyboard.text(
-      "⏮ Назад",
+      "⏮ Прев. страница",
       callbackData.pack({
         ...baseData,
         pageIndex: pageIndex - 1,
@@ -56,7 +62,7 @@ export function getPageKeyboard<S extends PaginatedSchema>(
   }
   if (pageIndex < totalPages - 1) {
     keyboard.text(
-      "Вперёд ⏭",
+      "След. страница ⏭",
       callbackData.pack({
         ...baseData,
         pageIndex: pageIndex + 1,
@@ -65,4 +71,20 @@ export function getPageKeyboard<S extends PaginatedSchema>(
   }
 
   return keyboard;
+}
+
+/**
+ * Adds a back button to the keyboard.
+ * @param keyboard The keyboard to add the button to.
+ * @param callbackData The callback data of the button.
+ */
+export function addBackButton(
+  keyboard: InlineKeyboard,
+  callbackData: string,
+): InlineKeyboard {
+  return keyboard
+    .row()
+    .text(" ", " ")
+    .row()
+    .text("↩️ В прошлое меню", callbackData);
 }

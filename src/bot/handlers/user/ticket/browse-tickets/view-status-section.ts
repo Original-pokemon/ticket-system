@@ -60,6 +60,8 @@ const createStatusSectionKeyboard = async (
                   selectStatusId: status,
                   isSelectPetrolStation: false,
                   selectPetrolStationId: "",
+                  pageIndex: 0,
+                  pageSize: 20,
                 })
               : "ignore",
         };

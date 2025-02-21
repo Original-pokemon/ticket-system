@@ -3,8 +3,12 @@ import {
   selectTicketData,
 } from "#root/bot/callback-data/index.js";
 import { Context } from "#root/bot/context.js";
-import { CallbackQueryContext, InlineKeyboard } from "grammy";
-import { chunk } from "#root/bot/helpers/index.js";
+import { CallbackQueryContext } from "grammy";
+import {
+  addBackButton,
+  getPageKeyboard,
+  paginateItems,
+} from "#root/bot/helpers/index.js";
 import { TicketType } from "#root/types/index.js";
 import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
 import { getAllTicketsForUserGroup } from "./get-all-tickets-for-user-group.js";
@@ -30,9 +34,9 @@ const createFilteredTicketsKeyboard = async (
     },
     logger,
   } = ctx;
-
-  const { selectPetrolStationId, selectStatusId } =
-    selectTicketsData.unpack(data);
+  const callbackData = selectTicketsData.unpack(data);
+  const { selectPetrolStationId, selectStatusId, pageIndex, pageSize } =
+    callbackData;
 
   try {
     const tickets = await getAllTicketsForUserGroup(userGroup as UserGroup, {
@@ -47,23 +51,42 @@ const createFilteredTicketsKeyboard = async (
 
     if (filteredTickets.length === 0) throw new Error("No tickets found");
 
-    const keyboardRows = InlineKeyboard.from(
-      chunk(
-        filteredTickets.map(({ title, id }) => {
-          if (!id) throw new Error("Invalid ticket id");
+    const ticketsPages = paginateItems(filteredTickets, pageSize);
 
-          return {
-            text: title,
-            callback_data: selectTicketData.pack({
-              id,
-            }),
-          };
+    const pageItems = ticketsPages[pageIndex].map(({ title, id }) => {
+      if (!id) throw new Error("Invalid ticket id");
+
+      return {
+        text: title,
+        callback_data: selectTicketData.pack({
+          id,
         }),
-        2,
-      ),
+      };
+    });
+
+    const keyboard = getPageKeyboard(
+      pageItems,
+      pageIndex,
+      ticketsPages.length,
+      selectTicketsData,
+      {
+        selectStatusId,
+        isSelectPetrolStation: true,
+        selectPetrolStationId,
+        pageSize,
+      },
     );
 
-    return keyboardRows;
+    return addBackButton(
+      keyboard,
+      selectTicketsData.pack({
+        selectStatusId,
+        pageIndex: 0,
+        isSelectPetrolStation: false,
+        selectPetrolStationId,
+        pageSize,
+      }),
+    );
   } catch (error) {
     logger.error(`Failed to create filtered tickets keyboard: ${error}`);
     throw error;

@@ -1,18 +1,21 @@
 import { selectTicketsData } from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
-import { CallbackQueryContext, InlineKeyboard } from "grammy";
-import { chunk } from "#root/bot/helpers/index.js";
+import { CallbackQueryContext } from "grammy";
+import { getPageKeyboard, paginateItems } from "#root/bot/helpers/index.js";
 import { getAllTicketsForUserGroup } from "./get-all-tickets-for-user-group.js";
 
 const createFilteredPetrolStationsKeyboard = async (
-  ctx: Context,
+  ctx: CallbackQueryContext<Context>,
   statuses: TicketStatus[],
 ) => {
-  const { services, session } = ctx;
+  const { services, session, callbackQuery } = ctx;
   const {
     user: { id: userId, user_group: userGroup },
   } = session;
+
+  const { pageIndex, pageSize, selectStatusId, selectPetrolStationId } =
+    selectTicketsData.unpack(callbackQuery.data);
 
   const tickets = await getAllTicketsForUserGroup(userGroup as UserGroup, {
     ctx,
@@ -38,11 +41,13 @@ const createFilteredPetrolStationsKeyboard = async (
   const uniqueStations = [...stationCountMap.keys()];
   const users = await services.User.getSelect(uniqueStations || []);
 
+  const usersPages = paginateItems(users, pageSize);
+
   if (users.length === 0) {
     throw new Error("Tickets not found");
   }
 
-  const buttons = users.map(({ user_name: userName, id }) => {
+  const pageItems = usersPages[pageIndex].map(({ user_name: userName, id }) => {
     const count = stationCountMap.get(id) ?? 0;
     const text = `${userName} (${count})`;
     return {
@@ -51,13 +56,26 @@ const createFilteredPetrolStationsKeyboard = async (
         selectStatusId: statuses[0],
         isSelectPetrolStation: true,
         selectPetrolStationId: id,
+        pageIndex: 0,
+        pageSize,
       }),
     };
   });
 
-  const keyboardRows = chunk(buttons, 2);
+  const keyboard = getPageKeyboard(
+    pageItems,
+    pageIndex,
+    usersPages.length,
+    selectTicketsData,
+    {
+      selectStatusId,
+      isSelectPetrolStation: false,
+      selectPetrolStationId,
+      pageSize,
+    },
+  );
 
-  return InlineKeyboard.from(keyboardRows);
+  return keyboard;
 };
 
 export const viewPetrolStationsFilteredHandler = async (
@@ -75,22 +93,22 @@ export const viewPetrolStationsFilteredHandler = async (
     throw new Error("Statuses not found");
   }
 
+  const keyboard = await createFilteredPetrolStationsKeyboard(ctx, [
+    selectStatusId as TicketStatus,
+  ]);
+
   try {
     await ctx.editMessageText(
       `Отфильтрованные АЗС для статуса ${cachedStatuses[selectStatusId].description}`,
       {
-        reply_markup: await createFilteredPetrolStationsKeyboard(ctx, [
-          selectStatusId as TicketStatus,
-        ]),
+        reply_markup: keyboard,
       },
     );
   } catch {
     await ctx.reply(
       `Отфильтрованные АЗС для статуса ${cachedStatuses[selectStatusId].description}`,
       {
-        reply_markup: await createFilteredPetrolStationsKeyboard(ctx, [
-          selectStatusId as TicketStatus,
-        ]),
+        reply_markup: keyboard,
       },
     );
   }
