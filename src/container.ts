@@ -17,33 +17,34 @@ import {
   TagWordService,
   TicketService,
 } from "#root/services/index.js";
+import { AxiosInstance } from "axios";
 
-const createServices = () => ({
-  User: new UserService(),
-  Group: new GroupService(),
-  Manager: new ManagerService(),
-  Bush: new BushService(),
-  PetrolStation: new PetrolStationService(),
-  TaskPerformer: new TaskPerformerService(),
-  Category: new CategoryService(),
-  Attachment: new AttachmentService(),
-  Comment: new CommentService(),
-  Priority: new PriorityService(),
-  StatusHistory: new StatusHistoryService(),
-  Status: new StatusService(),
-  TagWord: new TagWordService(),
-  Ticket: new TicketService(),
+const createServices = (api: AxiosInstance) => ({
+  Group: new GroupService(api),
+  User: new UserService(api),
+  Manager: new ManagerService(api),
+  Bush: new BushService(api),
+  PetrolStation: new PetrolStationService(api),
+  TaskPerformer: new TaskPerformerService(api),
+  Category: new CategoryService(api),
+  Attachment: new AttachmentService(api),
+  Comment: new CommentService(api),
+  Priority: new PriorityService(api),
+  StatusHistory: new StatusHistoryService(api),
+  Status: new StatusService(api),
+  TagWord: new TagWordService(api),
+  Ticket: new TicketService(api),
 });
 
 const createClient = (connectionString: string) =>
   new pg.Client(connectionString);
 
-export const createAppContainer = () => {
+export const createAppContainer = (api: AxiosInstance) => {
   const { DATABASE_URL } = config;
 
   const client = createClient(DATABASE_URL);
 
-  const services = createServices();
+  const services = createServices(api);
 
   return {
     client,

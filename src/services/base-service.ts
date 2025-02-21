@@ -1,15 +1,14 @@
-import { createApi } from "./api.js";
+import { AxiosInstance } from "axios";
 import { APIRoute } from "./const.js";
-
-const api = await createApi();
 
 export class BaseService<T> {
   private readonly resource;
 
-  #api = api;
+  #api: AxiosInstance;
 
-  constructor(resource: keyof typeof APIRoute) {
+  constructor(resource: keyof typeof APIRoute, api: AxiosInstance) {
     this.resource = APIRoute[resource];
+    this.#api = api;
   }
 
   getAll = async (): Promise<T[]> => {

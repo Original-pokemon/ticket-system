@@ -1,11 +1,12 @@
 import { TicketType } from "#root/types/index.js";
+import { AxiosInstance } from "axios";
 import { BaseService } from "../base-service.js";
 import { ApiRouteKey } from "../const.js";
 import { TicketStatus } from "../../bot/const/index.js";
 
 export class TicketService extends BaseService<TicketType> {
-  constructor() {
-    super(ApiRouteKey.Ticket);
+  constructor(api: AxiosInstance) {
+    super(ApiRouteKey.Ticket, api);
   }
 
   updateTicketStatus = async ({

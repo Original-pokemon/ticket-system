@@ -5,9 +5,8 @@ import { createAppContainer } from "#root/container.js";
 import { PsqlAdapter } from "@grammyjs/storage-psql";
 
 import { run, RunnerHandle } from "@grammyjs/runner";
+import { createApi } from "#root/services/api.js";
 
-const container = createAppContainer();
-const { logger, config, client } = container;
 function onShutdown(cleanUp: () => Promise<void>) {
   let isShuttingDown = false;
   const handleShutdown = async () => {
@@ -20,6 +19,9 @@ function onShutdown(cleanUp: () => Promise<void>) {
 }
 
 try {
+  const api = await createApi();
+  const container = createAppContainer(api);
+  const { logger, config, client } = container;
   await client.connect();
   const sessionStorage = await PsqlAdapter.create({
     tableName: "session",
@@ -35,9 +37,14 @@ try {
 
   // Graceful shutdown
   onShutdown(async () => {
-    logger.info("shutdown");
-
+    logger.debug("shutdown");
+    logger.debug("Closing database connection...");
+    await client.end();
+    logger.info("Stopping bot...");
+    await bot.stop();
+    logger.debug("Stopping runner...");
     await runner?.stop();
+    logger.info("Shutdown complete.");
   });
 
   await Promise.all([bot.init()]);
@@ -65,7 +72,6 @@ try {
         }),
     });
   }
-} catch (error) {
-  logger.error(error);
+} catch {
   process.exit(1);
 }
