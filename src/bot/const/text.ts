@@ -98,7 +98,7 @@ export const UserText = {
     EDIT_TEXT: "Изменить",
     DELETE_TEXT: "Удалить",
     RETRIEVE_TEXT: "Вернуть задачу ",
-    CONSIDER: "Задача выполнена",
+    CONSIDER: "Отметить задачу выполненой",
   },
   Consider: {
     PETROL_STATIONS: "Выберите АЗС",
