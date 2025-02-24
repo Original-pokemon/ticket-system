@@ -1,6 +1,7 @@
 import {
   selectTicketsData,
   selectTicketData,
+  SelectTicketScene,
 } from "#root/bot/callback-data/index.js";
 import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
@@ -23,6 +24,8 @@ const filterPerPetrolStation = (tickets: TicketType[], stationId: string) => {
   return tickets.filter((ticket) => ticket.petrol_station_id === stationId);
 };
 
+const PAGE_SIZE = 20;
+
 const createFilteredTicketsKeyboard = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
@@ -35,8 +38,12 @@ const createFilteredTicketsKeyboard = async (
     logger,
   } = ctx;
   const callbackData = selectTicketsData.unpack(data);
-  const { selectPetrolStationId, selectStatusId, pageIndex, pageSize } =
-    callbackData;
+  const {
+    selectPetrolStationId,
+    selectStatusId,
+    pageIndex,
+    availableStatuses,
+  } = callbackData;
 
   try {
     const tickets = await getAllTicketsForUserGroup(userGroup as UserGroup, {
@@ -51,7 +58,7 @@ const createFilteredTicketsKeyboard = async (
 
     if (filteredTickets.length === 0) throw new Error("No tickets found");
 
-    const ticketsPages = paginateItems(filteredTickets, pageSize);
+    const ticketsPages = paginateItems(filteredTickets, PAGE_SIZE);
 
     const pageItems = ticketsPages[pageIndex].map(({ title, id }) => {
       if (!id) throw new Error("Invalid ticket id");
@@ -70,21 +77,21 @@ const createFilteredTicketsKeyboard = async (
       ticketsPages.length,
       selectTicketsData,
       {
+        scene: SelectTicketScene.Ticket,
+        availableStatuses,
         selectStatusId,
-        isSelectPetrolStation: true,
         selectPetrolStationId,
-        pageSize,
       },
     );
 
     return addBackButton(
       keyboard,
       selectTicketsData.pack({
+        scene: SelectTicketScene.PetrolStation,
+        availableStatuses,
         selectStatusId,
         pageIndex: 0,
-        isSelectPetrolStation: false,
         selectPetrolStationId,
-        pageSize,
       }),
     );
   } catch (error) {

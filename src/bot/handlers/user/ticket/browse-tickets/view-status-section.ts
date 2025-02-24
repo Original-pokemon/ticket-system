@@ -1,9 +1,17 @@
 /* eslint-disable no-restricted-syntax */
 import { CallbackQueryContext, HearsContext, InlineKeyboard } from "grammy";
 import { Context } from "#root/bot/context.js";
-import { SupervisorButtons, UserGroup } from "#root/bot/const/index.js";
-import { selectTicketsData } from "#root/bot/callback-data/index.js";
-import { chunk } from "#root/bot/helpers/index.js";
+import {
+  SupervisorButtons,
+  TicketStatus,
+  UserGroup,
+} from "#root/bot/const/index.js";
+import {
+  SelectTicketScene,
+  selectTicketsData,
+  startMessageCallback,
+} from "#root/bot/callback-data/index.js";
+import { addBackButton, chunk } from "#root/bot/helpers/index.js";
 import {
   getAllowedStatusesForUserGroup,
   HearsTextType,
@@ -13,30 +21,40 @@ import { getAllTicketsForUserGroup } from "./get-all-tickets-for-user-group.js";
 const createStatusSectionKeyboard = async (
   ctx: HearsContext<Context> | CallbackQueryContext<Context>,
 ) => {
+  const { callbackQuery, session, services, message } = ctx;
   const {
     user,
     statuses: { data: cachedStatuses },
-  } = ctx.session;
+  } = session;
+
   const { user_group: userGroup, id: userId } = user;
 
   if (!cachedStatuses) {
     throw new Error("Statuses not found ");
   }
 
-  let buttonText = ctx.message?.text as HearsTextType | undefined;
+  let buttonText = message?.text as HearsTextType | undefined;
 
   if (!buttonText) {
     buttonText = SupervisorButtons.AllTickets;
   }
 
-  const allowedStatuses = getAllowedStatusesForUserGroup(
-    userGroup as UserGroup,
-    buttonText,
-  );
+  let allowedStatuses: TicketStatus[] = [];
+
+  if (message?.text) {
+    allowedStatuses = getAllowedStatusesForUserGroup(
+      userGroup as UserGroup,
+      buttonText,
+    );
+  }
+  if (callbackQuery?.data) {
+    const { availableStatuses } = selectTicketsData.unpack(callbackQuery.data);
+    allowedStatuses = availableStatuses.split(",") as TicketStatus[];
+  }
 
   const tickets = await getAllTicketsForUserGroup(userGroup as UserGroup, {
     ctx,
-    services: ctx.services,
+    services,
     userId,
   });
 
@@ -57,11 +75,11 @@ const createStatusSectionKeyboard = async (
           callback_data:
             count > 0
               ? selectTicketsData.pack({
+                  scene: SelectTicketScene.PetrolStation,
+                  availableStatuses: allowedStatuses.join(","),
                   selectStatusId: status,
-                  isSelectPetrolStation: false,
                   selectPetrolStationId: "",
                   pageIndex: 0,
-                  pageSize: 20,
                 })
               : "ignore",
         };
@@ -70,7 +88,7 @@ const createStatusSectionKeyboard = async (
     ),
   );
 
-  return keyboard;
+  return addBackButton(keyboard, startMessageCallback.pack({}));
 };
 
 export async function viewStatusSectionHandler(

@@ -1,11 +1,11 @@
 import { Context } from "#root/bot/context.js";
-import { CommandContext } from "grammy";
+import { CallbackQueryContext } from "grammy";
 import { createAdminStartMenu } from "#root/bot/keyboards/admin/admin-panel.js";
 import { isBlocked, isUnauthorized } from "#root/bot/filters/index.js";
 import { isAdmin } from "#root/bot/filters/is-bot-admin.js";
 import { BotText } from "#root/bot/const/text.js";
+import { createUserInlineKeyboard } from "#root/bot/keyboards/index.js";
 import { UserGroup } from "#root/bot/const/index.js";
-import { createUserKeyboard } from "#root/bot/keyboards/index.js";
 
 const ManualLink = {
   [UserGroup.Manager]:
@@ -28,7 +28,9 @@ const SiteLink = {
     "https://docs.google.com/document/d/1BTxTL7e7u5SCiCK39Zs_9BonVY9sd_j5pAzmqZfWP4U/edit?usp=sharing",
 };
 
-export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
+export const welcomeCallbackHandler = async (
+  ctx: CallbackQueryContext<Context>,
+) => {
   const { session, conversation } = ctx;
 
   const {
@@ -62,15 +64,27 @@ export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
   if (isBlocked(userGroup)) {
     return ctx.reply(BotText.Welcome.BLOCKED);
   }
-
-  return ctx.reply(
-    BotText.Welcome.getUserText(
-      group.description,
-      ManualLink[userGroup],
-      SiteLink[userGroup],
-    ),
-    {
-      reply_markup: await createUserKeyboard(group.id),
-    },
-  );
+  try {
+    await ctx.editMessageText(
+      BotText.Welcome.getUserText(
+        group.description,
+        ManualLink[userGroup],
+        SiteLink[userGroup],
+      ),
+      {
+        reply_markup: await createUserInlineKeyboard(group.id),
+      },
+    );
+  } catch {
+    await ctx.reply(
+      BotText.Welcome.getUserText(
+        group.description,
+        ManualLink[userGroup],
+        SiteLink[userGroup],
+      ),
+      {
+        reply_markup: await createUserInlineKeyboard(group.id),
+      },
+    );
+  }
 };

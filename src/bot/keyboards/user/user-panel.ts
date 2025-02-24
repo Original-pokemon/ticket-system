@@ -5,7 +5,12 @@ import {
   createTaskPerformerKeyboard,
   createManagerKeyboard,
   createSupervisorKeyboard,
+  createPetrolStationInlineKeyboard,
+  createManagerInlineKeyboard,
+  createTaskPerformerInlineKeyboard,
+  createSupervisorInlineKeyboard,
 } from "./index.js";
+import { createAdminStartMenu } from "../index.js";
 
 const Keyboard = {
   [UserGroup.Manager]: createManagerKeyboard,
@@ -14,8 +19,22 @@ const Keyboard = {
   [UserGroup.Supervisor]: createSupervisorKeyboard,
 };
 
+const InlineKeyboard = {
+  [UserGroup.Manager]: createManagerInlineKeyboard,
+  [UserGroup.PetrolStation]: createPetrolStationInlineKeyboard,
+  [UserGroup.TaskPerformer]: createTaskPerformerInlineKeyboard,
+  [UserGroup.Supervisor]: createSupervisorInlineKeyboard,
+  [UserGroup.Admin]: createAdminStartMenu,
+};
+
 export const createUserKeyboard = async (group: string) => {
   if (isAuthUser(group)) {
     return Keyboard[group]();
+  }
+};
+
+export const createUserInlineKeyboard = async (group: string) => {
+  if (isAuthUser(group)) {
+    return InlineKeyboard[group]();
   }
 };

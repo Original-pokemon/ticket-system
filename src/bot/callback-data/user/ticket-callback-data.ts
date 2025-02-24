@@ -25,10 +25,16 @@ export const selectTicketPropertyData = createCallbackData(
   },
 );
 
-export const selectTicketsData = createCallbackData("select-status", {
+export const SelectTicketScene = {
+  Status: "status",
+  PetrolStation: "petrol_station",
+  Ticket: "Ticket",
+} as const;
+
+export const selectTicketsData = createCallbackData("select-tickets", {
+  scene: String,
+  availableStatuses: String,
   selectStatusId: String,
-  isSelectPetrolStation: Boolean,
   selectPetrolStationId: String,
   pageIndex: Number,
-  pageSize: Number,
 });

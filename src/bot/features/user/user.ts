@@ -7,7 +7,7 @@ import {
   selectTicketData,
   transferTicketData,
   selectTicketsData,
-  showAllTickets,
+  SelectTicketScene,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
@@ -70,7 +70,9 @@ feature.hears(
 );
 
 feature.callbackQuery(
-  showAllTickets.filter(),
+  selectTicketsData.filter({
+    scene: SelectTicketScene.Status,
+  }),
   logHandle("callback-show-all-tickets"),
   chatAction("typing"),
   viewStatusSectionHandler,
@@ -85,7 +87,7 @@ feature.hears(
 
 feature.callbackQuery(
   selectTicketsData.filter({
-    isSelectPetrolStation: false,
+    scene: SelectTicketScene.PetrolStation,
   }),
   logHandle("select-filtered-petrol-station"),
   chatAction("typing"),
@@ -94,7 +96,7 @@ feature.callbackQuery(
 
 feature.callbackQuery(
   selectTicketsData.filter({
-    isSelectPetrolStation: true,
+    scene: SelectTicketScene.Ticket,
   }),
   logHandle("select-filtered-tickets-station"),
   chatAction("typing"),

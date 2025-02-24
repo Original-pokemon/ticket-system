@@ -1,9 +1,18 @@
-import { selectTicketsData } from "#root/bot/callback-data/index.js";
+import {
+  SelectTicketScene,
+  selectTicketsData,
+} from "#root/bot/callback-data/index.js";
 import { TicketStatus, UserGroup } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import { CallbackQueryContext } from "grammy";
-import { getPageKeyboard, paginateItems } from "#root/bot/helpers/index.js";
+import {
+  addBackButton,
+  getPageKeyboard,
+  paginateItems,
+} from "#root/bot/helpers/index.js";
 import { getAllTicketsForUserGroup } from "./get-all-tickets-for-user-group.js";
+
+const PAGE_SIZE = 20;
 
 const createFilteredPetrolStationsKeyboard = async (
   ctx: CallbackQueryContext<Context>,
@@ -14,8 +23,12 @@ const createFilteredPetrolStationsKeyboard = async (
     user: { id: userId, user_group: userGroup },
   } = session;
 
-  const { pageIndex, pageSize, selectStatusId, selectPetrolStationId } =
-    selectTicketsData.unpack(callbackQuery.data);
+  const {
+    pageIndex,
+    selectStatusId,
+    selectPetrolStationId,
+    availableStatuses,
+  } = selectTicketsData.unpack(callbackQuery.data);
 
   const tickets = await getAllTicketsForUserGroup(userGroup as UserGroup, {
     ctx,
@@ -41,7 +54,7 @@ const createFilteredPetrolStationsKeyboard = async (
   const uniqueStations = [...stationCountMap.keys()];
   const users = await services.User.getSelect(uniqueStations || []);
 
-  const usersPages = paginateItems(users, pageSize);
+  const usersPages = paginateItems(users, PAGE_SIZE);
 
   if (users.length === 0) {
     throw new Error("Tickets not found");
@@ -53,11 +66,11 @@ const createFilteredPetrolStationsKeyboard = async (
     return {
       text,
       callback_data: selectTicketsData.pack({
+        availableStatuses,
+        scene: SelectTicketScene.Ticket,
         selectStatusId: statuses[0],
-        isSelectPetrolStation: true,
         selectPetrolStationId: id,
         pageIndex: 0,
-        pageSize,
       }),
     };
   });
@@ -68,14 +81,23 @@ const createFilteredPetrolStationsKeyboard = async (
     usersPages.length,
     selectTicketsData,
     {
+      scene: SelectTicketScene.PetrolStation,
+      availableStatuses,
       selectStatusId,
-      isSelectPetrolStation: false,
       selectPetrolStationId,
-      pageSize,
     },
   );
 
-  return keyboard;
+  return addBackButton(
+    keyboard,
+    selectTicketsData.pack({
+      scene: SelectTicketScene.Status,
+      availableStatuses,
+      selectStatusId,
+      selectPetrolStationId,
+      pageIndex: 0,
+    }),
+  );
 };
 
 export const viewPetrolStationsFilteredHandler = async (
