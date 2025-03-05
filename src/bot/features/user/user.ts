@@ -2,7 +2,6 @@ import type { Context } from "#root/bot/context.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 import { Composer } from "grammy";
 
-import { chatAction } from "@grammyjs/auto-chat-action";
 import {
   selectTicketData,
   transferTicketData,
@@ -49,14 +48,12 @@ feature.use(petrolStationFeature);
 feature.callbackQuery(
   selectTicketData.filter(),
   logHandle("callbackQuery-show-ticket"),
-  chatAction("typing"),
   showTicketHandler,
 );
 
 feature.callbackQuery(
   transferTicketData.filter(),
   logHandle("callbackQuery-send-ticket"),
-  chatAction("typing"),
   transferTicketHandler,
 );
 
@@ -69,7 +66,6 @@ feature.hears(
     SupervisorButtons.AllTickets,
   ],
   logHandle("hears-consider-tickets"),
-  chatAction("typing"),
   viewStatusSectionHandler,
 );
 
@@ -78,14 +74,12 @@ feature.callbackQuery(
     scene: SelectTicketScene.Status,
   }),
   logHandle("callback-show-all-tickets"),
-  chatAction("typing"),
   viewStatusSectionHandler,
 );
 
 feature.hears(
   [ManagerButtons.CreateTicket, PetrolStationButtons.CreateTicket],
   logHandle("hears-create-ticket"),
-  chatAction("typing"),
   createTicketHandler,
 );
 
@@ -94,7 +88,6 @@ feature.callbackQuery(
     scene: SelectTicketScene.PetrolStation,
   }),
   logHandle("select-filtered-petrol-station"),
-  chatAction("typing"),
   viewPetrolStationsFilteredHandler,
 );
 
@@ -103,7 +96,6 @@ feature.callbackQuery(
     scene: SelectTicketScene.Ticket,
   }),
   logHandle("select-filtered-tickets-station"),
-  chatAction("typing"),
   showTicketsFilteredHandler,
 );
 
