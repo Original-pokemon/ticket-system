@@ -38,12 +38,15 @@ try {
   // Graceful shutdown
   onShutdown(async () => {
     logger.debug("shutdown");
-    logger.debug("Closing database connection...");
-    await client.end();
     logger.info("Stopping bot...");
     await bot.stop();
-    logger.debug("Stopping runner...");
-    await runner?.stop();
+
+    if (config.isProd) {
+      logger.debug("Closing database connection...");
+      await client.end();
+      logger.debug("Stopping runner...");
+      await runner?.stop();
+    }
     logger.info("Shutdown complete.");
   });
 
