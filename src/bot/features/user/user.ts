@@ -8,6 +8,7 @@ import {
   transferTicketData,
   selectTicketsData,
   SelectTicketScene,
+  startMessageCallback,
 } from "#root/bot/callback-data/index.js";
 import {
   showTicketHandler,
@@ -16,6 +17,7 @@ import {
   transferTicketHandler,
   createTicketHandler,
   viewStatusSectionHandler,
+  welcomeCallbackHandler,
 } from "#root/bot/handlers/index.js";
 import {
   ManagerButtons,
@@ -37,6 +39,8 @@ const feature = composer.chatType("private").filter(({ session }) => {
     isAuthUser(session.user.user_group) || isAdmin(session.user.user_group)
   );
 });
+
+feature.callbackQuery(startMessageCallback.filter(), welcomeCallbackHandler);
 
 feature.use(managerFeature);
 feature.use(taskPerformerFeature);

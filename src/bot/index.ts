@@ -5,10 +5,10 @@ import {
   SessionData,
 } from "#root/bot/context.js";
 import {
-  botAdminFeature,
   userFeature,
   unhandledFeature,
-  welcomeFeature,
+  commandsFeature,
+  botAdminFeature,
 } from "#root/bot/features/index.js";
 import { errorHandler } from "#root/bot/handlers/index.js";
 import { updateLogger, authMiddleware } from "#root/bot/middlewares/index.js";
@@ -109,7 +109,7 @@ export function createBot(
   protectedBot.use(conversationsFeature(container));
 
   // Handlers
-  protectedBot.use(welcomeFeature);
+  protectedBot.use(commandsFeature);
   protectedBot.use(botAdminFeature);
   protectedBot.use(userFeature);
 

@@ -6,3 +6,4 @@ export * from "./buttons/manager-buttons.js";
 export * from "./buttons/petrol-station-buttons.js";
 export * from "./buttons/task-performer-buttons.js";
 export * from "./buttons/super-visor-buttons.js";
+export * from "./commands.js";

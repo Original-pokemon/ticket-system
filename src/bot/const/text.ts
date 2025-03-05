@@ -34,15 +34,14 @@ export const AdminText = {
 
 export const BotText = {
   UNHANDLER: "Нераспознанная команда. Попробуйте /start",
+  HELP: (manualLink?: string, siteLink?: string) => `
+  ${manualLink ? `\nCсылка на инструкцию для вашей роли: ${manualLink}` : ""}
+      ${siteLink ? `\nСсылка на инструкцию для сайта: ${siteLink}` : ""}`,
   Welcome: {
     UNAUTHORIZED:
       "Добро пожаловать в систему заявок!\n \nОжидайте, когда Вам выдадут роль, когда это произойдет Вы получите уведомление",
-    getUserText: (role: string, manualLink?: string, siteLink?: string) =>
-      `Добро пожаловать! \nВаша роль: ${role} 
-      ${
-        manualLink ? `\nCсылка на инструкцию для вашей роли: ${manualLink}` : ""
-      }
-      ${siteLink ? `\nСсылка на инструкцию для сайта: ${siteLink}` : ""}`,
+    getUserText: (role: string, commands: string[]) =>
+      `Добро пожаловать! \nВаша роль: ${role}\n\n${commands.join("\n")} `,
     ADMIN: "Приветствую, Господин! ",
     BLOCKED: "Вы заблокированы",
   },

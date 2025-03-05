@@ -1,7 +1,7 @@
 import { Context } from "#root/bot/context.js";
 import { createConversation } from "@grammyjs/conversations";
 import { Container } from "#root/container.js";
-import { AdminText, BotText } from "#root/bot/const/index.js";
+import { AdminText, BotText, commandsText } from "#root/bot/const/index.js";
 import { registerUserData } from "#root/bot/callback-data/index.js";
 import { handleGroupRegistration } from "./handle-group-registration.js";
 import { getUserGroupId } from "./get-user-group-id.js";
@@ -50,7 +50,10 @@ export const registerUserConversation = (container: Container) =>
       try {
         await ctx.api.sendMessage(
           userId,
-          BotText.Welcome.getUserText(group.description),
+          BotText.Welcome.getUserText(
+            group.description,
+            Object.values(commandsText),
+          ),
         );
       } catch {
         logger.warn("User ID not valid");
