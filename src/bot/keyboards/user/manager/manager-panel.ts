@@ -3,16 +3,16 @@ import {
   selectTicketsData,
 } from "#root/bot/callback-data/index.js";
 import { ManagerButtons, UserGroup } from "#root/bot/const/index.js";
+import { infoPageCallback } from "#root/bot/handlers/commands/info.js";
 import { groupStatusesMap } from "#root/bot/handlers/user/ticket/browse-tickets/group-statuses-map.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard, Keyboard } from "grammy";
 
 const buttons = Object.values(ManagerButtons);
 
-export const createManagerKeyboard = async () =>
-  Keyboard.from(chunk(buttons, 2));
+export const createManagerKeyboard = () => Keyboard.from(chunk(buttons, 2));
 
-export const createManagerInlineKeyboard = async () => {
+export const createManagerInlineKeyboard = () => {
   const keyboard = InlineKeyboard.from([
     [
       {
@@ -47,6 +47,14 @@ export const createManagerInlineKeyboard = async () => {
           pageIndex: 0,
           selectPetrolStationId: "",
           selectStatusId: "",
+        }),
+      },
+    ],
+    [
+      {
+        text: ManagerButtons.TicketsPerPetrolStations,
+        callback_data: infoPageCallback.pack({
+          pageIndex: 0,
         }),
       },
     ],
