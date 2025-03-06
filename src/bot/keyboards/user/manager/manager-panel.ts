@@ -3,8 +3,10 @@ import {
   selectTicketsData,
 } from "#root/bot/callback-data/index.js";
 import { ManagerButtons, UserGroup } from "#root/bot/const/index.js";
-import { infoPageCallback } from "#root/bot/handlers/commands/info.js";
-import { groupStatusesMap } from "#root/bot/handlers/user/ticket/browse-tickets/group-statuses-map.js";
+import {
+  groupStatusesMap,
+  infoPageCallback,
+} from "#root/bot/handlers/index.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard, Keyboard } from "grammy";
 
