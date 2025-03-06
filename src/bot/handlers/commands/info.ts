@@ -80,12 +80,12 @@ export async function infoCallbackHandler(
   ctx: CallbackQueryContext<Context>,
 ): Promise<void> {
   try {
+    const { services, callbackQuery, session, me } = ctx;
     const {
       user,
       statuses: { data: cachedStatuses },
-    } = ctx.session;
-    const { services, callbackQuery } = ctx;
-
+    } = session;
+    console.log("me.username :>>");
     const { pageIndex } = infoPageCallback.unpack(callbackQuery.data);
 
     if (!user) {
@@ -133,9 +133,9 @@ export async function infoCallbackHandler(
     for (const [stationId, statusIdMap] of stationMap.entries()) {
       const stationName = `${stationNameMap.get(stationId)} :`;
 
-      text += `start_line<a href="tg://resolve?domain=Test_93848493939_bot&start=${stationId}-">${stationName}</a>\n`;
+      text += `start_line<a href="tg://resolve?domain=${me.username}&start=${stationId}-">${stationName}</a>\n`;
       for (const [statusId, count] of statusIdMap.entries()) {
-        text += `<a href="tg://resolve?domain=Test_93848493939_bot&start=${stationId}-${statusId}">${cachedStatuses[statusId].description}</a>: ${count} заявок\n`;
+        text += `<a href="tg://resolve?domain=${me.username}&start=${stationId}-${statusId}">${cachedStatuses[statusId].description}</a>: ${count} заявок\n`;
       }
       text += "\n";
     }
