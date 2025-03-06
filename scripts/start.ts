@@ -40,10 +40,10 @@ try {
     logger.debug("shutdown");
     logger.info("Stopping bot...");
     await bot.stop();
+    logger.debug("Closing database connection...");
+    await client.end();
 
     if (config.isProd) {
-      logger.debug("Closing database connection...");
-      await client.end();
       logger.debug("Stopping runner...");
       await runner?.stop();
     }
