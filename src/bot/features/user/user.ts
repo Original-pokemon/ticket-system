@@ -10,6 +10,10 @@ import {
   startMessageCallback,
 } from "#root/bot/callback-data/index.js";
 import {
+  infoCallbackHandler,
+  infoPageCallback,
+} from "#root/bot/handlers/commands/info.js";
+import {
   showTicketHandler,
   showTicketsFilteredHandler,
   viewPetrolStationsFilteredHandler,
@@ -24,7 +28,11 @@ import {
   SupervisorButtons,
   TaskPerformerButtons,
 } from "#root/bot/const/index.js";
-import { isAuthUser } from "#root/bot/filters/is-user.js";
+import {
+  isAuthUser,
+  isManager,
+  isTaskPerformer,
+} from "#root/bot/filters/is-user.js";
 import { isAdmin } from "#root/bot/filters/is-bot-admin.js";
 
 import { managerFeature } from "./manager/manager.js";
@@ -98,5 +106,12 @@ feature.callbackQuery(
   logHandle("select-filtered-tickets-station"),
   showTicketsFilteredHandler,
 );
+
+feature
+  .filter(
+    ({ session: { user } }) =>
+      isManager(user.user_group) || isTaskPerformer(user.user_group),
+  )
+  .callbackQuery(infoPageCallback.filter(), infoCallbackHandler);
 
 export { composer as userFeature };

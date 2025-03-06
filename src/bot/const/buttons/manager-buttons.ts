@@ -3,4 +3,5 @@ export enum ManagerButtons {
   CreateTicket = "Создать заявку",
   ConsiderTickets = "Рассмотрение заявок",
   AllTickets = "Все заявки",
+  TicketsPerPetrolStations = "Заявки по АЗС",
 }
