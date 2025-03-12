@@ -85,7 +85,6 @@ export async function infoCallbackHandler(
       user,
       statuses: { data: cachedStatuses },
     } = session;
-    console.log("me.username :>>");
     const { pageIndex } = infoPageCallback.unpack(callbackQuery.data);
 
     if (!user) {
@@ -133,6 +132,7 @@ export async function infoCallbackHandler(
     for (const [stationId, statusIdMap] of stationMap.entries()) {
       const stationName = `${stationNameMap.get(stationId)} :`;
 
+      // При нажатии на АЗС не передаем никакой статус
       text += `start_line<a href="tg://resolve?domain=${me.username}&start=${stationId}-">${stationName}</a>\n`;
       for (const [statusId, count] of statusIdMap.entries()) {
         text += `<a href="tg://resolve?domain=${me.username}&start=${stationId}-${statusId}">${cachedStatuses[statusId].description}</a>: ${count} заявок\n`;

@@ -11,8 +11,15 @@ import {
   paginateItems,
 } from "#root/bot/helpers/index.js";
 import { TicketType } from "#root/types/index.js";
-import { TicketStatus, UserGroup, UserText } from "#root/bot/const/index.js";
+import {
+  TicketStatus,
+  UserGroup,
+  UserText,
+  ManagerButtons,
+} from "#root/bot/const/index.js";
+import { infoPageCallback } from "#root/bot/handlers/index.js";
 import { getAllTicketsForUserGroup } from "./get-all-tickets-for-user-group.js";
+import { groupStatusesMap } from "./group-statuses-map.js";
 
 const filterPerStatus = (tickets: TicketType[], statuses: TicketStatus[]) => {
   return tickets.filter((ticket) =>
@@ -51,9 +58,45 @@ const createFilteredTicketsKeyboard = async (
       services,
       userId,
     });
+
+    // Проверяем, что selectStatusId не пустой, иначе используем все доступные статусы
+    let statusIdToUse = selectStatusId;
+
+    if (!statusIdToUse) {
+      // Если статус не указан, используем все доступные статусы
+      statusIdToUse = availableStatuses;
+    }
+
+    // Определяем статусы для фильтрации
+    let statusesToFilter: TicketStatus[];
+
+    // Если statusIdToUse - строка, проверяем на наличие разделителя или маркер ALL
+    if (typeof statusIdToUse === "string") {
+      if (statusIdToUse === "ALL") {
+        // Используем все доступные статусы
+        statusesToFilter =
+          groupStatusesMap[
+            (userGroup as UserGroup.Manager) || UserGroup.TaskPerformer
+          ][ManagerButtons.AllTickets];
+      } else if (statusIdToUse.includes("_")) {
+        // Разбиваем строку статусов на массив
+        statusesToFilter = statusIdToUse
+          .split("_")
+          .map((status) => status.trim() as TicketStatus);
+      } else {
+        // Один статус
+        statusesToFilter = [statusIdToUse as TicketStatus];
+      }
+    } else if (Array.isArray(statusIdToUse)) {
+      // Если statusIdToUse уже массив (из availableStatuses)
+      statusesToFilter = statusIdToUse as TicketStatus[];
+    } else {
+      throw new TypeError("Invalid status format");
+    }
+
     const filteredTickets = filterPerStatus(
       filterPerPetrolStation(tickets, selectPetrolStationId),
-      [selectStatusId as TicketStatus],
+      statusesToFilter,
     );
 
     if (filteredTickets.length === 0) throw new Error("No tickets found");
@@ -71,6 +114,18 @@ const createFilteredTicketsKeyboard = async (
       };
     });
 
+    // Используем маркер "ALL" для всех статусов, чтобы уменьшить размер callback данных
+    const useAllMarker = statusesToFilter.length > 2;
+    const selectStatusIdValue = useAllMarker
+      ? "ALL"
+      : statusesToFilter.join("_");
+
+    // Для availableStatuses используем только первые 3 статуса, чтобы уменьшить размер данных
+    const availableStatusesValue =
+      groupStatusesMap[
+        (userGroup as UserGroup.Manager) || UserGroup.TaskPerformer
+      ][ManagerButtons.AllTickets].join(",");
+
     const keyboard = getPageKeyboard(
       pageItems,
       pageIndex,
@@ -78,18 +133,27 @@ const createFilteredTicketsKeyboard = async (
       selectTicketsData,
       {
         scene: SelectTicketScene.Ticket,
-        availableStatuses,
-        selectStatusId,
+        availableStatuses: availableStatusesValue,
+        selectStatusId: selectStatusIdValue,
         selectPetrolStationId,
       },
     );
+
+    if (useAllMarker) {
+      return addBackButton(
+        keyboard,
+        infoPageCallback.pack({
+          pageIndex: 0,
+        }),
+      );
+    }
 
     return addBackButton(
       keyboard,
       selectTicketsData.pack({
         scene: SelectTicketScene.PetrolStation,
-        availableStatuses,
-        selectStatusId,
+        availableStatuses: availableStatusesValue,
+        selectStatusId: selectStatusIdValue,
         pageIndex: 0,
         selectPetrolStationId,
       }),

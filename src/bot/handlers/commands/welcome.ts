@@ -25,6 +25,7 @@ import {
   getPageKeyboard,
   paginateItems,
 } from "#root/bot/helpers/index.js";
+import { infoPageCallback } from "./info.js";
 
 const filterPerStatus = (tickets: TicketType[], statuses: TicketStatus[]) => {
   return tickets.filter((ticket) =>
@@ -46,6 +47,10 @@ const getFilteredTicketsKeyboard = async (
   statusId: string,
 ): Promise<InlineKeyboard | undefined> => {
   const { services, logger } = ctx;
+  const availableStatuses =
+    groupStatusesMap[
+      (userGroup as UserGroup.Manager) || UserGroup.TaskPerformer
+    ][ManagerButtons.AllTickets].join(",");
 
   try {
     // Получаем все задачи для группы пользователя
@@ -59,11 +64,28 @@ const getFilteredTicketsKeyboard = async (
     let statusesToFilter: TicketStatus[];
 
     try {
-      statusesToFilter = statusId
-        ? [statusId as TicketStatus]
-        : groupStatusesMap[
+      // Проверяем специальный маркер "ALL" или наличие подчеркиваний
+      if (statusId === "ALL") {
+        // Используем все доступные статусы
+        statusesToFilter =
+          groupStatusesMap[
             (userGroup as UserGroup.Manager) || UserGroup.TaskPerformer
           ][ManagerButtons.AllTickets];
+      } else if (statusId && statusId.includes("_")) {
+        // Разбиваем строку статусов на массив
+        statusesToFilter = statusId
+          .split("_")
+          .map((status) => status.trim() as TicketStatus);
+      } else if (statusId) {
+        // Один статус
+        statusesToFilter = [statusId as TicketStatus];
+      } else {
+        // Статус не указан, используем все доступные статусы
+        statusesToFilter =
+          groupStatusesMap[
+            (userGroup as UserGroup.Manager) || UserGroup.TaskPerformer
+          ][ManagerButtons.AllTickets];
+      }
     } catch (error) {
       logger.error(`Failed to get statuses: ${error}`);
       return undefined;
@@ -92,7 +114,11 @@ const getFilteredTicketsKeyboard = async (
       };
     });
 
-    const availableStatuses = statusesToFilter.join(",");
+    // Используем маркер "ALL" для всех статусов, чтобы уменьшить размер callback данных
+    const useAllMarker = statusesToFilter.length > 2;
+    const selectStatusIdValue = useAllMarker
+      ? "ALL"
+      : statusesToFilter.join("_");
 
     const keyboard = getPageKeyboard(
       pageItems,
@@ -102,17 +128,26 @@ const getFilteredTicketsKeyboard = async (
       {
         scene: SelectTicketScene.Ticket,
         availableStatuses,
-        selectStatusId: statusId,
+        selectStatusId: selectStatusIdValue,
         selectPetrolStationId: stationId,
       },
     );
+
+    if (useAllMarker) {
+      return addBackButton(
+        keyboard,
+        infoPageCallback.pack({
+          pageIndex: 0,
+        }),
+      );
+    }
 
     return addBackButton(
       keyboard,
       selectTicketsData.pack({
         scene: SelectTicketScene.PetrolStation,
         availableStatuses,
-        selectStatusId: statusId,
+        selectStatusId: selectStatusIdValue,
         pageIndex: 0,
         selectPetrolStationId: stationId,
       }),
@@ -133,12 +168,20 @@ export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
 
   if (stationId) {
     try {
+      // Проверяем, содержит ли statusId запятые (несколько статусов)
+      let statusIdToUse = statusId;
+
+      if (!statusIdToUse) {
+        // Если statusId не указан, используем специальный маркер "ALL"
+        statusIdToUse = "ALL";
+      }
+
       const keyboard = await getFilteredTicketsKeyboard(
         ctx,
         userGroup,
         userId,
         stationId,
-        statusId,
+        statusIdToUse,
       );
 
       if (!keyboard) {
