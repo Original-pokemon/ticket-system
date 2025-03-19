@@ -133,7 +133,7 @@ export async function infoCallbackHandler(
       const stationName = `${stationNameMap.get(stationId)} :`;
 
       // При нажатии на АЗС не передаем никакой статус
-      text += `start_line<a href="tg://resolve?domain=${me.username}&start=${stationId}-">${stationName}</a>\n`;
+      text += `start_line<a href="tg://resolve?domain=${me.username}&start=${stationId}-ALL">${stationName}</a>\n`;
       for (const [statusId, count] of statusIdMap.entries()) {
         text += `<a href="tg://resolve?domain=${me.username}&start=${stationId}-${statusId}">${cachedStatuses[statusId].description}</a>: ${count} заявок\n`;
       }
