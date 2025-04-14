@@ -4,7 +4,7 @@ import { createAdminStartMenu } from "#root/bot/keyboards/admin/admin-panel.js";
 import { isBlocked, isUnauthorized } from "#root/bot/filters/index.js";
 import { isAdmin } from "#root/bot/filters/is-bot-admin.js";
 import { BotText } from "#root/bot/const/text.js";
-import { createUserKeyboard } from "#root/bot/keyboards/index.js";
+import { createUserInlineKeyboard } from "#root/bot/keyboards/index.js";
 import {
   commandsText,
   TicketStatus,
@@ -189,7 +189,7 @@ export const welcomeCommandHandler = async (ctx: CommandContext<Context>) => {
   return ctx.reply(
     BotText.Welcome.getUserText(group.description, Object.values(commandsText)),
     {
-      reply_markup: await createUserKeyboard(group.id),
+      reply_markup: await createUserInlineKeyboard(group.id),
     },
   );
 };
