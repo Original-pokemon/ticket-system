@@ -257,6 +257,8 @@ export const retrieveTicketHandler = async (
   await ctx.editMessageText(UserText.RETRIEVE_TICKET(ticket.title, userName));
 };
 
-export const createTicketHandler = async (ctx: HearsContext<Context>) => {
+export const createTicketHandler = async (
+  ctx: HearsContext<Context> | CallbackQueryContext<Context>,
+) => {
   await ctx.conversation.enter(CREATE_TICKET_CONVERSATION);
 };

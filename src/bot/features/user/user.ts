@@ -8,6 +8,7 @@ import {
   selectTicketsData,
   SelectTicketScene,
   startMessageCallback,
+  createTicketData,
 } from "#root/bot/callback-data/index.js";
 import {
   infoCallbackHandler,
@@ -87,6 +88,12 @@ feature.callbackQuery(
 
 feature.hears(
   [ManagerButtons.CreateTicket, PetrolStationButtons.CreateTicket],
+  logHandle("hears-create-ticket"),
+  createTicketHandler,
+);
+
+feature.callbackQuery(
+  createTicketData.filter(),
   logHandle("hears-create-ticket"),
   createTicketHandler,
 );

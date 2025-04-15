@@ -22,6 +22,8 @@ export const selectPetrolStationData = createCallbackData(
   },
 );
 
+export const createTicketData = createCallbackData("create-ticket-data", {});
+
 export const withdrawTicketData = createCallbackData(
   "withdraw-ticket-callback",
   {

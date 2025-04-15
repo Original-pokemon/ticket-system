@@ -1,4 +1,5 @@
 import {
+  createTicketData,
   SelectTicketScene,
   selectTicketsData,
 } from "#root/bot/callback-data/index.js";
@@ -19,7 +20,7 @@ export const createManagerInlineKeyboard = () => {
     [
       {
         text: ManagerButtons.CreateTicket,
-        callback_data: ManagerButtons.CreateTicket,
+        callback_data: createTicketData.pack({}),
       },
     ],
     [
