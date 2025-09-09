@@ -5,7 +5,6 @@ import {
 } from "#root/bot/conversations/index.js";
 import { CallbackQueryContext, InlineKeyboard } from "grammy";
 import {
-  selectCategoryAdminData,
   unBlockUserData,
   blockUserData,
   registerUserData,
@@ -26,33 +25,6 @@ export const registerUserHandler = async (
   ctx: CallbackQueryContext<Context>,
 ) => {
   await ctx.conversation.enter(REGISTER_USER_CONVERSATION);
-};
-
-export const saveCategoryHandler = async (
-  ctx: CallbackQueryContext<Context>,
-) => {
-  const {
-    callbackQuery,
-    session: { selectUser },
-    services: { TaskPerformer },
-  } = ctx;
-  // eslint-disable-next-line camelcase
-  const { id: category_id } = selectCategoryAdminData.unpack(
-    callbackQuery.data,
-  );
-
-  if (!selectUser) {
-    throw new Error("User not Selected");
-  }
-  const taskPerformer = await TaskPerformer.getUnique(selectUser);
-
-  await TaskPerformer.update({
-    ...taskPerformer,
-    // eslint-disable-next-line camelcase
-    category_id,
-  });
-
-  await ctx.editMessageText(AdminText.Admin.SAVE_RELATIONSHIP);
 };
 
 export const unblockUserHandler = async (

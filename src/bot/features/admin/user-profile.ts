@@ -6,10 +6,10 @@ import {
   unblockUserHandler,
   registerUserHandler,
   blockUserHandler,
-  saveCategoryHandler,
   saveRelationshipHandler,
   selectPetrolStationsHandler,
   selectManagersHandler,
+  selectСategoryHandler,
 } from "#root/bot/handlers/index.js";
 import { logHandle } from "#root/bot/helpers/logging.js";
 import { Composer } from "grammy";
@@ -19,9 +19,9 @@ import {
   setRelationshipUserData,
   unBlockUserData,
   selectManagerData,
-  selectCategoryAdminData,
   selectPetrolStationAdminData,
   saveRelationshipData,
+  selectCategoryAdminData,
 } from "#root/bot/callback-data/index.js";
 
 const composer = new Composer<Context>();
@@ -54,7 +54,7 @@ feature.callbackQuery(
 
 feature.callbackQuery(
   selectPetrolStationAdminData.filter(),
-  logHandle("callbackquery-selext-petrol-station"),
+  logHandle("callbackquery-seleсt-petrol-station"),
   selectPetrolStationsHandler,
 );
 feature.callbackQuery(
@@ -64,15 +64,15 @@ feature.callbackQuery(
 );
 
 feature.callbackQuery(
-  saveRelationshipData.filter(),
-  logHandle("callbackquery-save-relationship"),
-  saveRelationshipHandler,
+  selectCategoryAdminData.filter(),
+  logHandle("callbackquery-select-petrol-station"),
+  selectСategoryHandler,
 );
 
 feature.callbackQuery(
-  selectCategoryAdminData.filter(),
-  logHandle("callbackquery-set-category"),
-  saveCategoryHandler,
+  saveRelationshipData.filter(),
+  logHandle("callbackquery-save-relationship"),
+  saveRelationshipHandler,
 );
 
 export { composer as userProfileFeature };

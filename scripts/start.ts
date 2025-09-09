@@ -22,58 +22,64 @@ try {
   const api = await createApi();
   const container = createAppContainer(api);
   const { logger, config, client } = container;
-  await client.connect();
-  const sessionStorage = await PsqlAdapter.create({
-    tableName: "session",
-    client,
-  });
+  try {
+    await client.connect();
+    const sessionStorage = await PsqlAdapter.create({
+      tableName: "session",
+      client,
+    });
 
-  const bot = createBot(config.BOT_TOKEN, {
-    container,
-    sessionStorage,
-  });
+    const bot = createBot(config.BOT_TOKEN, {
+      container,
+      sessionStorage,
+    });
 
-  let runner: undefined | RunnerHandle;
+    let runner: undefined | RunnerHandle;
 
-  // Graceful shutdown
-  onShutdown(async () => {
-    logger.debug("shutdown");
-    logger.info("Stopping bot...");
-    await bot.stop();
-    logger.debug("Closing database connection...");
-    await client.end();
+    // Graceful shutdown
+    onShutdown(async () => {
+      logger.debug("shutdown");
+      logger.info("Stopping bot...");
+      await bot.stop();
+      logger.debug("Closing database connection...");
+      await client.end();
+      logger.debug("Close database connection");
+
+      if (config.isProd) {
+        logger.debug("Stopping runner...");
+        await runner?.stop();
+      }
+      logger.info("Shutdown complete.");
+    });
+
+    await Promise.all([bot.init()]);
 
     if (config.isProd) {
-      logger.debug("Stopping runner...");
-      await runner?.stop();
-    }
-    logger.info("Shutdown complete.");
-  });
+      logger.info({
+        msg: "bot running...",
+        username: bot.botInfo.username,
+      });
 
-  await Promise.all([bot.init()]);
-
-  if (config.isProd) {
-    logger.info({
-      msg: "bot running...",
-      username: bot.botInfo.username,
-    });
-
-    runner = run(bot, {
-      runner: {
-        fetch: {
-          allowed_updates: config.BOT_ALLOWED_UPDATES,
+      runner = run(bot, {
+        runner: {
+          fetch: {
+            allowed_updates: config.BOT_ALLOWED_UPDATES,
+          },
         },
-      },
-    });
-  } else if (config.isDev) {
-    await bot.start({
-      allowed_updates: config.BOT_ALLOWED_UPDATES,
-      onStart: ({ username }) =>
-        logger.info({
-          msg: "bot running...",
-          username,
-        }),
-    });
+      });
+    } else if (config.isDev) {
+      await bot.start({
+        allowed_updates: config.BOT_ALLOWED_UPDATES,
+        onStart: ({ username }) =>
+          logger.info({
+            msg: "bot running...",
+            username,
+          }),
+      });
+    }
+  } catch (error) {
+    logger.error(error);
+    process.exit(1);
   }
 } catch {
   process.exit(1);

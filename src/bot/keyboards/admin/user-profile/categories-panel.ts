@@ -1,14 +1,18 @@
-import { selectCategoryAdminData } from "#root/bot/callback-data/index.js";
+import {
+  saveRelationshipData,
+  selectCategoryAdminData,
+} from "#root/bot/callback-data/index.js";
+import { AdminText } from "#root/bot/const/index.js";
 import { Context } from "#root/bot/context.js";
 import { chunk } from "#root/bot/helpers/index.js";
 import { InlineKeyboard } from "grammy";
 
 export const createCategoriesRelationKeyboard = async (ctx: Context) => {
   const {
-    services: { TaskPerformer },
     session: {
       selectUser,
       categories: { data },
+      customData,
     },
   } = ctx;
 
@@ -20,13 +24,12 @@ export const createCategoriesRelationKeyboard = async (ctx: Context) => {
     throw new Error("Categories not found");
   }
 
-  const { category_id: categoryId } = await TaskPerformer.getUnique(selectUser);
   const categoriesArray = Object.values(data);
 
-  return InlineKeyboard.from(
+  const keyboard = InlineKeyboard.from(
     chunk(
       categoriesArray.map(({ description, id }) => ({
-        text: id === categoryId ? `✅${description}` : description,
+        text: customData[id.toString()] ? `✅${description}` : description,
         callback_data: selectCategoryAdminData.pack({
           id,
         }),
@@ -34,4 +37,13 @@ export const createCategoriesRelationKeyboard = async (ctx: Context) => {
       2,
     ),
   );
+
+  keyboard
+    .row()
+    .text(
+      AdminText.Keyboard.SAVE,
+      saveRelationshipData.pack({ id: selectUser }),
+    );
+
+  return keyboard;
 };
