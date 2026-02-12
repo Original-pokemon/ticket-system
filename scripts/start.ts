@@ -81,6 +81,7 @@ try {
     logger.error(error);
     process.exit(1);
   }
-} catch {
+} catch (error) {
+  console.error("Fatal startup error:", error);
   process.exit(1);
 }

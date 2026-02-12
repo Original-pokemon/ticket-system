@@ -11,7 +11,7 @@ type DetailMessageType = {
   message: string;
 };
 
-const TOKEN_REFRESH_INTERVAL = 25 * 24 * 60 * 60 * 1000; // 25 дней
+const TOKEN_REFRESH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 дней
 
 const createApi = async () => {
   const api = axios.create({
