@@ -1,6 +1,6 @@
-version: '3'
+version: "3"
 
-services: 
+services:
   backend:
     image: ${DOCKER_USERNAME}/backend:latest
     ports:
@@ -33,9 +33,7 @@ services:
       BOT_ADMIN_USER_ID: ${BOT_ADMIN_USER_ID}
       DATABASE_URL: ${DATABASE_URL} # TODO
       BOT_TOKEN: ${BOT_TOKEN}
-      BACKEND_URL: ${http://backend:8000}
-      BACKEND_USERNAME: ${EXTERNAL_SERVICE_LOGIN}
-      BACKEND_PASSWORD: ${EXTERNAL_SERVICE_PASSWORD}
+      BACKEND_URL: http://backend:8000
     volumes:
       - ./logs:/app/logs
     depends_on:
