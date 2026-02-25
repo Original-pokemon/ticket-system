@@ -131,7 +131,7 @@ const sendTaskPerformersAboutNewTicket = async ({
   }
   const markup = createTicketNotificationKeyboard({ ticketId });
 
-  sendTaskPerformers({ ctx, ticket }, text, markup);
+  await sendTaskPerformers({ ctx, ticket }, text, markup);
 };
 
 const sendManagersNotificationAboutPerformTicket = async ({
@@ -265,7 +265,7 @@ const actionForReviewedManagerTicket = async ({ ctx, ticket }: Properties) => {
   throw new Error("User group is not manager");
 };
 
-/* 
+/*
   Т.к данный статус меняется при просмотре задачи на seenTaskPerformer в handlers\user\select-ticket.ts
   Никакой преедачи не производится
 */
