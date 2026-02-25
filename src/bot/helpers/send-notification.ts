@@ -62,12 +62,12 @@ export const sendManagers = async (
   const promises = managers.map(async (managerId) => {
     try {
       await api.sendMessage(managerId, text, { reply_markup: markup });
-      successCount++;
+      successCount += 1;
       logger.debug(
         `[sendManagers] Successfully sent notification to manager ${managerId} for ticket ${ticketId}`,
       );
     } catch (error) {
-      failureCount++;
+      failureCount += 1;
       logger.error(
         `[sendManagers] Failed to send notification to manager ${managerId} for ticket ${ticketId} "${ticketTitle}": ${error}`,
       );
@@ -151,12 +151,12 @@ export const sendTaskPerformers = async (
       await api.sendMessage(taskPerformerId, text, {
         reply_markup: markup,
       });
-      successCount++;
+      successCount += 1;
       logger.debug(
         `[sendTaskPerformers] Successfully sent notification to task performer ${taskPerformerId} for ticket ${ticketId}`,
       );
     } catch (error) {
-      failureCount++;
+      failureCount += 1;
       logger.error(
         `[sendTaskPerformers] Failed to send notification to task performer ${taskPerformerId} for ticket ${ticketId} "${ticketTitle}": ${error}`,
       );
